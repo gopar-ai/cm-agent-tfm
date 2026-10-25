@@ -1,3 +1,13 @@
+import { readJson, writeJson } from './local-store';
+
+/**
+ * Memoria silenciosa: qué formato, qué versión y qué estilo de titular elige el
+ * equipo, para que el agente se acerque a su gusto sin que nadie configure nada.
+ *
+ * El resumen se construye en una función pura (`buildMemorySummary`) porque es
+ * lo que viaja al prompt y lo que hay que poder probar sin navegador.
+ */
+
 export type MemoryEntry = {
   tema: string;
   formato: string;
@@ -8,28 +18,18 @@ export type MemoryEntry = {
 
 const KEY = 'cm_memoria';
 const MIN_ENTRIES_FOR_SUMMARY = 3;
+const MAX_STORED_ENTRIES = 200;
 
 export function getMemory(): MemoryEntry[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = localStorage.getItem(KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  const stored = readJson<MemoryEntry[]>(KEY, []);
+  return Array.isArray(stored) ? stored : [];
 }
 
 export function addMemoryEntry(entry: MemoryEntry): void {
-  const list = getMemory();
-  list.push(entry);
-  localStorage.setItem(KEY, JSON.stringify(list));
-}
-
-function topEntries(counts: Map<string, number>, n: number): string[] {
-  return [...counts.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, n)
-    .map(([key]) => key);
+  // Se recorta por la cola: el historial reciente es el que describe el gusto
+  // actual del equipo, y así el payload que viaja al servidor tiene techo.
+  const list = [...getMemory(), entry].slice(-MAX_STORED_ENTRIES);
+  writeJson(KEY, list);
 }
 
 function countBy<T>(items: T[], key: (item: T) => string): Map<string, number> {
@@ -42,38 +42,44 @@ function countBy<T>(items: T[], key: (item: T) => string): Map<string, number> {
   return counts;
 }
 
-function detectTitularStyle(titular: string): string {
-  const t = titular.trim();
+function topEntries(counts: Map<string, number>, n: number): string[] {
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, n)
+    .map(([key]) => key);
+}
+
+export function detectTitularStyle(titular: string): 'pregunta' | 'dato duro' | 'declaración' {
+  const t = (titular ?? '').trim();
   if (!t) return 'declaración';
   if (t.endsWith('?')) return 'pregunta';
   if (/\d/.test(t)) return 'dato duro';
   return 'declaración';
 }
 
+const SIN_DATOS = 'sin datos suficientes';
+
 /**
- * Construye un resumen de preferencias editoriales a partir del historial de elecciones.
- * Devuelve null si no hay suficientes entradas para detectar un patrón confiable.
+ * Resume las preferencias editoriales a partir del historial de elecciones.
+ * Devuelve null mientras no haya elecciones suficientes para hablar de un
+ * patrón: con una o dos, el "patrón" sería ruido.
  */
 export function buildMemorySummary(memoria: MemoryEntry[]): string | null {
-  if (!Array.isArray(memoria) || memoria.length < MIN_ENTRIES_FOR_SUMMARY) return null;
+  if (!Array.isArray(memoria)) return null;
 
-  const formatoCounts = countBy(memoria, (m) => m.formato);
-  const topFormatos = topEntries(formatoCounts, 2);
+  const valid = memoria.filter((entry): entry is MemoryEntry => Boolean(entry) && typeof entry === 'object');
+  if (valid.length < MIN_ENTRIES_FOR_SUMMARY) return null;
 
-  const versionCounts = countBy(memoria, (m) => m.version_elegida);
-  const [preferredVersion] = topEntries(versionCounts, 1);
+  const topFormatos = topEntries(countBy(valid, (m) => m.formato), 2);
+  const [preferredVersion] = topEntries(countBy(valid, (m) => m.version_elegida), 1);
+  const [topStyle] = topEntries(countBy(valid, (m) => detectTitularStyle(m.titular_elegido)), 1);
+  const topTemas = topEntries(countBy(valid, (m) => m.tema), 3);
 
-  const styleCounts = countBy(memoria, (m) => detectTitularStyle(m.titular_elegido));
-  const [topStyle] = topEntries(styleCounts, 1);
-
-  const temaCounts = countBy(memoria, (m) => m.tema);
-  const topTemas = topEntries(temaCounts, 3);
-
-  if (topFormatos.length === 0 && !preferredVersion && !topStyle && topTemas.length === 0) return null;
-
-  return `Preferencias aprendidas del equipo Detecta:
-- Formatos más usados: ${topFormatos.join(', ') || 'sin datos suficientes'}
-- Versión preferida: ${preferredVersion ?? 'sin datos suficientes'}
-- Estilo de titulares preferido: ${topStyle ?? 'sin datos suficientes'}
-- Temas más desarrollados: ${topTemas.join(', ') || 'sin datos suficientes'}`;
+  return `Preferencias aprendidas del equipo:
+- Formatos más usados: ${topFormatos.join(', ') || SIN_DATOS}
+- Versión preferida: ${preferredVersion ?? SIN_DATOS}
+- Estilo de titulares preferido: ${topStyle ?? SIN_DATOS}
+- Temas más desarrollados: ${topTemas.join(', ') || SIN_DATOS}`;
 }
+
+export { MIN_ENTRIES_FOR_SUMMARY, MAX_STORED_ENTRIES };

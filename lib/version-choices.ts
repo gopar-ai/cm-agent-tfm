@@ -1,3 +1,10 @@
+import { readJson, writeJson } from './local-store';
+
+/**
+ * Registro de qué versión eligió el analista en cada propuesta.
+ * Alimenta la memoria de preferencias (`lib/agent-memory.ts`).
+ */
+
 export type VersionChoice = {
   tema: string;
   formato: string;
@@ -6,25 +13,15 @@ export type VersionChoice = {
 };
 
 const KEY = 'cm_version_choices';
+const MAX_STORED = 200;
 
 export function logVersionChoice(choice: VersionChoice): void {
-  if (typeof window === 'undefined') return;
-  try {
-    const raw = localStorage.getItem(KEY);
-    const list: VersionChoice[] = raw ? JSON.parse(raw) : [];
-    list.push(choice);
-    localStorage.setItem(KEY, JSON.stringify(list));
-  } catch {
-    // ignore corrupted storage
-  }
+  writeJson(KEY, [...getVersionChoices(), choice].slice(-MAX_STORED));
 }
 
 export function getVersionChoices(): VersionChoice[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = localStorage.getItem(KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  const stored = readJson<VersionChoice[]>(KEY, []);
+  return Array.isArray(stored) ? stored : [];
 }
+
+export { KEY as VERSION_CHOICES_KEY, MAX_STORED };

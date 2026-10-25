@@ -1,0 +1,157 @@
+name: CI
+
+# Se ejecuta en cada cambio sobre la rama principal y en cada pull request.
+# El objetivo es que nada entre sin pasar por: análisis estático, tipos,
+# pruebas con cobertura, construcción, recorrido en navegador e imagen de
+# contenedor (RNF-23).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  # Un empujón nuevo cancela la ejecución anterior de la misma rama: no tiene
+  # sentido gastar minutos en revisar código que ya quedó atrás.
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # La aplicación nunca llama al modelo en la integración continua: sin clave,
+  # el agente responde con su guion de demostración.
+  DEMO_MODE: 'true'
+
+jobs:
+  calidad:
+    name: Análisis estático, tipos y pruebas
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Análisis estático
+        run: npm run lint
+
+      - name: Comprobar tipos (aplicación y pruebas)
+        run: npm run typecheck
+
+      - name: Pruebas con cobertura
+        run: npm run test:cov
+
+      - name: Guardar informe de cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura
+          path: coverage/
+          retention-days: 14
+
+      - name: Revisar vulnerabilidades conocidas
+        # Informativo: una vulnerabilidad recién publicada en una dependencia
+        # indirecta no debe bloquear una entrega, pero sí verse.
+        run: npm audit --audit-level=high || true
+
+  construccion:
+    name: Construcción de producción
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: calidad
+
+    env:
+      NODE_ENV: production
+      APP_USERNAME: ci
+      APP_PASSWORD: contrasena-solo-para-ci
+      JWT_SECRET: secreto-de-integracion-continua-suficientemente-largo
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Construir
+        run: npm run build
+
+  navegador:
+    name: Recorrido en navegador
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: calidad
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Instalar navegador
+        run: npx playwright install --with-deps chromium
+
+      - name: Recorrido de punta a punta
+        run: npm run test:e2e
+
+      - name: Guardar informe del recorrido
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: informe-playwright
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+  contenedor:
+    name: Imagen de contenedor
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: calidad
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Construir la imagen
+        run: docker build -t cm-agent:ci .
+
+      - name: Comprobar que el contenedor levanta y responde
+        run: |
+          docker run -d --name cm-agent-ci -p 3000:3000 \
+            -e DEMO_MODE=true \
+            -e APP_USERNAME=ci \
+            -e APP_PASSWORD=contrasena-solo-para-ci \
+            -e JWT_SECRET=secreto-de-integracion-continua-suficientemente-largo \
+            cm-agent:ci
+
+          # Espera activa en vez de un sleep fijo: termina en cuanto responde.
+          for intento in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3000/api/health; then
+              echo "El contenedor responde."
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "El contenedor no respondió a tiempo. Registro:"
+          docker logs cm-agent-ci
+          exit 1
+
+      - name: Detener el contenedor
+        if: always()
+        run: docker rm -f cm-agent-ci || true

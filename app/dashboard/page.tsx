@@ -15,13 +15,17 @@ import {
   type ChatMessage as Message,
 } from '@/lib/chat-storage';
 import type { Topic } from '@/lib/post-parser';
+import {
+  KICKOFF_MESSAGE,
+  buildConfirmMessage,
+  buildFormatMessage,
+  buildTopicMessage,
+  isConfirmMessage,
+} from '@/lib/agent-messages';
+import { addDraftToCalendar } from '@/lib/calendar-storage';
 import { getAgentContext, hasStoredAgentContext } from '@/lib/agent-context';
 import { logVersionChoice } from '@/lib/version-choices';
 import { getMemory, addMemoryEntry } from '@/lib/agent-memory';
-import type { CalendarPost } from '@/lib/calendar-storage';
-
-const KICKOFF_PROMPT =
-  'Inicia la conversación proponiendo directamente entre 5 y 8 temas para LinkedIn, mezclando temas y actualidad. No redactes ningún post todavía.';
 
 const LIMIT_MESSAGE: Message = {
   role: 'assistant',
@@ -94,7 +98,7 @@ function DashboardContent() {
     setMessages([]);
     if (kickedOffFor.current === chat.id) return;
     kickedOffFor.current = chat.id;
-    sendToAgent(chat.id, [], [{ role: 'user', content: KICKOFF_PROMPT }]);
+    sendToAgent(chat.id, [], [{ role: 'user', content: KICKOFF_MESSAGE }]);
   }, [chatId]);
 
   useEffect(() => {
@@ -117,7 +121,7 @@ function DashboardContent() {
   function getLoadingLabels(apiMessages: Message[]): string[] {
     const lastContent = apiMessages[apiMessages.length - 1]?.content ?? '';
 
-    if (lastContent === KICKOFF_PROMPT) {
+    if (lastContent === KICKOFF_MESSAGE) {
       return shuffleArray([
         'Buscando noticias y preparando propuestas',
         'Revisando fuentes de logística',
@@ -231,12 +235,12 @@ function DashboardContent() {
 
   function handleSelectTopic(topic: Topic) {
     currentTopicRef.current = topic.title;
-    submitUserMessage(`Desarrolla el tema ${topic.number}: ${topic.title}`);
+    submitUserMessage(buildTopicMessage(topic.number, topic.title));
   }
 
   function handleSelectFormat(format: string) {
     currentFormatRef.current = format;
-    submitUserMessage(`Genera el formato "${format}" para este tema: dos versiones (A y B).`);
+    submitUserMessage(buildFormatMessage(format));
   }
 
   function handleConfirmVersion(choice: 'A' | 'B', content: string, titulares: string[]) {
@@ -253,9 +257,7 @@ function DashboardContent() {
       titular_elegido: titulares[0] ?? '',
       timestamp: Date.now(),
     });
-    submitUserMessage(
-      `Elijo la Versión ${choice}. Este es el contenido confirmado, a partir de aquí lo ajustamos si pido cambios:\n\n${content}`
-    );
+    submitUserMessage(buildConfirmMessage(choice, content));
   }
 
   function handleSavePost(post: {
@@ -264,23 +266,16 @@ function DashboardContent() {
     hashtags: string;
     promptImagen: string;
   }) {
-    const saved: CalendarPost[] = JSON.parse(localStorage.getItem('cm_calendar') ?? '[]');
-    const newPost: CalendarPost = {
-      id: Date.now().toString(),
-      ...post,
-      fecha: new Date().toISOString().split('T')[0],
-      status: 'borrador',
-    };
-    localStorage.setItem('cm_calendar', JSON.stringify([...saved, newPost]));
+    addDraftToCalendar(post);
   }
 
   // El mensaje "Elijo la Versión..." y la confirmación breve que le sigue son solo
   // para que el agente tenga contexto en ajustes futuros — no se muestran en el chat,
   // ahí ya se ve el panel de edición dentro de la tarjeta de versiones.
   const visibleMessages = messages.filter((msg, i) => {
-    if (msg.role === 'user' && msg.content.startsWith('Elijo la Versión')) return false;
+    if (msg.role === 'user' && isConfirmMessage(msg.content)) return false;
     const prev = messages[i - 1];
-    if (msg.role === 'assistant' && prev?.role === 'user' && prev.content.startsWith('Elijo la Versión')) {
+    if (msg.role === 'assistant' && prev?.role === 'user' && isConfirmMessage(prev.content)) {
       return false;
     }
     return true;

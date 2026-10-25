@@ -1,3 +1,11 @@
+import { emitChange, newId, readJson, subscribeToChange, writeJson } from './local-store';
+
+/**
+ * Calendario de contenido: borradores, programados y publicados.
+ */
+
+export type PostStatus = 'borrador' | 'programado' | 'publicado';
+
 export type CalendarPost = {
   id: string;
   titular: string;
@@ -5,7 +13,7 @@ export type CalendarPost = {
   hashtags: string;
   promptImagen: string;
   fecha: string;
-  status: 'borrador' | 'programado' | 'publicado';
+  status: PostStatus;
 };
 
 const CALENDAR_KEY = 'cm_calendar';
@@ -13,37 +21,58 @@ const DRAFTS_KEY = 'cm_borradores';
 const PUBLISHED_KEY = 'cm_published_posts';
 const PUBLISHED_EVENT = 'cm-published-updated';
 
-export function addToCalendar(post: Omit<CalendarPost, 'id' | 'status'>): void {
-  const saved: CalendarPost[] = JSON.parse(localStorage.getItem(CALENDAR_KEY) ?? '[]');
-  const newPost: CalendarPost = { id: Date.now().toString(), status: 'programado', ...post };
-  localStorage.setItem(CALENDAR_KEY, JSON.stringify([...saved, newPost]));
+export function addToCalendar(post: Omit<CalendarPost, 'id' | 'status'>): CalendarPost {
+  const saved = readJson<CalendarPost[]>(CALENDAR_KEY, []);
+  const newPost: CalendarPost = { ...post, id: newId(), status: 'programado' };
+  writeJson(CALENDAR_KEY, [...saved, newPost]);
+  return newPost;
 }
 
-export function saveDraft(post: Omit<CalendarPost, 'id' | 'status' | 'fecha'>): void {
-  const saved: CalendarPost[] = JSON.parse(localStorage.getItem(DRAFTS_KEY) ?? '[]');
-  const newPost: CalendarPost = { id: Date.now().toString(), status: 'borrador', fecha: '', ...post };
-  localStorage.setItem(DRAFTS_KEY, JSON.stringify([...saved, newPost]));
+/**
+ * Guarda un post como borrador dentro del calendario, con la fecha de hoy.
+ *
+ * Es lo que hace el botón "+ Calendario" de una propuesta: deja el post a la
+ * vista en el mes, todavía como borrador, para fecharlo después. La pantalla del
+ * chat escribía esto a mano con `Date.now()` como identificador; pasa por aquí
+ * para que use un identificador único como el resto.
+ */
+export function addDraftToCalendar(
+  post: Omit<CalendarPost, 'id' | 'status' | 'fecha'>,
+  today: Date = new Date()
+): CalendarPost {
+  const saved = readJson<CalendarPost[]>(CALENDAR_KEY, []);
+  const newPost: CalendarPost = {
+    ...post,
+    id: newId(),
+    status: 'borrador',
+    fecha: today.toISOString().split('T')[0],
+  };
+  writeJson(CALENDAR_KEY, [...saved, newPost]);
+  return newPost;
+}
+
+export function saveDraft(post: Omit<CalendarPost, 'id' | 'status' | 'fecha'>): CalendarPost {
+  const saved = readJson<CalendarPost[]>(DRAFTS_KEY, []);
+  const newPost: CalendarPost = { ...post, id: newId(), status: 'borrador', fecha: '' };
+  writeJson(DRAFTS_KEY, [...saved, newPost]);
+  return newPost;
 }
 
 function readPublished(): CalendarPost[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    return JSON.parse(localStorage.getItem(PUBLISHED_KEY) ?? '[]');
-  } catch {
-    return [];
-  }
+  const stored = readJson<CalendarPost[]>(PUBLISHED_KEY, []);
+  return Array.isArray(stored) ? stored : [];
 }
 
 function writePublished(posts: CalendarPost[]): void {
-  localStorage.setItem(PUBLISHED_KEY, JSON.stringify(posts));
-  window.dispatchEvent(new Event(PUBLISHED_EVENT));
+  writeJson(PUBLISHED_KEY, posts);
+  emitChange(PUBLISHED_EVENT);
 }
 
 export function getPublishedPosts(): CalendarPost[] {
   return readPublished();
 }
 
-/** Mantiene "cm_published_posts" en sincronía con el estado real del post en el calendario. */
+/** Mantiene la lista de publicados en sincronía con el estado real del post. */
 export function syncPublishedPost(post: CalendarPost): void {
   const list = readPublished();
   const idx = list.findIndex((p) => p.id === post.id);
@@ -64,6 +93,7 @@ export function removeFromPublished(id: string): void {
 }
 
 export function subscribeToPublished(callback: () => void): () => void {
-  window.addEventListener(PUBLISHED_EVENT, callback);
-  return () => window.removeEventListener(PUBLISHED_EVENT, callback);
+  return subscribeToChange(PUBLISHED_EVENT, callback);
 }
+
+export { CALENDAR_KEY, DRAFTS_KEY, PUBLISHED_KEY, PUBLISHED_EVENT };

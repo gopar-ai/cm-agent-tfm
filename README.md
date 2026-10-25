@@ -1,8 +1,48 @@
 # CM Agent
 
-Agente de community manager con IA para LinkedIn: genera, itera y programa contenido para Detecta Security mediante un flujo conversacional de varias fases, con aprendizaje silencioso de preferencias editoriales.
+Agente de community manager con IA para LinkedIn. Acompaña de la idea al post
+publicable en cuatro fases, consulta la actualidad del sector mientras propone, y
+aprende del uso: cada elección del analista orienta las siguientes propuestas sin
+que nadie configure nada.
 
-![Demo de CM Agent](docs/screenshots/demo.gif)
+![El agente proponiendo temas, con el feed del sector al lado](docs/screenshots/2-temas.png)
+
+> Las capturas de este README salen de la demo, con una marca ficticia, y se
+> generan con `node scripts/capturas.mjs`: así no envejecen y nunca muestran
+> datos de un cliente real.
+
+---
+
+## Entrega del proyecto final
+
+| | |
+|---|---|
+| **Aplicación publicada** | _(pendiente de publicar)_ |
+| **Usuario de prueba** | `demo` |
+| **Contraseña de prueba** | `demo1234` |
+| **Presentación** | [`docs/slides.md`](docs/slides.md) |
+| **Vídeo** | _(pendiente de publicar)_ |
+| **Documentación técnica** | [`docs/`](docs/) — especificación, requisitos, diseño, seguridad, pruebas |
+
+La versión publicada corre en **modo de demostración**: el agente responde con un
+guion local en vez de llamar al modelo, así que se puede recorrer el flujo
+completo sin gastar nada y sin configurar nada. El código es el mismo; lo único
+que cambia es de dónde sale la respuesta, y la aplicación lo declara en la
+cabecera `X-Agent-Source`.
+
+---
+
+## Qué problema resuelve
+
+Una empresa B2B con ciclo de venta largo necesita publicar en LinkedIn de forma
+constante, y de eso se encarga una analista de marketing, no un equipo de
+contenido. Siempre se topa con lo mismo: decidir **de qué** publicar cuesta más
+que escribirlo; sin seguir la actualidad del sector el contenido queda
+intemporal; y cada herramienta de IA genérica obliga a volver a explicar a quién
+le hablamos, con qué tono y qué no se dice.
+
+CM Agent es un agente especializado en una marca, que sabe todo eso de entrada y
+que **registra lo que funciona** para acertar más la próxima vez.
 
 ## Cómo funciona
 
@@ -10,58 +50,214 @@ Agente de community manager con IA para LinkedIn: genera, itera y programa conte
 Analista (chat)
      │
      ▼
-Claude (Anthropic, con Web Search nativo)
+Claude Sonnet 4.6 · con búsqueda web
      │
-     ├─► Fase 1: propuesta de temas (evergreen + actualidad con fecha verificada)
-     ├─► Fase 2: ángulo sugerido (gancho, por qué ahora, emoción objetivo)
-     ├─► Fase 3: 2 versiones A/B por formato (Copy, Copy + imagen, Carrusel, PDF, Video)
-     └─► Fase 4: confirmación + ajustes iterativos
+     ├─► Fase 1 · Temas        5 propuestas: fondo del sector + actualidad con fecha verificada
+     ├─► Fase 2 · Ángulo       gancho, por qué ahora, emoción objetivo
+     ├─► Fase 3 · Versiones    A/B por formato, 3 titulares cada una
+     └─► Fase 4 · Ajustes      sobre la versión elegida, sin empezar de nuevo
      │
      ▼
-Panel editable (titulares, copy, hashtags) ──► Calendario / Borradores (localStorage)
+Panel editable ──► Calendario de contenido
+     │
+     └─► cada elección alimenta la memoria de preferencias ──┐
+                                                            │
+         las siguientes propuestas ya nacen con ese estilo ◄─┘
 ```
 
-Cada elección del analista (versión, formato, titular) se registra como memoria silenciosa que el agente usa en conversaciones futuras para acercarse al estilo preferido del equipo, sin que el analista tenga que configurar nada manualmente.
+En paralelo, un feed de noticias del sector (RSS + búsqueda con Claude Haiku 4.5)
+acompaña al chat para detectar oportunidades.
 
-## Features
+## Funcionalidades
 
-- *Flujo en 4 fases* — temas, ángulo, versiones A/B, confirmación e iteración
-- *Feed de noticias en vivo* — RSS de medios de logística en México + búsqueda web, con caché en memoria de 6h y caché en disco diaria
-- *Calendario de contenido* — borradores, programados y publicados, con sección de publicados en el sidebar
-- *Memoria silenciosa* — aprende formato, versión y estilo de titular preferidos con el uso
-- *Configuración editable* — contexto de marca, tono y temas prioritarios desde la propia app
-- *Sesión persistente* — login con JWT de 30 días
+- **Flujo en cuatro fases** — temas, ángulo, versiones A/B, ajustes. El agente no
+  pregunta qué quieres: entrega lo que toca en cada paso.
+- **Cinco formatos con estructura propia** — copy, copy + imagen (con el prompt
+  para generarla), carrusel, documento PDF y guion de video.
+- **Actualidad con fecha verificada** — solo entra como "actualidad" lo publicado
+  hoy o ayer, comparando la fecha de forma literal; el resto se convierte en tema
+  de fondo en vez de forzarse.
+- **Memoria silenciosa** — aprende formato, versión y estilo de titular
+  preferidos, y los aplica sin mencionarlo. A partir de tres elecciones: con
+  menos, el patrón sería ruido.
+- **Feed de noticias del sector** — RSS de medios + búsqueda web, con caché en
+  memoria y en disco para no repetir la búsqueda del día.
+- **Calendario de contenido** — borradores, programados y publicados.
+- **Varias propuestas en paralelo** — nombrables, fijables, ordenadas por última
+  actividad.
+- **Contexto de marca editable** — ICP, tono, temas prioritarios y prohibidos, se
+  editan desde la propia aplicación.
+- **Modo de demostración** — el flujo completo funciona sin clave de API.
+- **Acceso con sesión** — contraseña en hash, límite de intentos y cookie que el
+  navegador no puede leer.
+- **Costo acotado** — presupuesto diario de llamadas al modelo, límite por minuto
+  y techo por petición. Al agotarse el presupuesto, el agente sigue atendiendo
+  con el guion de demostración en vez de quedarse muerto.
 
-### Optimizaciones de costo
+## Cómo se ve
 
-- **Modelo por función**: el agente conversacional usa Claude Sonnet 4.6; la búsqueda del feed de noticias usa Claude Haiku 4.5 (más barato, suficiente para extraer titulares/fechas)
-- **System prompt compacto**: instrucciones densas sin perder reglas funcionales (~44% más corto que la versión inicial)
-- **Web Search acotado**: máximo 3 búsquedas por turno en el chat (`max_uses`)
-- **Caché del feed**: 6 horas en memoria + respaldo diario en disco antes de volver a buscar en vivo
-- **Historial acotado**: solo los últimos 10 mensajes de cada conversación se envían al modelo
-- **Memoria cacheada**: el resumen de preferencias del equipo solo se recalcula si hay entradas nuevas en `cm_memoria`
+**Ángulo antes de escribir** — el agente propone el enfoque y deja elegir el
+formato, sin haber redactado todavía:
 
-## Setup
+![Ángulo propuesto y selector de formato](docs/screenshots/3-angulo.png)
+
+**Dos versiones para comparar** — ganchos distintos, tres titulares cada una:
+
+![Comparación de la versión A y la B](docs/screenshots/4-versiones.png)
+
+**El contexto de marca se edita desde la aplicación**, sin tocar el código:
+
+![Pantalla de configuración del contexto](docs/screenshots/6-contexto.png)
+
+## Stack
+
+| | |
+|---|---|
+| **Lenguaje** | TypeScript (modo estricto) |
+| **Framework** | Next.js 16 · App Router · React 19 |
+| **Estilos** | Tailwind CSS 4 |
+| **IA** | Claude Sonnet 4.6 (agente) y Claude Haiku 4.5 (feed), con búsqueda web nativa |
+| **Validación** | Zod, en la configuración y en la entrada de la API |
+| **Sesión** | JWT en cookie `httpOnly`; contraseña en hash scrypt |
+| **Pruebas** | Vitest (367) + Playwright (11 × 2 perfiles) |
+| **Entorno** | Node.js 24 · Docker multietapa · GitHub Actions · Railway |
+| **Persistencia** | `localStorage` del navegador (decisión de diseño, no carencia: [docs/03](docs/03-diseno.md)) |
+
+## Instalación
+
+Requisitos: **Node.js 24 o superior**.
 
 ```bash
-cp .env.example .env.local   # completa tus credenciales
+git clone https://github.com/gopar-ai/cm-agent.git
+cd cm-agent
 npm install
 npm run dev
 ```
 
-## Variables de entorno
+Abrir <http://localhost:3000> y entrar con **`demo` / `demo1234`**.
 
-| Variable | Descripción |
+No hace falta configurar nada ni tener clave de API: fuera de producción la
+aplicación rellena credenciales de desarrollo y el agente responde con su guion
+de demostración. Se recorre el flujo completo tal cual.
+
+### Con el agente real
+
+Crear `.env.local` con la clave de Anthropic:
+
+```bash
+cp .env.example .env.local
+# editar .env.local y poner ANTHROPIC_API_KEY=sk-ant-...
+npm run dev
+```
+
+### Con Docker
+
+```bash
+docker build -t cm-agent .
+docker run -p 3000:3000 \
+  -e APP_USERNAME=demo \
+  -e APP_PASSWORD=demo1234 \
+  -e JWT_SECRET="$(openssl rand -hex 32)" \
+  -e DEMO_MODE=true \
+  cm-agent
+```
+
+La receta completa de despliegue, con todas las variables, está en
+[docs/08-despliegue.md](docs/08-despliegue.md).
+
+## Comandos
+
+| Comando | Qué hace |
 |---|---|
-| `ANTHROPIC_API_KEY` | API key de Anthropic |
-| `APP_USERNAME` / `APP_PASSWORD` | Credenciales de acceso del analista |
-| `JWT_SECRET` | Secreto para firmar la sesión (genera un string aleatorio largo) |
-| `CRON_SECRET` | Protege el endpoint de refresco diario del feed de noticias |
+| `npm run dev` | Servidor de desarrollo |
+| `npm run build` / `npm start` | Construcción y arranque de producción |
+| `npm test` | 367 pruebas unitarias y de integración (~5 s) |
+| `npm run test:cov` | Las mismas, con cobertura y umbrales que hacen fallar |
+| `npm run test:e2e` | Recorrido en navegador real, en escritorio y celular |
+| `npm run lint` / `npm run typecheck` | Análisis estático y tipos |
+| `npm run verify` | Lint + tipos + pruebas con cobertura |
+| `npm run hash-password -- "tu contraseña"` | Genera el valor de `APP_PASSWORD_HASH` |
 
-## Tech stack
+## Estructura
 
-- **Next.js (App Router)** — frontend y API routes
-- **Anthropic Claude (Sonnet 4.6 + Haiku 4.5)** — agente conversacional (Sonnet) y búsqueda del feed de noticias (Haiku), ambos con Web Search nativo
-- **RSS + web scraping** — feed de noticias de logística en México
-- **Railway** — deploy + cron del feed de noticias
-- **localStorage** — persistencia de chats, calendario, memoria y configuración (sin base de datos)
+```
+cm-agent/
+├── app/                        Next.js App Router
+│   ├── api/
+│   │   ├── auth/login/         acceso: límite por IP, hash, cookie firmada
+│   │   ├── auth/logout/
+│   │   ├── chat/               conversación: validación, presupuesto, modelo o guion
+│   │   ├── cron/refresh-news/  refresco programado del feed
+│   │   ├── health/             estado del servicio
+│   │   └── news/               feed con caché en memoria y disco
+│   ├── calendar/               calendario de contenido
+│   ├── dashboard/              chat y configuración del contexto
+│   └── login/
+│
+├── components/                 tarjetas de temas, ángulo, versiones A/B, feed…
+│
+├── lib/
+│   ├── agent-messages.ts       contrato de mensajes entre interfaz y agente
+│   ├── anthropic.ts            prompt del sistema y streaming del modelo
+│   ├── agent-context.ts        contexto de marca editable
+│   ├── agent-memory.ts         memoria de preferencias editoriales
+│   ├── brand.ts                identidad de la marca, por configuración
+│   ├── calendar-storage.ts     calendario, borradores y publicados
+│   ├── chat-storage.ts         conversaciones guardadas
+│   ├── day-key.ts              corte del día en la zona de la operación
+│   ├── demo-agent.ts           guion de demostración, sin API
+│   ├── env.ts                  configuración validada al arrancar
+│   ├── local-store.ts          acceso al almacenamiento del navegador
+│   ├── model-budget.ts         presupuesto diario de llamadas al modelo
+│   ├── news*.ts                feed: fuentes, RSS, búsqueda, caché
+│   ├── post-parser.ts          lectura de los bloques que devuelve el modelo
+│   ├── prompt-safety.ts        texto no confiable que entra al prompt
+│   ├── rate-limit.ts           límite de peticiones por clave
+│   ├── schemas.ts              techos de la entrada de la API
+│   └── security.ts             hash, comparación segura, validación de URL
+│
+├── tests/                      367 pruebas unitarias y de integración
+│   ├── api/                    rutas con dobles
+│   └── helpers/                doble de navegador y arranque común
+├── e2e/                        recorrido en navegador real
+├── docs/                       documentación técnica (ver abajo)
+├── scripts/hash-password.mjs   generador del hash de contraseña
+├── Dockerfile                  imagen multietapa, usuario sin privilegios
+├── proxy.ts                    middleware de sesión
+└── .github/workflows/ci.yml    integración continua
+```
+
+## Documentación técnica
+
+| Documento | Qué contiene |
+|---|---|
+| [01 · Especificación](docs/01-especificacion.md) | Problema, actores, 15 historias de usuario con criterios de aceptación y prioridad, ambigüedades resueltas |
+| [02 · Requisitos](docs/02-requisitos.md) | 23 requisitos no funcionales con umbral medible y cómo se comprueban |
+| [03 · Diseño](docs/03-diseno.md) | Arquitectura, siete decisiones con sus alternativas y su costo, riesgos, deuda técnica reconocida |
+| [04 · Seguridad](docs/04-seguridad.md) | Auditoría propia: ocho hallazgos corregidos, recorrido de OWASP Top 10 y OWASP LLM, riesgo residual |
+| [05 · Pruebas](docs/05-pruebas.md) | Estrategia, reparto por niveles, trazabilidad historia-prueba, cobertura y los defectos que encontraron |
+| [06 · Cotejo](docs/06-cotejo-master.md) | Qué pide el máster y dónde está cada cosa |
+| [07 · Trabajo con IA](docs/07-trabajo-con-ia.md) | Modelo por tarea, control de costos, y cómo se usó la IA para construirlo |
+| [08 · Despliegue](docs/08-despliegue.md) | Variables, Docker, Railway, qué vigilar |
+
+## Calidad
+
+| | |
+|---|---|
+| **Pruebas** | 367 unitarias y de integración · 11 en navegador real × 2 perfiles |
+| **Cobertura** | 98 % sentencias · 97 % funciones · 99 % líneas · 90 % ramas |
+| **Umbrales** | La suite falla si la cobertura baja de 85/90/85/80 |
+| **Análisis estático** | 0 errores |
+| **Integración continua** | Lint · tipos · pruebas · construcción · navegador · contenedor |
+
+El proyecto partía de una aplicación que ya funcionaba en producción pero no
+tenía ninguna prueba, ni integración continua, ni contenedor, ni validación de
+configuración, ni cabeceras de seguridad. Lo que se hizo fue llevarla al punto en
+que se puede sostener y auditar: ocho hallazgos de seguridad corregidos y seis
+defectos de comportamiento que las pruebas destaparon, cada uno con su prueba de
+regresión. El detalle está en [docs/04](docs/04-seguridad.md) y
+[docs/05](docs/05-pruebas.md).
+
+## Licencia
+
+MIT. Ver [LICENSE](LICENSE).

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import type { AngleResult } from '@/lib/post-parser';
 
-const FORMATS = ['📝 Copy', '📸 Copy + imagen', '🎠 Carrusel', '📄 Documento PDF', '🎬 Video (guión)'];
+import { FORMAT_OPTIONS } from '@/lib/agent-messages';
 
 type Props = {
   angle: AngleResult;
@@ -36,7 +36,7 @@ export default function AngleCard({ angle, onSelectFormat, disabled }: Props) {
         </div>
 
         <div className="flex flex-wrap gap-2 pt-1">
-          {FORMATS.map((format) => (
+          {FORMAT_OPTIONS.map((format) => (
             <button
               key={format}
               disabled={disabled}

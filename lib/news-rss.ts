@@ -1,17 +1,19 @@
 import type { NewsItem } from './news-types';
+import { getRssFeeds, type RssFeed } from './news-sources';
+import { isSafePublicHttpUrl } from './security';
 
-const RSS_FEEDS: { url: string; source: string }[] = [
-  { url: 'https://thelogisticsworld.com/feed/', source: 'The Logistics World' },
-  { url: 'https://logisticapress.com/feed/', source: 'Logística Press' },
-  { url: 'https://transporte.mx/feed/', source: 'Transporte.mx' },
-  { url: 'https://esemanal.mx/feed/', source: 'eSemanal' },
-  { url: 'https://t21.com.mx/feed/', source: 'T21' },
-  { url: 'https://revistalogisticaytransporte.com/feed/', source: 'Revista Énfasis Logística' },
-  { url: 'https://alianzaflotillera.com/feed/', source: 'Alianza Flotillera' },
-  { url: 'https://mexicanist.com/?feed=rss2', source: 'Mexicanist' },
-];
+/**
+ * Lectura de los feeds RSS del sector.
+ *
+ * Se parsea el XML con expresiones regulares a propósito: son feeds RSS 2.0 con
+ * una estructura fija y conocida, y evita sumar una dependencia de parseo para
+ * extraer cuatro campos. El límite está asumido y anotado en docs/03-diseno.md.
+ */
 
-function decodeEntities(text: string): string {
+const FEED_TIMEOUT_MS = 6000;
+const ITEMS_PER_FEED = 10;
+
+export function decodeEntities(text: string): string {
   return text
     .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
     .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)))
@@ -23,24 +25,42 @@ function decodeEntities(text: string): string {
     .replace(/&amp;/g, '&');
 }
 
-function extractTag(block: string, tag: string): string {
+export function extractTag(block: string, tag: string): string {
   const cdataMatch = block.match(new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></${tag}>`));
   if (cdataMatch) return cdataMatch[1].trim();
   const plainMatch = block.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`));
   return plainMatch ? decodeEntities(plainMatch[1].trim()) : '';
 }
 
-function toIsoDate(pubDate: string): string {
+export function toIsoDate(pubDate: string): string {
   if (!pubDate) return '';
   const parsed = new Date(pubDate);
   if (Number.isNaN(parsed.getTime())) return '';
   return parsed.toISOString().split('T')[0];
 }
 
-async function fetchFeed(feed: { url: string; source: string }): Promise<NewsItem[]> {
+/** Convierte el XML de un feed en noticias. Pura: no toca la red. */
+export function parseFeedXml(xml: string, source: string): NewsItem[] {
+  const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)];
+
+  return items
+    .slice(0, ITEMS_PER_FEED)
+    .map((match) => {
+      const block = match[1];
+      return {
+        title: extractTag(block, 'title'),
+        url: extractTag(block, 'link'),
+        source,
+        date: toIsoDate(extractTag(block, 'pubDate')),
+      };
+    })
+    .filter((item) => item.title && item.url && isSafePublicHttpUrl(item.url));
+}
+
+async function fetchFeed(feed: RssFeed): Promise<NewsItem[]> {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 6000);
+    const timeout = setTimeout(() => controller.abort(), FEED_TIMEOUT_MS);
     const res = await fetch(feed.url, {
       signal: controller.signal,
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; CMAgentBot/1.0)' },
@@ -48,27 +68,14 @@ async function fetchFeed(feed: { url: string; source: string }): Promise<NewsIte
     clearTimeout(timeout);
     if (!res.ok) return [];
 
-    const xml = await res.text();
-    const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)];
-
-    return items
-      .slice(0, 10)
-      .map((m) => {
-        const block = m[1];
-        return {
-          title: extractTag(block, 'title'),
-          url: extractTag(block, 'link'),
-          source: feed.source,
-          date: toIsoDate(extractTag(block, 'pubDate')),
-        };
-      })
-      .filter((item) => item.title && item.url);
+    return parseFeedXml(await res.text(), feed.source);
   } catch {
+    // Un feed caído no debe tumbar el resto del panel.
     return [];
   }
 }
 
 export async function fetchRssNews(): Promise<NewsItem[]> {
-  const results = await Promise.all(RSS_FEEDS.map(fetchFeed));
+  const results = await Promise.all(getRssFeeds().map(fetchFeed));
   return results.flat();
 }

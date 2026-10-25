@@ -12,11 +12,16 @@ const FADE_MS = 300;
 export default function LoadingBubble({ labels }: Props) {
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [labelsAnteriores, setLabelsAnteriores] = useState(labels);
 
-  useEffect(() => {
+  // Al cambiar los avisos, la rotación vuelve a empezar. Se ajusta durante el
+  // render, que es la forma que recomienda React para derivar estado de una
+  // prop, en vez de hacerlo en un efecto y provocar un render extra.
+  if (labelsAnteriores !== labels) {
+    setLabelsAnteriores(labels);
     setIndex(0);
     setVisible(true);
-  }, [labels]);
+  }
 
   useEffect(() => {
     if (labels.length <= 1) return;

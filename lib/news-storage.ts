@@ -1,28 +1,30 @@
+import { readJson, writeJson } from './local-store';
 import type { NewsItem } from './news-types';
+
+/** Noticias que el analista guardó para desarrollarlas después. */
 
 const SAVED_NEWS_KEY = 'cm_saved_news';
 
 export function getSavedNews(): NewsItem[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = localStorage.getItem(SAVED_NEWS_KEY);
-    return raw ? (JSON.parse(raw) as NewsItem[]) : [];
-  } catch {
-    return [];
-  }
+  const stored = readJson<NewsItem[]>(SAVED_NEWS_KEY, []);
+  return Array.isArray(stored) ? stored : [];
 }
 
 export function saveNews(item: NewsItem): void {
   const saved = getSavedNews();
   if (saved.some((n) => n.url === item.url)) return;
-  localStorage.setItem(SAVED_NEWS_KEY, JSON.stringify([item, ...saved]));
+  writeJson(SAVED_NEWS_KEY, [item, ...saved]);
 }
 
 export function removeSavedNews(url: string): void {
-  const saved = getSavedNews().filter((n) => n.url !== url);
-  localStorage.setItem(SAVED_NEWS_KEY, JSON.stringify(saved));
+  writeJson(
+    SAVED_NEWS_KEY,
+    getSavedNews().filter((n) => n.url !== url)
+  );
 }
 
 export function isNewsSaved(url: string): boolean {
   return getSavedNews().some((n) => n.url === url);
 }
+
+export { SAVED_NEWS_KEY };

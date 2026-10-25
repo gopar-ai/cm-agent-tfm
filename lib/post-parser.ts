@@ -1,3 +1,5 @@
+import { hashString } from './hash';
+
 export function parsePost(text: string): {
   titular: string;
   cuerpo: string;
@@ -29,14 +31,6 @@ export type Topic = {
 const TOPIC_REGEX =
   /(\d+)\.\s*(.+?)\s*—\s*(Actualidad|Tema)\s*\n([^\n]+)(?:\nFecha:\s*([^\n]+))?(?:\nFuente:\s*([^\n]+))?(?:\n\[ver noticia\]\((\S+)\))?/g;
 
-function hashString(str: string): number {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash << 5) - hash + str.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash) || 1;
-}
 
 function seededRandom(seed: number): () => number {
   let s = seed % 2147483647;

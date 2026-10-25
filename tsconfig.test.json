@@ -1,0 +1,22 @@
+{
+  "$comment": "Las pruebas se revisan aparte: no forman parte del paquete que se despliega, pero igual deben compilar.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "tests/**/*.ts",
+    "e2e/**/*.ts",
+    "vitest.config.mts",
+    "playwright.config.ts",
+    "lib/**/*.ts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "components/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

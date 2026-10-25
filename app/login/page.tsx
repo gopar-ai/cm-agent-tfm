@@ -2,8 +2,19 @@
 
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { getBrand } from '@/lib/brand';
+
+/**
+ * Pantalla de acceso.
+ *
+ * `NEXT_PUBLIC_DEMO_HINT` existe para la versión publicada: cuando está
+ * configurada, muestra las credenciales de prueba debajo del formulario, para
+ * que quien entra a probar la app no tenga que buscarlas en el README.
+ */
+const demoHint = process.env.NEXT_PUBLIC_DEMO_HINT;
 
 export default function LoginPage() {
+  const brand = getBrand();
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -40,15 +51,17 @@ export default function LoginPage() {
             <span className="text-white text-3xl font-light tracking-tight">Agent</span>
           </div>
           <p className="text-zinc-500 text-sm">Agente de contenido</p>
-          <p className="text-zinc-500 text-sm">Detecta Security</p>
+          <p className="text-zinc-500 text-sm">{brand.name}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-zinc-400 text-xs mb-1 uppercase tracking-widest">
+            <label htmlFor="username" className="block text-zinc-400 text-xs mb-1 uppercase tracking-widest">
               Usuario
             </label>
             <input
+              id="username"
+              name="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -59,10 +72,12 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="block text-zinc-400 text-xs mb-1 uppercase tracking-widest">
+            <label htmlFor="password" className="block text-zinc-400 text-xs mb-1 uppercase tracking-widest">
               Contraseña
             </label>
             <input
+              id="password"
+              name="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -84,6 +99,15 @@ export default function LoginPage() {
             {loading ? 'Ingresando…' : 'Ingresar'}
           </button>
         </form>
+
+        {demoHint && (
+          <p
+            data-testid="demo-hint"
+            className="mt-6 text-center text-zinc-500 text-xs border border-zinc-800 rounded py-2 px-3"
+          >
+            {demoHint}
+          </p>
+        )}
       </div>
     </main>
   );

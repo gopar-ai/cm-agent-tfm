@@ -1,29 +1,67 @@
 import Anthropic from '@anthropic-ai/sdk';
-import type { NewsItem } from './news-types';
+import { getServerEnv } from './env';
+import { getSearchDomains, getSearchQueries } from './news-sources';
 import { fetchRssNews } from './news-rss';
+import { DEMO_NEWS } from './news-demo';
+import { isSafePublicHttpUrl } from './security';
+import type { NewsItem } from './news-types';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+/**
+ * Feed de noticias del sector.
+ *
+ * Dos fuentes que se complementan: los RSS, que son rápidos y gratuitos pero
+ * limitados a los medios que publican feed; y una búsqueda web hecha por un
+ * modelo pequeño (Haiku), que alcanza medios sin feed. Para extraer titulares y
+ * fechas no hace falta el modelo grande, y la diferencia de costo es grande
+ * (docs/07-trabajo-con-ia.md).
+ */
 
-const NEWS_SYSTEM_PROMPT = `Eres un buscador de noticias para un feed de logística en México.
+const NEWS_MODEL = 'claude-haiku-4-5-20251001';
+const MAX_ITEMS = 20;
+const OG_IMAGE_TIMEOUT_MS = 5000;
 
-El tema es logística en general, no solo seguridad/robo de carga. Incluye: transporte de carga, cadena de suministro, nearshoring, comercio exterior, aranceles y política comercial, infraestructura logística (puertos, carreteras, aduanas), regulación del autotransporte, y también seguridad/robo de carga como un subtema más (no el único).
+let client: Anthropic | null = null;
 
-Prioriza (no exclusivamente) estas fuentes: thelogisticsworld.com, elfinanciero.com.mx, eleconomista.com.mx — pero busca también en cualquier otro medio mexicano relevante.
+function getClient(): Anthropic {
+  if (!client) {
+    const { anthropicApiKey } = getServerEnv();
+    if (!anthropicApiKey) throw new Error('Falta ANTHROPIC_API_KEY para buscar noticias.');
+    client = new Anthropic({ apiKey: anthropicApiKey });
+  }
+  return client;
+}
 
-Haz una búsqueda exhaustiva: usa MUCHAS variantes de búsqueda distintas antes de conformarte, por ejemplo: "logística México", "cadena de suministro México", "nearshoring México", "comercio exterior México", "transporte de carga México", "robo de carga México", "seguridad logística México", "CANACAR", "puertos México logística", "aranceles transporte México". Prueba también agregando el mes y año actual a alguna de estas búsquedas para sesgar hacia resultados recientes.
+/** Solo para pruebas. */
+export function resetNewsClient(): void {
+  client = null;
+}
+
+export function buildNewsSystemPrompt(): string {
+  const domains = getSearchDomains().join(', ');
+  const queries = getSearchQueries()
+    .map((query) => `"${query}"`)
+    .join(', ');
+
+  return `Eres un buscador de noticias para un feed del sector.
+
+Prioriza (no exclusivamente) estas fuentes: ${domains} — pero busca también en cualquier otro medio relevante.
+
+Haz una búsqueda exhaustiva: usa MUCHAS variantes distintas antes de conformarte, por ejemplo: ${queries}. Prueba también agregando el mes y año actual a alguna de estas búsquedas para sesgar hacia resultados recientes.
 
 Responde EXCLUSIVAMENTE con un JSON array, sin texto antes ni después, sin markdown, sin bloque de código. Cada elemento debe tener exactamente esta forma:
 {"title": "string", "url": "string", "source": "string", "date": "YYYY-MM-DD"}
 
 Reglas:
-- Máximo 20 elementos.
+- Máximo ${MAX_ITEMS} elementos.
 - "date" es la fecha de publicación real del artículo en formato YYYY-MM-DD. Si no puedes determinarla con certeza, usa "" (cadena vacía) — nunca inventes una fecha.
 - "url" debe ser la URL directa del artículo, no la portada del sitio.
-- "source" es el nombre del medio (ej. "El Financiero", "The Logistics World").
+- "source" es el nombre del medio.
 - No repitas la misma noticia dos veces.
-- Da prioridad a noticias de los últimos 7 días sobre las más viejas: si encuentras suficientes (al menos 10) de los últimos 7 días, usa esas antes de incluir noticias de hace varias semanas o meses.`;
+- Da prioridad a noticias de los últimos 7 días sobre las más viejas: si encuentras al menos 10 de los últimos 7 días, usa esas antes de incluir noticias de hace semanas o meses.`;
+}
 
-function extractJsonArray(text: string): unknown[] {
+/** Extrae el primer array JSON que aparezca en un texto. Pura y tolerante. */
+export function extractJsonArray(text: string): unknown[] {
   const start = text.indexOf('[');
   const end = text.lastIndexOf(']');
   if (start === -1 || end === -1 || end < start) return [];
@@ -35,17 +73,51 @@ function extractJsonArray(text: string): unknown[] {
   }
 }
 
-function isNewsItem(value: unknown): value is NewsItem {
+function isNewsItemShape(value: unknown): value is NewsItem {
   if (typeof value !== 'object' || value === null) return false;
   const v = value as Record<string, unknown>;
   return typeof v.title === 'string' && typeof v.url === 'string' && typeof v.source === 'string';
 }
 
+/**
+ * Normaliza lo que devolvió el modelo: se queda con lo que tiene forma de
+ * noticia y descarta URLs que no sean públicas y seguras de pedir.
+ */
+export function normalizeNewsItems(raw: unknown[]): NewsItem[] {
+  return raw
+    .filter(isNewsItemShape)
+    .map((item) => ({
+      title: item.title.trim(),
+      url: item.url.trim(),
+      source: item.source.trim(),
+      date: typeof item.date === 'string' ? item.date.trim() : '',
+    }))
+    .filter((item) => item.title && isSafePublicHttpUrl(item.url));
+}
+
+export function sortByDateDesc(items: NewsItem[]): NewsItem[] {
+  return [...items].sort((a, b) => {
+    if (!a.date && !b.date) return 0;
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    return b.date.localeCompare(a.date);
+  });
+}
+
+export function dedupeByUrl(items: NewsItem[]): NewsItem[] {
+  const seen = new Set<string>();
+  return items.filter((item) => {
+    if (!item.url || seen.has(item.url)) return false;
+    seen.add(item.url);
+    return true;
+  });
+}
+
 async function searchNews(): Promise<NewsItem[]> {
-  const response = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
+  const response = await getClient().messages.create({
+    model: NEWS_MODEL,
     max_tokens: 4096,
-    system: NEWS_SYSTEM_PROMPT,
+    system: buildNewsSystemPrompt(),
     messages: [{ role: 'user', content: 'Busca las noticias y devuelve el JSON.' }],
     tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 18 }],
   });
@@ -55,40 +127,25 @@ async function searchNews(): Promise<NewsItem[]> {
     .join('\n')
     .trim();
 
-  const raw = extractJsonArray(text);
-
-  return raw.filter(isNewsItem).map((item) => ({
-    title: item.title.trim(),
-    url: item.url.trim(),
-    source: item.source.trim(),
-    date: typeof item.date === 'string' ? item.date.trim() : '',
-  }));
+  return normalizeNewsItems(extractJsonArray(text));
 }
 
-function sortByDateDesc(items: NewsItem[]): NewsItem[] {
-  return [...items].sort((a, b) => {
-    if (!a.date && !b.date) return 0;
-    if (!a.date) return 1;
-    if (!b.date) return -1;
-    return b.date.localeCompare(a.date);
-  });
-}
+/**
+ * Pide la imagen de portada de una noticia.
+ *
+ * La URL la propuso el modelo o un feed de terceros, así que se valida antes de
+ * pedirla: sin eso, el servidor se convierte en un proxy hacia su propia red
+ * interna (SSRF, OWASP A10).
+ */
+export async function fetchOgImage(url: string): Promise<string | undefined> {
+  if (!isSafePublicHttpUrl(url)) return undefined;
 
-function dedupeByUrl(items: NewsItem[]): NewsItem[] {
-  const seen = new Set<string>();
-  return items.filter((item) => {
-    if (!item.url || seen.has(item.url)) return false;
-    seen.add(item.url);
-    return true;
-  });
-}
-
-async function fetchOgImage(url: string): Promise<string | undefined> {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), OG_IMAGE_TIMEOUT_MS);
     const res = await fetch(url, {
       signal: controller.signal,
+      redirect: 'manual', // un redirect puede apuntar a una IP interna
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; CMAgentBot/1.0)' },
     });
     clearTimeout(timeout);
@@ -98,23 +155,33 @@ async function fetchOgImage(url: string): Promise<string | undefined> {
     const match =
       html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) ??
       html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
-    return match?.[1];
+
+    const image = match?.[1];
+    return image && isSafePublicHttpUrl(image) ? image : undefined;
   } catch {
     return undefined;
   }
 }
 
+/**
+ * Feed completo: RSS + búsqueda del modelo, sin duplicados, lo más reciente
+ * primero y con portada cuando se puede.
+ *
+ * En modo de demostración devuelve un feed de ejemplo: así la demo publicada no
+ * depende de la red ni gasta llamadas al modelo.
+ */
 export async function fetchNews(): Promise<NewsItem[]> {
-  const [rssItems, aiItems] = await Promise.all([fetchRssNews(), searchNews()]);
+  const { useDemoAgent } = getServerEnv();
+  if (useDemoAgent) return DEMO_NEWS;
 
-  const top = sortByDateDesc(dedupeByUrl([...rssItems, ...aiItems])).slice(0, 20);
+  const [rssItems, aiItems] = await Promise.all([
+    fetchRssNews().catch(() => [] as NewsItem[]),
+    searchNews().catch(() => [] as NewsItem[]),
+  ]);
 
-  const enriched = await Promise.all(
-    top.map(async (item) => ({
-      ...item,
-      image: await fetchOgImage(item.url),
-    }))
-  );
+  const top = sortByDateDesc(dedupeByUrl([...rssItems, ...aiItems])).slice(0, MAX_ITEMS);
 
-  return enriched;
+  return Promise.all(top.map(async (item) => ({ ...item, image: await fetchOgImage(item.url) })));
 }
+
+export { NEWS_MODEL, MAX_ITEMS };

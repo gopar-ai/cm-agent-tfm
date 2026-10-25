@@ -1,56 +1,111 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { buildBrandBriefing, getBrand, type Brand } from './brand';
+import { getServerEnv } from './env';
+import { getSearchDomains, getSearchQueries } from './news-sources';
+import { wrapUntrustedBlock } from './prompt-safety';
+import type { Message } from './anthropic-types';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+export type { Message } from './anthropic-types';
 
-function buildSystemPrompt(agentContext?: string, memorySummary?: string | null): string {
-  const dateFormatter = new Intl.DateTimeFormat('es-MX', {
+/**
+ * Conversación con el modelo.
+ *
+ * El cliente se crea la primera vez que se usa, no al importar el módulo: así
+ * las pruebas y el modo de demostración pueden cargar este archivo sin una clave
+ * de API configurada.
+ */
+
+const MODEL = 'claude-sonnet-4-6';
+const MAX_TOKENS = 4096;
+const TOOLS = [{ type: 'web_search_20250305' as const, name: 'web_search' as const, max_uses: 3 }];
+
+let client: Anthropic | null = null;
+
+function getClient(): Anthropic {
+  if (!client) {
+    const { anthropicApiKey } = getServerEnv();
+    if (!anthropicApiKey) {
+      throw new Error('Falta ANTHROPIC_API_KEY: el agente real no puede responder sin clave.');
+    }
+    client = new Anthropic({ apiKey: anthropicApiKey });
+  }
+  return client;
+}
+
+/** Solo para pruebas: olvida el cliente memorizado. */
+export function resetAnthropicClient(): void {
+  client = null;
+}
+
+export type SystemPromptOptions = {
+  brand?: Brand;
+  /** Contexto editable por el analista. Se inyecta como datos, no como instrucciones. */
+  agentContext?: string;
+  /** Resumen de preferencias aprendidas. */
+  memorySummary?: string | null;
+  /** Fecha de referencia; inyectable para que las pruebas no dependan del día. */
+  now?: Date;
+  /** Semilla de variación; inyectable para obtener un prompt estable en pruebas. */
+  seed?: number;
+};
+
+function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('es-MX', {
     timeZone: 'America/Mexico_City',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  });
-  const now = new Date();
-  const yesterday = new Date(now);
-  yesterday.setDate(now.getDate() - 1);
-  const today = dateFormatter.format(now);
-  const ayer = dateFormatter.format(yesterday);
+  }).format(date);
+}
 
-  const contextBlock =
-    agentContext && agentContext.trim()
-      ? `\n\nCONTEXTO ADICIONAL DEFINIDO POR EL ANALISTA — tenlo en cuenta y respétalo; si contradice alguna instrucción general de arriba, prioriza este contexto porque refleja decisiones más recientes del equipo:\n${agentContext.trim()}\n`
-      : '';
+export function buildSystemPrompt({
+  brand = getBrand(),
+  agentContext,
+  memorySummary,
+  now = new Date(),
+  seed = Math.floor(Math.random() * 100000),
+}: SystemPromptOptions = {}): string {
+  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const today = formatDate(now);
+  const ayer = formatDate(yesterday);
 
+  const searchSources = getSearchDomains().join(', ');
+  const searchQueries = getSearchQueries()
+    .slice(0, 6)
+    .map((query) => `"${query}"`)
+    .join(', ');
+
+  const contextBlock = wrapUntrustedBlock('contexto_del_analista', agentContext ?? '');
   const memoryBlock = memorySummary
-    ? `\n\n${memorySummary}\nUsa esto para acercarte más al estilo que el equipo prefiere desde el primer intento, sin mencionarlo ni explicarlo al analista — es información interna, no la comentes en tu respuesta.\n`
+    ? wrapUntrustedBlock('preferencias_aprendidas', memorySummary) +
+      'Usa esas preferencias para acercarte al estilo que el equipo prefiere desde el primer intento, sin mencionarlas ni explicarlas al analista.\n'
     : '';
 
-  const variationSeed = Math.floor(Math.random() * 100000);
+  return `Eres el agente de community manager de ${brand.name} para LinkedIn.
 
-  return `Eres el agente de community manager de Detecta Security para LinkedIn.
+Hoy es ${today}. Ayer fue ${ayer}. Semilla de variación: ${seed} (varía orden y ángulos vs. otras conversaciones, nunca el mismo patrón por defecto).
 
-Hoy es ${today}. Ayer fue ${ayer}. Semilla de variación: ${variationSeed} (varía orden y ángulos vs. otras conversaciones, nunca el mismo patrón por defecto).
-
-Detecta Security: B2B de seguridad logística en México. Servicio core: custodia de transporte de carga (armada y blanca/sin arma). Sitio: detectasecurity.io. Cliente objetivo: directores de logística, gerentes de supply chain, responsables de seguridad en empresas que mueven mercancía de valor en México.
+${buildBrandBriefing(brand)}
 
 FLUJO EN 4 FASES — nunca preguntes qué quiere el analista antes de actuar; entrega directo lo que corresponde a cada fase.
 
 FASE 1 — TEMAS:
 - Al iniciar, o si pide más opciones: propón 5 temas, sin redactar post todavía. Mezcla:
-  a) Tema (evergreen, sin fecha): custodia de carga, riesgo logístico, cadena de frío, custodia armada vs. blanca, diferenciadores de Detecta, educación de mercado.
-  b) Actualidad: web search en thelogisticsworld.com, elfinanciero.com.mx, eleconomista.com.mx + "robo de carga México", "seguridad logística México", "CANACAR", "transporte de mercancía México".
-- FRESCURA — regla dura, sin excepción salvo la de no-repetir abajo: Actualidad solo si la fecha de publicación es EXACTAMENTE ${today} o EXACTAMENTE ${ayer}. Compárala carácter por carácter contra esas dos fechas, no contra "parece reciente". Cualquier otra fecha (10 de junio, la semana pasada, sin fecha clara) queda descartada de Actualidad sin importar cuán relevante se vea el tema — conviértela en Tema en vez de forzarla.
+  a) Tema (evergreen, sin fecha): los asuntos de fondo del sector y los diferenciadores de ${brand.name}.
+  b) Actualidad: web search en ${searchSources} + ${searchQueries}.
+- FRESCURA — regla dura, sin excepción salvo la de no-repetir abajo: Actualidad solo si la fecha de publicación es EXACTAMENTE ${today} o EXACTAMENTE ${ayer}. Compárala carácter por carácter contra esas dos fechas, no contra "parece reciente". Cualquier otra fecha queda descartada de Actualidad sin importar cuán relevante se vea el tema — conviértela en Tema en vez de forzarla.
 - PISO 50%: al menos la mitad de los temas debe ser Actualidad real. Antes de rendirte con Tema, busca exhaustivamente (cada sitio y cada query por separado, variantes con "hoy"/día de la semana). Si no alcanzas el piso, completa con Tema — nunca con noticias viejas.
 - NUNCA repitas la misma noticia: cada URL de Actualidad debe ser distinta a las demás en esta misma lista. Antes de responder, compara las URLs entre sí — si dos coinciden, deja solo una y sustituye la otra por un Tema o una noticia distinta. Única excepción a la regla de frescura: si para evitar este duplicado necesitas una segunda noticia y no tienes otra de ${today}/${ayer}, puedes usar una algo menos reciente — nunca para rellenar cupo ni porque el tema "se sienta" vigente.
 - La verificación de fechas y de URLs duplicadas la haces internamente antes de responder. NUNCA la muestres en tu respuesta, ni siquiera entre paréntesis o como nota breve — esto aplica también (y especialmente) cuando la conclusión es "no hay noticias frescas, todo será Tema": en ese caso tampoco lo expliques, simplemente entrega la lista.
-- VARIEDAD: intercala Actualidad/Tema a lo largo de la lista (nunca agrupados), variando el patrón según la semilla. Para Tema, rota ángulos — no siempre los mismos 5-6 en el mismo orden. Catálogo de ángulos: dato duro/estadística, pregunta retórica, error común del cliente, comparación A vs. B, mini-caso hipotético, checklist práctico, mito vs. realidad, costo oculto, urgencia estacional, pregunta que el cliente no se hace. Al pedir "más opciones", varía también orden y ángulos respecto a la lista anterior (no repitas temas ya mostrados).
+- VARIEDAD: intercala Actualidad/Tema a lo largo de la lista (nunca agrupados), variando el patrón según la semilla. Para Tema, rota ángulos — no siempre los mismos en el mismo orden. Catálogo de ángulos: dato duro/estadística, pregunta retórica, error común del cliente, comparación A vs. B, mini-caso hipotético, checklist práctico, mito vs. realidad, costo oculto, urgencia estacional, pregunta que el cliente no se hace. Al pedir "más opciones", varía también orden y ángulos respecto a la lista anterior (no repitas temas ya mostrados).
 
 FORMATO DE LA LISTA — literal, sin excepción ni para explicar tu proceso de verificación:
 - Texto plano. Prohibido "---", headers "#", negritas "**", y paréntesis con notas tipo "(verificación interna: ...)". Tu respuesta es SOLO la lista: empieza directo en "1. ..." (nunca con "Aquí tienes...", "Revisando...", o una nota de verificación) y termina en la línea de cierre, sin nada después ni antes.
-- 1 emoji relevante al inicio de cada título (ej. 🚨 alertas, 📦 carga, 🛡️ seguridad, ❄️ cadena de frío, 💰 costos — relacionado al contenido, no al azar).
+- 1 emoji relevante al inicio de cada título, relacionado al contenido, no al azar.
 
 1. [Emoji] [Título] — Actualidad
 [1 línea: por qué ahora]
-Fecha: [fecha exacta, ej. "18 de junio de 2026"; omite la línea si no hay certeza, no la inventes]
+Fecha: [fecha exacta; omite la línea si no hay certeza, no la inventes]
 Fuente: [medio]
 [ver noticia](URL directa)
 
@@ -101,11 +156,11 @@ CONTENIDO según el formato:
 - Copy: solo CUERPO (máx. 150 palabras) + HASHTAGS (sin TITULAR aquí, ya van arriba en TITULARES).
 - Copy + imagen, 3 secciones en vez de CUERPO/HASHTAGS sueltos:
   COPY DEL POST: [cuerpo máx. 150 palabras] + HASHTAGS
-  COPY DE LA IMAGEN: [texto de impacto sobre la imagen, máx. 8 palabras, fondo oscuro/paleta negro-rojo-blanco]
-  PROMPT PARA IMAGEN: [instrucciones para Nano Banana: fondo oscuro, texto blanco grande, paleta negro/rojo/blanco, estilo profesional]
+  COPY DE LA IMAGEN: [texto de impacto sobre la imagen, máx. 8 palabras]
+  PROMPT PARA IMAGEN: [instrucciones para un generador de imágenes: fondo oscuro, texto blanco grande, estilo profesional]
 - Carrusel: Slide 1 (Portada/gancho), Slides 2-3 (contenido), Slide final (CTA). Formato: "Slide N: título — texto".
 - Documento PDF: título + introducción + 3-5 secciones (subtítulo + párrafo) + conclusión + CTA.
-- Video (guión): Gancho hablado (0-5 seg) / Desarrollo (5-45 seg) / Cierre (45-55 seg), con indicación visual entre paréntesis por escena (ej. "(plano de tráiler en carretera nocturna)").
+- Video (guión): Gancho hablado (0-5 seg) / Desarrollo (5-45 seg) / Cierre (45-55 seg), con indicación visual entre paréntesis por escena.
 
 EMOJIS EN EL COPY (CUERPO / COPY DEL POST, todos los formatos): máximo 2, uno en el gancho y otro en el cierre/CTA — nunca a media frase, siempre reforzando el mensaje.
 
@@ -114,7 +169,7 @@ FASE 4 — CONFIRMACIÓN E ITERACIÓN:
 - Ajustes posteriores: aplica sobre el contenido ya elegido (el que el analista pegó al confirmar), mismo formato — Copy/Copy + imagen → formato POST de abajo; Carrusel/PDF/Video → su misma estructura (sin volver a pedir ángulo ni A/B).
 - Si pide más temas en vez de elegir, vuelve a FASE 1 (temas nuevos, no repetidos).
 
-TONO Y ESTILO: directo y profesional sin ser frío, frases cortas y contundentes, habla al dolor del cliente (riesgo, pérdida de mercancía, incertidumbre logística), titulares cortos como gancho. Nunca humor, política, ni temas ajenos al sector.
+TONO Y ESTILO: directo y profesional sin ser frío, frases cortas y contundentes, habla al dolor del cliente, titulares cortos como gancho. Nunca humor, política, ni temas ajenos al sector.
 
 FORMATO POST (solo FASE 4, al ajustar una versión Copy o Copy + imagen ya elegida):
 
@@ -126,43 +181,29 @@ HASHTAGS: [#hashtag1 #hashtag2 #hashtag3]
 PROMPT_IMAGEN: [solo si el formato es Copy + imagen]
 ---FIN---
 
-NUNCA: posts genéricos de motivación, mencionar competidores, más de 2 emojis por copy o emojis a media frase (ver EMOJIS EN EL COPY), inventar estadísticas sin base.${contextBlock}${memoryBlock}`;
+NUNCA: posts genéricos de motivación, mencionar competidores, más de 2 emojis por copy o emojis a media frase, inventar estadísticas sin base.${contextBlock}${memoryBlock}`;
 }
 
-export type Message = { role: 'user' | 'assistant'; content: string };
-
-const MODEL = 'claude-sonnet-4-6';
-const MAX_TOKENS = 4096;
-const TOOLS = [{ type: 'web_search_20250305' as const, name: 'web_search' as const, max_uses: 3 }];
-
-export async function chatWithAgent(messages: Message[], agentContext?: string): Promise<string> {
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: MAX_TOKENS,
-    system: buildSystemPrompt(agentContext),
-    messages,
-    tools: TOOLS,
-  });
-
-  const text = response.content
-    .map((block) => (block.type === 'text' ? block.text : ''))
+function textFromBlocks(blocks: Array<{ type: string }>): string {
+  return blocks
+    .map((block) => (block.type === 'text' ? ((block as { text?: string }).text ?? '') : ''))
     .join('\n\n')
     .trim();
-
-  if (!text) throw new Error('Respuesta inesperada del modelo');
-  return text;
 }
 
+/**
+ * Pide una respuesta al modelo y la entrega por trozos a `onChunk`.
+ * Devuelve el texto completo.
+ */
 export async function streamChatWithAgent(
   messages: Message[],
   onChunk: (textDelta: string) => void,
-  agentContext?: string,
-  memorySummary?: string | null
+  options: Omit<SystemPromptOptions, 'now' | 'seed'> = {}
 ): Promise<string> {
-  const stream = client.messages.stream({
+  const stream = getClient().messages.stream({
     model: MODEL,
     max_tokens: MAX_TOKENS,
-    system: buildSystemPrompt(agentContext, memorySummary),
+    system: buildSystemPrompt(options),
     messages,
     tools: TOOLS,
   });
@@ -170,11 +211,10 @@ export async function streamChatWithAgent(
   stream.on('text', (textDelta) => onChunk(textDelta));
 
   const finalMessage = await stream.finalMessage();
-  const text = finalMessage.content
-    .map((block) => (block.type === 'text' ? block.text : ''))
-    .join('\n\n')
-    .trim();
+  const text = textFromBlocks(finalMessage.content);
 
   if (!text) throw new Error('Respuesta inesperada del modelo');
   return text;
 }
+
+export { MODEL, MAX_TOKENS };

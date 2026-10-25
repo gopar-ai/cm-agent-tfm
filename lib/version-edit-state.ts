@@ -1,3 +1,13 @@
+import { readJson, writeJson } from './local-store';
+
+export { hashContent } from './hash';
+
+/**
+ * Ediciones del analista sobre una versión A/B: qué titular eligió y cómo dejó
+ * el cuerpo. Se guarda por bloque de contenido, para que al volver a abrir una
+ * propuesta aparezca como la dejó.
+ */
+
 export type VersionEditState = {
   choice: 'A' | 'B';
   selectedIndex: number;
@@ -10,12 +20,8 @@ export type VersionEditState = {
 const KEY = 'cm_version_edit_state';
 
 function readAll(): Record<string, VersionEditState> {
-  if (typeof window === 'undefined') return {};
-  try {
-    return JSON.parse(localStorage.getItem(KEY) ?? '{}');
-  } catch {
-    return {};
-  }
+  const stored = readJson<Record<string, VersionEditState>>(KEY, {});
+  return stored && typeof stored === 'object' ? stored : {};
 }
 
 export function getVersionEditState(id: string): VersionEditState | null {
@@ -23,16 +29,7 @@ export function getVersionEditState(id: string): VersionEditState | null {
 }
 
 export function saveVersionEditState(id: string, state: VersionEditState): void {
-  const all = readAll();
-  all[id] = state;
-  localStorage.setItem(KEY, JSON.stringify(all));
+  writeJson(KEY, { ...readAll(), [id]: state });
 }
 
-export function hashContent(content: string): string {
-  let hash = 0;
-  for (let i = 0; i < content.length; i++) {
-    hash = (hash << 5) - hash + content.charCodeAt(i);
-    hash |= 0;
-  }
-  return hash.toString(36);
-}
+export { KEY as VERSION_EDIT_STATE_KEY };

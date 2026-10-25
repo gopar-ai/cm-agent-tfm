@@ -1,11 +1,23 @@
+import { getBrand, type Brand } from './brand';
+import { readText, removeKey, writeText } from './local-store';
+
+/**
+ * Contexto editable del agente: el ICP, el tono, los temas y lo que no se toca.
+ *
+ * El contenido por defecto se construye desde la marca activa, así que al
+ * cambiar la configuración de marca el contexto inicial cambia con ella. Lo que
+ * el analista edita desde la pantalla de configuración vive en su navegador y
+ * manda sobre el valor por defecto.
+ */
+
 const KEY = 'cm_agent_context';
 
-export const DEFAULT_CONTEXT = `# ICP (Cliente Ideal)
-- Cargo: Director de Logística, Gerente de Supply Chain, Responsable de Seguridad
-- Industria: Manufactura, Retail, Farmacéutico, Alimentos y Bebidas, Tecnología
-- Empresa: B2B, operaciones en México, flota propia o subcontratada
-- Dolor principal: robo de mercancía, pérdida económica, inseguridad en rutas
-- Motivación: proteger su operación, cumplir con clientes, evitar penalizaciones
+export function buildDefaultContext(brand: Brand = getBrand()): string {
+  return `# ICP (Cliente Ideal)
+- A quién le hablamos: ${brand.audience}
+- Sector: ${brand.sector}
+- Dolor principal: pérdida de mercancía, incertidumbre en ruta, incumplimiento con su cliente final
+- Motivación: proteger la operación, cumplir con clientes, evitar penalizaciones
 
 # Tono y estilo
 - Directo y profesional, sin ser frío
@@ -15,11 +27,11 @@ export const DEFAULT_CONTEXT = `# ICP (Cliente Ideal)
 - Máximo 1 emoji por post
 
 # Temas prioritarios
-- Custodia de transporte de carga
-- Riesgo logístico y robo de mercancía en México
-- Cadena de frío (farmacéutico, alimentos)
-- Coyuntura: Hot Sale, Buen Fin, temporadas de alto riesgo
-- Diferenciadores de Detecta: tecnología, equipo, metodología
+- ${brand.coreService}
+- Riesgo y pérdida de mercancía
+- Cadena de frío y mercancía sensible
+- Coyuntura: temporadas de alto volumen y alto riesgo
+- Diferenciadores de ${brand.name}: tecnología, equipo, metodología
 
 # Temas prohibidos
 - Motivación genérica
@@ -31,22 +43,24 @@ export const DEFAULT_CONTEXT = `# ICP (Cliente Ideal)
 (Pega aquí ejemplos de posts que hayan funcionado bien)
 
 # Contexto semanal
-(Notas temporales: "esta semana es Hot Sale", "evitar X tema", etc.)`;
+(Notas temporales: "esta semana hay temporada alta", "evitar X tema", etc.)`;
+}
+
+/** Contexto por defecto de la marca activa. */
+export const DEFAULT_CONTEXT = buildDefaultContext();
 
 export function getAgentContext(): string {
-  if (typeof window === 'undefined') return DEFAULT_CONTEXT;
-  return localStorage.getItem(KEY) ?? DEFAULT_CONTEXT;
+  return readText(KEY) ?? buildDefaultContext();
 }
 
 export function hasStoredAgentContext(): boolean {
-  if (typeof window === 'undefined') return false;
-  return localStorage.getItem(KEY) !== null;
+  return readText(KEY) !== null;
 }
 
 export function saveAgentContext(content: string): void {
-  localStorage.setItem(KEY, content);
+  writeText(KEY, content);
 }
 
 export function resetAgentContext(): void {
-  localStorage.removeItem(KEY);
+  removeKey(KEY);
 }

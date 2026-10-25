@@ -1,3 +1,19 @@
+import {
+  emitChange,
+  newId,
+  readJson,
+  readText,
+  removeKey,
+  subscribeToChange,
+  writeJson,
+  writeText,
+} from './local-store';
+
+/**
+ * Conversaciones guardadas: cada propuesta es un chat con su nombre, su orden y
+ * su historial.
+ */
+
 export type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
 export type ChatSession = {
@@ -15,51 +31,54 @@ const LEGACY_HISTORY_KEY = 'cm_chat_history';
 const CHATS_EVENT = 'cm-chats-updated';
 
 function nextChatNumber(): number {
-  const current = Number(localStorage.getItem(COUNTER_KEY) ?? '0');
-  const next = current + 1;
-  localStorage.setItem(COUNTER_KEY, String(next));
+  const current = Number(readText(COUNTER_KEY) ?? '0');
+  const next = (Number.isFinite(current) ? current : 0) + 1;
+  writeText(COUNTER_KEY, String(next));
   return next;
 }
 
-function readChats(): ChatSession[] {
-  if (typeof window === 'undefined') return [];
-  migrateLegacyHistory();
-  try {
-    const raw = localStorage.getItem(CHATS_KEY);
-    return raw ? (JSON.parse(raw) as ChatSession[]) : [];
-  } catch {
-    return [];
-  }
-}
-
 function writeChats(chats: ChatSession[]): void {
-  localStorage.setItem(CHATS_KEY, JSON.stringify(chats));
-  window.dispatchEvent(new Event(CHATS_EVENT));
+  writeJson(CHATS_KEY, chats);
+  emitChange(CHATS_EVENT);
 }
 
+/**
+ * Trae la conversación única de la primera versión de la app al formato de
+ * varios chats. Se ejecuta una sola vez: después, la clave antigua ya no existe.
+ */
 function migrateLegacyHistory(): void {
-  const legacy = localStorage.getItem(LEGACY_HISTORY_KEY);
+  const legacy = readText(LEGACY_HISTORY_KEY);
   if (!legacy) return;
-  localStorage.removeItem(LEGACY_HISTORY_KEY);
+  removeKey(LEGACY_HISTORY_KEY);
+
   try {
     const messages = JSON.parse(legacy) as ChatMessage[];
     if (!Array.isArray(messages) || messages.length === 0) return;
-    const existing = localStorage.getItem(CHATS_KEY);
-    const chats: ChatSession[] = existing ? JSON.parse(existing) : [];
-    chats.unshift({
-      id: crypto.randomUUID(),
-      name: `Propuesta ${nextChatNumber()}`,
-      pinned: false,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      messages,
-    });
-    localStorage.setItem(CHATS_KEY, JSON.stringify(chats));
+
+    const chats = readJson<ChatSession[]>(CHATS_KEY, []);
+    writeJson(CHATS_KEY, [
+      {
+        id: newId(),
+        name: `Propuesta ${nextChatNumber()}`,
+        pinned: false,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        messages,
+      },
+      ...(Array.isArray(chats) ? chats : []),
+    ]);
   } catch {
-    // ignore corrupted legacy data
+    // Historial antiguo corrupto: se descarta en silencio, ya quedó fuera.
   }
 }
 
+function readChats(): ChatSession[] {
+  migrateLegacyHistory();
+  const stored = readJson<ChatSession[]>(CHATS_KEY, []);
+  return Array.isArray(stored) ? stored : [];
+}
+
+/** Chats ordenados: primero los fijados, después por última actividad. */
 export function getChats(): ChatSession[] {
   return readChats().sort((a, b) => {
     if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
@@ -72,43 +91,52 @@ export function getChat(id: string): ChatSession | null {
 }
 
 export function createChat(): ChatSession {
-  const chats = readChats();
   const chat: ChatSession = {
-    id: crypto.randomUUID(),
+    id: newId(),
     name: `Propuesta ${nextChatNumber()}`,
     pinned: false,
     createdAt: Date.now(),
     updatedAt: Date.now(),
     messages: [],
   };
-  writeChats([chat, ...chats]);
+  writeChats([chat, ...readChats()]);
   return chat;
 }
 
-export function updateChatMessages(id: string, messages: ChatMessage[]): void {
+function updateChat(id: string, change: (chat: ChatSession) => ChatSession): void {
   const chats = readChats();
   const idx = chats.findIndex((c) => c.id === id);
   if (idx === -1) return;
-  chats[idx] = { ...chats[idx], messages, updatedAt: Date.now() };
-  writeChats(chats);
+  const next = [...chats];
+  next[idx] = change(chats[idx]);
+  writeChats(next);
+}
+
+/**
+ * Marca de actividad estrictamente posterior a la de cualquier otra conversación.
+ *
+ * `Date.now()` tiene resolución de milisegundos: dos conversaciones creadas de
+ * seguido comparten marca, y al escribir en la primera el orden no cambiaba
+ * porque el empate dejaba la lista como estaba.
+ */
+function nextActivityStamp(chats: ChatSession[]): number {
+  const latest = chats.reduce((max, chat) => Math.max(max, chat.updatedAt), 0);
+  return Math.max(Date.now(), latest + 1);
+}
+
+export function updateChatMessages(id: string, messages: ChatMessage[]): void {
+  const stamp = nextActivityStamp(readChats());
+  updateChat(id, (chat) => ({ ...chat, messages, updatedAt: stamp }));
 }
 
 export function renameChat(id: string, name: string): void {
   const trimmed = name.trim();
   if (!trimmed) return;
-  const chats = readChats();
-  const idx = chats.findIndex((c) => c.id === id);
-  if (idx === -1) return;
-  chats[idx] = { ...chats[idx], name: trimmed };
-  writeChats(chats);
+  updateChat(id, (chat) => ({ ...chat, name: trimmed }));
 }
 
 export function togglePinChat(id: string): void {
-  const chats = readChats();
-  const idx = chats.findIndex((c) => c.id === id);
-  if (idx === -1) return;
-  chats[idx] = { ...chats[idx], pinned: !chats[idx].pinned };
-  writeChats(chats);
+  updateChat(id, (chat) => ({ ...chat, pinned: !chat.pinned }));
 }
 
 export function deleteChat(id: string): void {
@@ -116,6 +144,7 @@ export function deleteChat(id: string): void {
 }
 
 export function subscribeToChats(callback: () => void): () => void {
-  window.addEventListener(CHATS_EVENT, callback);
-  return () => window.removeEventListener(CHATS_EVENT, callback);
+  return subscribeToChange(CHATS_EVENT, callback);
 }
+
+export { CHATS_KEY, COUNTER_KEY, LEGACY_HISTORY_KEY, CHATS_EVENT };
