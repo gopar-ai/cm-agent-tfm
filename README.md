@@ -100,18 +100,45 @@ acompaña al chat para detectar oportunidades.
 
 ## Cómo se ve
 
-**Ángulo antes de escribir** — el agente propone el enfoque y deja elegir el
-formato, sin haber redactado todavía:
+Las cuatro fases, en orden, tal como las recorre la analista.
 
-![Ángulo propuesto y selector de formato](docs/screenshots/3-angulo.png)
+### 1 · Entrar
 
-**Dos versiones para comparar** — ganchos distintos, tres titulares cada una:
+![Pantalla de acceso con las credenciales de prueba a la vista](docs/screenshots/1-acceso.png)
 
-![Comparación de la versión A y la B](docs/screenshots/4-versiones.png)
+La demo publicada muestra el usuario de prueba debajo del formulario: quien
+llega a evaluarla no tiene que buscar nada.
 
-**El contexto de marca se edita desde la aplicación**, sin tocar el código:
+### 2 · El agente propone, sin que nadie se lo pida
 
-![Pantalla de configuración del contexto](docs/screenshots/6-contexto.png)
+![Lista de cinco temas con el feed del sector al lado](docs/screenshots/2-temas.png)
+
+Cinco temas al abrir una propuesta. Los de **actualidad** llevan medio, fecha y
+enlace; los de **fondo** son los asuntos que siempre funcionan en el sector. A
+la derecha, el feed del sector, para detectar oportunidades sin salir de la
+herramienta.
+
+### 3 · El ángulo, antes de escribir una línea
+
+![Ángulo, por qué ahora y emoción objetivo, con el selector de formato](docs/screenshots/3-angulo.png)
+
+Tres líneas —ángulo, por qué ahora, emoción objetivo— y los cinco formatos.
+Corregir el rumbo aquí es barato; hacerlo después de leer un post entero, no.
+
+### 4 · Dos versiones para comparar
+
+![Comparación de la versión A y la versión B, con sus titulares](docs/screenshots/4-versiones.png)
+
+Ganchos realmente distintos, tres titulares cada una, y la estructura propia del
+formato elegido. **Elegir es la interfaz:** cada elección alimenta la memoria de
+preferencias.
+
+### Y lo que sostiene el trabajo diario
+
+| Calendario de contenido | Contexto de marca editable |
+|---|---|
+| ![Calendario con borradores, programados y publicados](docs/screenshots/5-calendario.png) | ![Pantalla de configuración del contexto](docs/screenshots/6-contexto.png) |
+| Borradores, programados y publicados | ICP, tono y temas prohibidos, sin tocar el código |
 
 ## Stack
 
