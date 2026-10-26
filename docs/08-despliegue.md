@@ -11,7 +11,7 @@
 | `ANTHROPIC_API_KEY` | no | Sin ella, el agente responde con su guion de demostración |
 | `DEMO_MODE` | no | `true` fuerza el guion aunque haya clave |
 | `CRON_SECRET` | no | Protege el refresco programado del feed. Sin ella, esa ruta responde 503 |
-| `NEXT_PUBLIC_DEMO_HINT` | no | Texto con las credenciales de prueba que se muestra en el acceso. Solo para la demo pública |
+| `DEMO_HINT` | no | Texto con las credenciales de prueba que se muestra en el acceso. Solo para la demo pública |
 | `DAILY_MODEL_CALL_BUDGET` | no | Llamadas al modelo por día. Por defecto 120 |
 | `LOGIN_MAX_ATTEMPTS` / `LOGIN_WINDOW_SECONDS` | no | Límite del acceso. Por defecto 8 cada 300 s |
 | `CHAT_MAX_PER_MINUTE` | no | Peticiones de chat por minuto y sesión. Por defecto 10 |
@@ -62,14 +62,15 @@ El repositorio incluye `railway.json` con el healthcheck apuntando a
 1. Crear el proyecto desde el repositorio.
 2. Configurar las variables de la tabla de arriba (como mínimo `APP_USERNAME`,
    `APP_PASSWORD_HASH`, `JWT_SECRET`).
-3. Para la demo pública, añadir `NEXT_PUBLIC_DEMO_HINT` con las credenciales de
+3. Para la demo pública, añadir `DEMO_HINT` con las credenciales de
    prueba, y `DAILY_MODEL_CALL_BUDGET` ajustado a lo que se quiera gastar.
 4. Opcional: un cron diario que llame a `/api/cron/refresh-news` con la cabecera
    `Authorization: Bearer $CRON_SECRET`, para que la primera visita del día no
    espere la búsqueda.
 
-> `NEXT_PUBLIC_*` se incrusta al construir, no al arrancar: cambiar la marca o el
-> aviso de la demo requiere un despliegue nuevo, no basta con reiniciar.
+> `NEXT_PUBLIC_*` se incrusta **al construir**, no al arrancar: cambiar la marca
+> exige un despliegue nuevo, no basta con reiniciar. El resto de variables,
+> incluido `DEMO_HINT`, se leen en ejecución.
 
 ## 8.5 Qué vigilar
 

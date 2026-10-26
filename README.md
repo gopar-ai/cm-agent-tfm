@@ -5,11 +5,11 @@ publicable en cuatro fases, consulta la actualidad del sector mientras propone, 
 aprende del uso: cada elección del analista orienta las siguientes propuestas sin
 que nadie configure nada.
 
-![El agente proponiendo temas, con el feed del sector al lado](docs/screenshots/2-temas.png)
+![Recorrido completo: entrar, elegir tema, ver el ángulo y comparar versiones](docs/screenshots/demo.gif)
 
-> Las capturas de este README salen de la demo, con una marca ficticia, y se
-> generan con `node scripts/capturas.mjs`: así no envejecen y nunca muestran
-> datos de un cliente real.
+> Las imágenes de este README se graban contra la demo, con una marca ficticia,
+> y se regeneran con `node scripts/capturas.mjs` y `node scripts/demo-gif.mjs`:
+> así no envejecen y nunca muestran datos de un cliente real.
 
 ---
 
@@ -17,12 +17,16 @@ que nadie configure nada.
 
 | | |
 |---|---|
-| **Aplicación publicada** | _(pendiente de publicar)_ |
+| **Aplicación publicada** | **<https://cm-agent-tfm-production.up.railway.app>** |
 | **Usuario de prueba** | `demo` |
 | **Contraseña de prueba** | `demo1234` |
+| **Repositorio** | <https://github.com/gopar-ai/cm-agent-tfm> |
 | **Presentación** | [`docs/slides.md`](docs/slides.md) |
 | **Vídeo** | _(pendiente de publicar)_ |
 | **Documentación técnica** | [`docs/`](docs/) — especificación, requisitos, diseño, seguridad, pruebas |
+
+Las credenciales también aparecen escritas en la propia pantalla de acceso: no
+hace falta volver aquí para entrar.
 
 La versión publicada corre en **modo de demostración**: el agente responde con un
 guion local en vez de llamar al modelo, así que se puede recorrer el flujo
@@ -119,7 +123,7 @@ formato, sin haber redactado todavía:
 | **IA** | Claude Sonnet 4.6 (agente) y Claude Haiku 4.5 (feed), con búsqueda web nativa |
 | **Validación** | Zod, en la configuración y en la entrada de la API |
 | **Sesión** | JWT en cookie `httpOnly`; contraseña en hash scrypt |
-| **Pruebas** | Vitest (374) + Playwright (10 × 2 perfiles) |
+| **Pruebas** | Vitest (383) + Playwright (10 × 2 perfiles) |
 | **Entorno** | Node.js 24 · Docker multietapa · GitHub Actions · Railway |
 | **Persistencia** | `localStorage` del navegador (decisión de diseño, no carencia: [docs/03](docs/03-diseno.md)) |
 
@@ -128,8 +132,8 @@ formato, sin haber redactado todavía:
 Requisitos: **Node.js 24 o superior**.
 
 ```bash
-git clone https://github.com/gopar-ai/cm-agent.git
-cd cm-agent
+git clone https://github.com/gopar-ai/cm-agent-tfm.git
+cd cm-agent-tfm
 npm install
 npm run dev
 ```
@@ -171,7 +175,7 @@ La receta completa de despliegue, con todas las variables, está en
 |---|---|
 | `npm run dev` | Servidor de desarrollo |
 | `npm run build` / `npm start` | Construcción y arranque de producción |
-| `npm test` | 374 pruebas unitarias y de integración (~5 s) |
+| `npm test` | 383 pruebas unitarias y de integración (~5 s) |
 | `npm run test:cov` | Las mismas, con cobertura y umbrales que hacen fallar |
 | `npm run test:e2e` | Recorrido en navegador real, en escritorio y celular |
 | `npm run lint` / `npm run typecheck` | Análisis estático y tipos |
@@ -216,12 +220,15 @@ cm-agent/
 │   ├── schemas.ts              techos de la entrada de la API
 │   └── security.ts             hash, comparación segura, validación de URL
 │
-├── tests/                      374 pruebas unitarias y de integración
+├── tests/                      383 pruebas unitarias y de integración
 │   ├── api/                    rutas con dobles
 │   └── helpers/                doble de navegador y arranque común
 ├── e2e/                        recorrido en navegador real
 ├── docs/                       documentación técnica (ver abajo)
-├── scripts/hash-password.mjs   generador del hash de contraseña
+├── scripts/
+│   ├── hash-password.mjs       generador del hash de contraseña
+│   ├── capturas.mjs            capturas del README, desde la demo
+│   └── demo-gif.mjs            animación del README, desde la demo
 ├── Dockerfile                  imagen multietapa, usuario sin privilegios
 ├── proxy.ts                    middleware de sesión
 └── .github/workflows/ci.yml    integración continua
@@ -244,7 +251,7 @@ cm-agent/
 
 | | |
 |---|---|
-| **Pruebas** | 374 unitarias y de integración · 10 × 2 perfiles = 20 en navegador real |
+| **Pruebas** | 383 unitarias y de integración · 10 × 2 perfiles = 20 en navegador real |
 | **Cobertura** | 98 % sentencias · 97 % funciones · 99 % líneas · 90 % ramas |
 | **Umbrales** | La suite falla si la cobertura baja de 85/90/85/80 |
 | **Análisis estático** | 0 errores |

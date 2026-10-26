@@ -113,7 +113,7 @@ calendario.
 
 *Mostrar la salida de `npm test` y `npm run test:cov`.*
 
-> Hoy hay 374 pruebas que corren en cinco segundos, más diez en navegador real
+> Hoy hay 383 pruebas que corren en cinco segundos, más diez en navegador real
 > sobre escritorio y celular, con 98 % de cobertura y umbrales que hacen fallar
 > la suite si baja.
 >

@@ -83,7 +83,7 @@ Tres reglas del prompt que salieron de ver al modelo fallar en uso real:
 Este proyecto se desarrolló con Claude Code como par de programación, y
 conviene decir con precisión qué hizo cada parte.
 
-**Lo que hizo la IA:** escribir el código de los módulos nuevos, las 374
+**Lo que hizo la IA:** escribir el código de los módulos nuevos, las 383
 pruebas, el Dockerfile, la integración continua y esta documentación. Auditar el
 código existente y encontrar los ocho hallazgos de seguridad. Proponer la
 separación en módulos puros.

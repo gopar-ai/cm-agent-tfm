@@ -54,6 +54,15 @@ test.describe('E1 · acceso', () => {
     await expect(page.getByPlaceholder('Escribe aquí tu instrucción al agente')).toBeVisible();
   });
 
+  test('el healthcheck responde sin sesión', async ({ request }) => {
+    // Lo consulta la plataforma de despliegue, que no tiene cookie. Antes
+    // redirigía al login y el servicio se daba por sano sin comprobar nada.
+    const respuesta = await request.get('/api/health');
+
+    expect(respuesta.status()).toBe(200);
+    expect(await respuesta.json()).toEqual({ ok: true });
+  });
+
   test('la respuesta lleva las cabeceras de seguridad (OWASP A05)', async ({ page }) => {
     const respuesta = await page.goto('/login');
 

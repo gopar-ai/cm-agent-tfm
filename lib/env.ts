@@ -52,6 +52,13 @@ const schema = z
     /** Fuerza el guion de demostración aunque haya clave de API. */
     DEMO_MODE: booleanish.optional(),
 
+    /**
+     * Aviso con las credenciales de prueba que se muestra bajo el formulario de
+     * acceso. Solo tiene sentido en una demo pública; vacío en una instalación
+     * real. Se lee en ejecución, no al construir.
+     */
+    DEMO_HINT: z.string().trim().max(200).optional(),
+
     /** Tope de llamadas reales al modelo por día, para acotar el costo (RNF-06). */
     DAILY_MODEL_CALL_BUDGET: positiveInt(120),
     /** Intentos de login permitidos por IP dentro de la ventana. */
@@ -85,6 +92,7 @@ const schema = z
       /** Si no hay clave de API o el modo demo está activo, se usa el guion de demostración. */
       useDemoAgent: raw.DEMO_MODE === true || !raw.ANTHROPIC_API_KEY,
       demoMode: raw.DEMO_MODE === true,
+      demoHint: raw.DEMO_HINT || undefined,
       dailyModelCallBudget: raw.DAILY_MODEL_CALL_BUDGET,
       loginMaxAttempts: raw.LOGIN_MAX_ATTEMPTS,
       loginWindowSeconds: raw.LOGIN_WINDOW_SECONDS,

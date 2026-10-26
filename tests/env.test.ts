@@ -45,6 +45,16 @@ describe('parseServerEnv fuera de producción (RNF-09)', () => {
     expect(env.demoMode).toBe(true);
   });
 
+  it('el aviso de credenciales de prueba se lee en ejecución', () => {
+    // Antes era una variable NEXT_PUBLIC_, que Next fija al construir: en la
+    // demo publicada estaba configurada y el aviso no aparecía nunca.
+    expect(parseServerEnv({ DEMO_HINT: 'Acceso de prueba: demo / demo1234' }).demoHint).toBe(
+      'Acceso de prueba: demo / demo1234'
+    );
+    expect(parseServerEnv({}).demoHint).toBeUndefined();
+    expect(parseServerEnv({ DEMO_HINT: '   ' }).demoHint).toBeUndefined();
+  });
+
   it('entiende las formas habituales de escribir un booleano', () => {
     for (const valor of ['1', 'true', 'TRUE', 'yes', 'si']) {
       expect(parseServerEnv({ DEMO_MODE: valor }).demoMode, valor).toBe(true);

@@ -48,7 +48,7 @@ export default defineConfig({
       APP_USERNAME: 'demo',
       APP_PASSWORD: 'demo1234',
       JWT_SECRET: 'secreto-solo-para-pruebas-de-punta-a-punta-0001',
-      NEXT_PUBLIC_DEMO_HINT: 'Acceso de prueba: demo / demo1234',
+      DEMO_HINT: 'Acceso de prueba: demo / demo1234',
       // La suite entera conversa con el mismo usuario, así que en pocos
       // segundos hace más peticiones que una persona en un minuto. El límite
       // real (10 por minuto) tiene sus propias pruebas en tests/api; aquí se

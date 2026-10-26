@@ -146,7 +146,7 @@ Todos corregidos, con prueba. OWASP Top 10 y OWASP LLM recorridos en
 
 | | |
 |---|---|
-| Unitarias y de integración | **374** (5 segundos) |
+| Unitarias y de integración | **383** (5 segundos) |
 | En navegador real | **10 × 2 perfiles** (escritorio y celular) |
 | Cobertura | 98 % sentencias · 97 % funciones · 99 % líneas |
 | Umbrales | la suite **falla** si baja |

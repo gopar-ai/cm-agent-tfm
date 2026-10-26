@@ -1,6 +1,6 @@
 # 5 · Estrategia de pruebas
 
-El proyecto no tenía ninguna prueba. Ahora tiene **374 unitarias y de
+El proyecto no tenía ninguna prueba. Ahora tiene **383 unitarias y de
 integración** más **10 en navegador real**, que corren en dos perfiles —escritorio
 y celular, 20 ejecuciones—, y una cobertura del núcleo del **98 %**.
 
@@ -13,7 +13,7 @@ y celular, 20 ejecuciones—, y una cobertura del núcleo del **98 %**.
      ╱      ╲       40 de integración (rutas de API con dobles)
     ╱        ╲      Permisos · validación · límites · presupuesto · caché
    ╱──────────╲
-  ╱            ╲    334 unitarias (funciones puras y módulos de datos)
+  ╱            ╲    343 unitarias (funciones puras y módulos de datos)
  ╱______________╲   Parsers · seguridad · memoria · almacenamiento · config
 ```
 
@@ -51,6 +51,7 @@ arrancar que lo que corre.
 | `schemas.test.ts` | Techos de la petición al modelo | 16 |
 | `model-budget.test.ts` | Presupuesto diario, devolución de cupo, cambio de día | 8 |
 | `brand.test.ts` | Marca por configuración y prompt del sistema | 17 |
+| `proxy.test.ts` | La puerta de entrada: qué rutas son públicas y cuáles no | 8 |
 | `day-key.test.ts` | Corte del día en la zona de México | 6 |
 
 ### De integración · `tests/api/*.test.ts`
@@ -95,7 +96,7 @@ perfil de celular (RNF-03).
 | HU-12 Probarlo sin configurar nada | `demo-agent.test.ts`, `chat.route.test.ts`, `env.test.ts`, E1-E2 |
 | HU-13 Llevarlo a otra marca | `brand.test.ts`, `news.test.ts` |
 | HU-14 Cuánto llevo hoy | `content-storage.test.ts` |
-| HU-15 Acceso controlado | `login.route.test.ts`, `auth.test.ts`, E1 |
+| HU-15 Acceso controlado | `login.route.test.ts`, `auth.test.ts`, `proxy.test.ts`, E1 |
 | RNF-04 a RNF-07 límites | `schemas.test.ts`, `rate-limit.test.ts`, `model-budget.test.ts`, `chat.route.test.ts` |
 | RNF-13 a RNF-19 seguridad | `security.test.ts`, `prompt-safety.test.ts`, `news.route.test.ts`, E1 |
 

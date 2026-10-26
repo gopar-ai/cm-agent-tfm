@@ -11,8 +11,8 @@ Qué pide el programa, dónde está en este proyecto y cómo comprobarlo.
 | A1 | Aplicación real, original y con valor propio | Herramienta en uso real para publicar en LinkedIn; no es un ejercicio | ✅ |
 | A2 | Que demuestre lo aprendido | Secciones B a G de este documento | ✅ |
 | A3 | README completo: descripción, stack, instalación, estructura, funcionalidades, usuario de prueba | [README](../README.md) | ✅ |
-| A4 | Repositorio público en GitHub | Copia limpia, sin historial previo y sin datos de cliente | 🟦 se publica al entregar |
-| A5 | Despliegue funcionando, con URL | Railway, con la demo en modo de demostración. Receta en [08](08-despliegue.md) | 🟦 |
+| A4 | Repositorio público en GitHub | <https://github.com/gopar-ai/cm-agent-tfm> — copia limpia, sin historial previo y sin datos de cliente | ✅ |
+| A5 | Despliegue funcionando, con URL | <https://cm-agent-tfm-production.up.railway.app> — Railway, en modo de demostración. Receta en [08](08-despliegue.md) | ✅ |
 | A6 | Slides de presentación | [`slides.md`](slides.md) | ✅ |
 | A7 | Vídeo con captura de pantalla | Guion en [`guion-video.md`](guion-video.md) | 🟦 grabación |
 | A8 | Usuario y contraseña de prueba | `demo` / `demo1234`, también visibles en la propia pantalla de acceso | ✅ |
@@ -48,7 +48,7 @@ Qué pide el programa, dónde está en este proyecto y cómo comprobarlo.
 
 | # | Qué enseña el máster | Dónde | Estado |
 |---|---|---|---|
-| D1 | Muchas pruebas pequeñas, algunas de conjunto, pocas de punta a punta | 334 unitarias · 40 de integración · 20 en navegador (10 × 2 perfiles) | ✅ |
+| D1 | Muchas pruebas pequeñas, algunas de conjunto, pocas de punta a punta | 343 unitarias · 40 de integración · 20 en navegador (10 × 2 perfiles) | ✅ |
 | D2 | Pruebas de punta a punta de lo crítico | Tres recorridos en Chrome y en perfil de celular | ✅ |
 | D3 | Cobertura mínima medida | 98 % sentencias · 97 % funciones · 99 % líneas · 90 % ramas, con umbrales que hacen fallar la suite | ✅ |
 | D4 | Probar con datos de ejemplo, reiniciables | El modo de demostración sirve también a las pruebas; el doble de navegador se estrena en cada prueba | ✅ |
@@ -61,7 +61,7 @@ Qué pide el programa, dónde está en este proyecto y cómo comprobarlo.
 |---|---|---|---|
 | E1 | Revisión automática en cada cambio | [`ci.yml`](../.github/workflows/ci.yml) — cuatro trabajos | ✅ |
 | E2 | Empaquetar en un contenedor | [`Dockerfile`](../Dockerfile) multietapa, usuario sin privilegios, con healthcheck. La integración continua lo levanta y comprueba que responde | ✅ |
-| E3 | Despliegue | Railway, con `railway.json` | 🟦 ver A5 |
+| E3 | Despliegue | Railway, con `railway.json` y healthcheck en `/api/health` | ✅ |
 | E4 | Orquestación a gran escala (Kubernetes) | No aplica: un proceso, una analista por marca. El motivo está en [03](03-diseno.md#d-04--límites-en-memoria-no-en-redis) | ✅ decisión justificada |
 
 ## F · Seguridad
@@ -90,9 +90,9 @@ Qué pide el programa, dónde está en este proyecto y cómo comprobarlo.
 
 ## Resumen
 
-**Lo que queda pendiente** son tres acciones manuales, no trabajo técnico:
-publicar el repositorio (A4), desplegar la demo y anotar su URL (A5) y grabar el
-vídeo con el guion ya escrito (A7).
+**Lo que queda pendiente** es una sola acción manual: grabar el vídeo con el
+guion ya escrito (A7). El repositorio está publicado y la demo, desplegada y
+probada de punta a punta contra su URL real.
 
 **Lo que distingue a esta entrega:** no es un proyecto nuevo hecho para aprobar,
 sino una aplicación en uso llevada al punto en que se puede sostener. De ahí
