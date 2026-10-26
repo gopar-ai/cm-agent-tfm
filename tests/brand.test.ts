@@ -75,6 +75,31 @@ describe('buildDefaultContext', () => {
     expect(contexto).toContain(DEMO_BRAND.name);
   });
 
+  it('no deja rastro del sector de la marca anterior', () => {
+    // El contexto llegó a mezclar la audiencia de un sector con los dolores de
+    // otro, porque esas frases estaban escritas en el código en vez de salir de
+    // la marca. Si alguien vuelve a fijar una, esta prueba lo caza.
+    const panaderia = {
+      name: 'Pan de Ayer',
+      description: 'panadería de barrio',
+      coreService: 'pan de masa madre',
+      website: 'pandeayer.example',
+      audience: 'vecinos del barrio',
+      sector: 'alimentación',
+      pain: 'el pan industrial sabe a nada',
+      motivation: 'comer bien sin complicarse',
+      topics: ['Fermentación lenta', 'Harinas locales'],
+    };
+
+    const contexto = buildDefaultContext(panaderia);
+
+    for (const palabra of ['datos', 'nube', 'producto digital', 'IA', 'software']) {
+      expect(contexto, palabra).not.toContain(palabra);
+    }
+    expect(contexto).toContain('el pan industrial sabe a nada');
+    expect(contexto).toContain('Fermentación lenta');
+  });
+
   it('cambia con la marca', () => {
     const otra = { ...DEMO_BRAND, name: 'Otra Marca', coreService: 'paquetería urbana' };
     const contexto = buildDefaultContext(otra);

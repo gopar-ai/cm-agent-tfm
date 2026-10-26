@@ -16,7 +16,7 @@
 | `LOGIN_MAX_ATTEMPTS` / `LOGIN_WINDOW_SECONDS` | no | Límite del acceso. Por defecto 8 cada 300 s |
 | `CHAT_MAX_PER_MINUTE` | no | Peticiones de chat por minuto y sesión. Por defecto 10 |
 | `NEWS_CACHE_DIR` | no | Carpeta de la caché del feed. Por defecto `./data` |
-| `NEXT_PUBLIC_BRAND_*` | no | Identidad de la marca: `NAME`, `DESCRIPTION`, `CORE_SERVICE`, `WEBSITE`, `AUDIENCE`, `SECTOR` |
+| `NEXT_PUBLIC_BRAND_*` | no | Identidad de la marca: `NAME`, `DESCRIPTION`, `CORE_SERVICE`, `WEBSITE`, `AUDIENCE`, `SECTOR`, `PAIN`, `MOTIVATION` y `TOPICS` (separados por `|`). De aquí sale el contexto por defecto del agente |
 | `NEWS_RSS_FEEDS` / `NEWS_SEARCH_DOMAINS` / `NEWS_SEARCH_QUERIES` | no | Fuentes del sector, separadas por coma |
 
 Fuera de producción no hace falta configurar nada: la aplicación rellena usuario

@@ -4,10 +4,13 @@ import { readText, removeKey, writeText } from './local-store';
 /**
  * Contexto editable del agente: el ICP, el tono, los temas y lo que no se toca.
  *
- * El contenido por defecto se construye desde la marca activa, así que al
- * cambiar la configuración de marca el contexto inicial cambia con ella. Lo que
- * el analista edita desde la pantalla de configuración vive en su navegador y
- * manda sobre el valor por defecto.
+ * **Todo el contenido sale de la marca activa.** La primera versión tenía el
+ * dolor del cliente y los temas escritos a mano: al cambiar de marca quedaba un
+ * híbrido —audiencia de un sector y dolores de otro— que el analista veía en la
+ * pantalla de configuración. Si algo describe al cliente, va en `lib/brand.ts`,
+ * que es configuración, y nunca aquí.
+ *
+ * Lo que el analista edita vive en su navegador y manda sobre este valor.
  */
 
 const KEY = 'cm_agent_context';
@@ -16,8 +19,8 @@ export function buildDefaultContext(brand: Brand = getBrand()): string {
   return `# ICP (Cliente Ideal)
 - A quién le hablamos: ${brand.audience}
 - Sector: ${brand.sector}
-- Dolor principal: pérdida de mercancía, incertidumbre en ruta, incumplimiento con su cliente final
-- Motivación: proteger la operación, cumplir con clientes, evitar penalizaciones
+- Dolor principal: ${brand.pain}
+- Motivación: ${brand.motivation}
 
 # Tono y estilo
 - Directo y profesional, sin ser frío
@@ -28,10 +31,8 @@ export function buildDefaultContext(brand: Brand = getBrand()): string {
 
 # Temas prioritarios
 - ${brand.coreService}
-- Riesgo y pérdida de mercancía
-- Cadena de frío y mercancía sensible
-- Coyuntura: temporadas de alto volumen y alto riesgo
-- Diferenciadores de ${brand.name}: tecnología, equipo, metodología
+${brand.topics.map((tema) => `- ${tema}`).join('\n')}
+- Diferenciadores de ${brand.name}: producto, equipo, método
 
 # Temas prohibidos
 - Motivación genérica
@@ -43,7 +44,7 @@ export function buildDefaultContext(brand: Brand = getBrand()): string {
 (Pega aquí ejemplos de posts que hayan funcionado bien)
 
 # Contexto semanal
-(Notas temporales: "esta semana hay temporada alta", "evitar X tema", etc.)`;
+(Notas temporales: "esta semana lanzamos X", "evitar Y tema", etc.)`;
 }
 
 /** Contexto por defecto de la marca activa. */
