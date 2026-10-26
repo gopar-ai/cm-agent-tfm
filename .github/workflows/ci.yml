@@ -68,7 +68,8 @@ jobs:
     needs: calidad
 
     env:
-      NODE_ENV: production
+      # Los secretos son de relleno: la construcción de Next evalúa la
+      # configuración del servidor, que en producción los exige.
       APP_USERNAME: ci
       APP_PASSWORD: contrasena-solo-para-ci
       JWT_SECRET: secreto-de-integracion-continua-suficientemente-largo
@@ -81,10 +82,15 @@ jobs:
           node-version: 24
           cache: npm
 
+      # Sin NODE_ENV=production en este paso: con esa variable, `npm ci` se
+      # salta las dependencias de desarrollo y la construcción se queda sin
+      # Tailwind ni TypeScript.
       - run: npm ci
 
       - name: Construir
         run: npm run build
+        env:
+          NODE_ENV: production
 
   navegador:
     name: Recorrido en navegador
