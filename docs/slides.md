@@ -91,7 +91,7 @@ Con menos de tres, no deduce nada: el patrón sería ruido.
 
 ## 8 · El punto de partida de este proyecto
 
-La aplicación **ya funcionaba** en producción.
+La aplicación llevaba **meses en uso**.
 
 Lo que no tenía:
 
@@ -146,7 +146,7 @@ Todos corregidos, con prueba. OWASP Top 10 y OWASP LLM recorridos en
 
 | | |
 |---|---|
-| Unitarias y de integración | **383** (5 segundos) |
+| Unitarias y de integración | **406** (5 segundos) |
 | En navegador real | **10 × 2 perfiles** (escritorio y celular) |
 | Cobertura | 98 % sentencias · 97 % funciones · 99 % líneas |
 | Umbrales | la suite **falla** si baja |
@@ -195,10 +195,6 @@ Ni se escribió a mano línea por línea, ni lo hizo la IA sola.
 | Que no se gaste dinero | La documentación |
 | Qué se corrige y qué queda como deuda | El montaje del vídeo |
 
-Descarté dos proyectos antes que este: uno que el evaluador no habría podido
-probar, y otro que exponía datos reales. **Elegí el evaluable por encima del
-vistoso.**
-
 ---
 
 ## 15 · Infraestructura
@@ -221,4 +217,4 @@ entrega.
 
 La documentación técnica completa está en `docs/`: especificación con historias
 y criterios, requisitos con umbral, diseño con alternativas y deuda reconocida,
-auditoría de seguridad, estrategia de pruebas y trabajo con IA.
+auditoría de seguridad y estrategia de pruebas.
