@@ -1,8 +1,9 @@
 <h1 align="center">CM Agent</h1>
 
 <p align="center">
-  <strong>De la noticia de hoy a un post de LinkedIn listo para publicar, en cuatro pasos.</strong><br>
-  Un agente de contenido que se especializa en tu marca y aprende cómo escribes.
+  <strong>Agente de community manager con IA para LinkedIn.</strong><br>
+  Propone temas desde la actualidad del sector, genera dos versiones de cada post, las lleva a un calendario<br>
+  y aprende en silencio el estilo editorial de la marca a partir de lo que eliges.
 </p>
 
 <p align="center">
@@ -11,7 +12,6 @@
 
 <p align="center">
   <img alt="Pruebas" src="https://img.shields.io/badge/pruebas-406%20✓-2da44e">
-  <img alt="Cobertura" src="https://img.shields.io/badge/cobertura-98%25-2da44e">
   <a href="https://github.com/gopar-ai/cm-agent-tfm/actions"><img alt="CI" src="https://github.com/gopar-ai/cm-agent-tfm/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="Node" src="https://img.shields.io/badge/node-24-333">
   <img alt="Licencia" src="https://img.shields.io/badge/licencia-MIT-333">
@@ -21,7 +21,7 @@
 
 ---
 
-## Pruébalo en un minuto
+## Probar la demo
 
 > **<https://cm-agent-tfm-production.up.railway.app>** · usuario `demo` · contraseña `demo1234`
 >
@@ -42,7 +42,7 @@ La versión publicada corre en **modo de demostración**: el agente responde con
 
 Una empresa **B2B de tecnología** —una startup de software, una plataforma, una consultora técnica— que necesita publicar en LinkedIn de forma constante, y donde eso recae en **una sola persona**, no en un equipo de contenido.
 
-Esa persona se topa siempre con lo mismo:
+Siempre los mismos cuatro problemas:
 
 | El problema | Lo que hace CM Agent |
 |---|---|
@@ -58,23 +58,22 @@ La marca es **configuración, no código**: cambiar de empresa —o de sector—
 ## Cómo funciona
 
 ```
-      Noticias reales del sector                   Contexto de la marca
-      (RSS + búsqueda web)                    (ICP, tono, temas prohibidos)
-                  │                                        │
-                  └────────────────┬───────────────────────┘
-                                   ▼
-                        Claude Sonnet 4.6
-                                   │
-   ┌───────────────────────────────┼───────────────────────────────┐
-   ▼               ▼               ▼               ▼               ▼
- 1 Temas       2 Ángulo      3 Versiones A/B   4 Ajustes      Calendario
- 5 propuestas  gancho,       dos ganchos      sobre lo        borrador →
- con fuente    por qué       distintos, 3     elegido, sin    programado →
- y fecha       y emoción     titulares c/u    regenerar       publicado
-   │                               │
-   └── cada elección alimenta la memoria de preferencias ──┐
-                                                           │
-            las siguientes propuestas nacen con ese estilo ◄┘
+Noticias del sector (RSS + búsqueda web)
+Contexto de la marca (ICP, tono, temas vetados)
+            │
+            ▼
+    Claude Sonnet 4.6
+            │
+            ├─ 1 · Temas — cinco propuestas, con fuente y fecha
+            ├─ 2 · Ángulo — gancho, por qué ahora, emoción objetivo
+            ├─ 3 · Versiones — A/B, tres titulares cada una
+            ├─ 4 · Ajustes — sobre lo elegido, sin regenerar
+            │
+            ▼
+    Calendario — borrador → programado → publicado
+
+Cada elección alimenta la memoria de preferencias:
+las siguientes propuestas nacen con ese estilo.
 ```
 
 ---
