@@ -26,8 +26,8 @@ Publicar en LinkedIn de forma constante, siendo una sola persona:
 
 - Decidir **de qué** escribir cuesta más que escribirlo.
 - Sin seguir la actualidad, el contenido queda intemporal y poco relevante.
-- Cada herramienta de IA genérica obliga a **volver a explicar** a quién le
-  hablamos, con qué tono y qué no se dice.
+- Una *skill* o un proyecto de IA ayudan, pero siguen siendo **instrucciones**:
+  el modelo las cumple casi siempre, y "casi siempre" cuela una noticia vieja.
 - Lo que funcionó el mes pasado no queda registrado en ninguna parte.
 
 ---
