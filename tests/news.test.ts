@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   buildNewsSystemPrompt,
   intercalarPorFuente,
+  relevancia,
   dedupeByUrl,
   extractJsonArray,
   fetchOgImage,
@@ -133,6 +134,28 @@ describe('sortByDateDesc', () => {
       { title: 'b', url: 'u2', source: 's', date: '' },
     ];
     expect(sortByDateDesc(items).map((n) => n.title)).toEqual(['a', 'b']);
+  });
+});
+
+describe('relevancia', () => {
+  const terminos = ['inteligencia artificial empresas', 'computo en la nube noticias'];
+  const noticia = (title) => ({ title, url: 'u', source: 's', date: '' });
+
+  it('puntúa lo que habla del sector', () => {
+    expect(relevancia(noticia('La inversión en inteligencia artificial crece'), terminos)).toBeGreaterThan(0);
+  });
+
+  it('deja en cero lo que no tiene que ver', () => {
+    expect(relevancia(noticia('Prejubilado a los 58 años encontró su vocación'), terminos)).toBe(0);
+  });
+
+  it('no distingue mayúsculas', () => {
+    expect(relevancia(noticia('NOTICIAS SOBRE LA NUBE'), terminos)).toBeGreaterThan(0);
+  });
+
+  it('ignora las palabras cortas, que casan con cualquier cosa', () => {
+    // 'de', 'la', 'en' no deberían puntuar.
+    expect(relevancia(noticia('De la casa en el campo'), ['de la casa en'])).toBe(0);
   });
 });
 

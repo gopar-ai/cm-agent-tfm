@@ -198,9 +198,40 @@ export function intercalarPorFuente(items: NewsItem[]): NewsItem[] {
   return resultado;
 }
 
-/** Ordena, quita repetidas, reparte entre fuentes y busca la portada de cada una. */
+/**
+ * Puntúa una noticia por lo que tiene que ver con el sector de la marca.
+ *
+ * Los medios generalistas mezclan: en el mismo feed llega un informe sobre
+ * adopción de IA en empresas y una oferta de portátiles para jugar. Sin esto,
+ * el panel abría con lo segundo.
+ *
+ * No descarta nada —una noticia aparentemente lejana puede dar un buen ángulo—,
+ * solo decide qué se lee primero.
+ */
+export function relevancia(item: NewsItem, terminos: string[]): number {
+  const texto = item.title.toLowerCase();
+  return terminos.reduce((puntos, termino) => {
+    const palabras = termino.toLowerCase().split(/\s+/).filter((p) => p.length > 3);
+    const aciertos = palabras.filter((palabra) => texto.includes(palabra)).length;
+    return puntos + aciertos;
+  }, 0);
+}
+
+/** Ordena por relevancia y fecha, reparte entre fuentes y busca las portadas. */
 async function componerFeed(items: NewsItem[]): Promise<NewsItem[]> {
-  const ordenadas = intercalarPorFuente(sortByDateDesc(dedupeByUrl(items))).slice(0, MAX_ITEMS);
+  const terminos = getSearchQueries();
+  const porFecha = sortByDateDesc(dedupeByUrl(items));
+
+  // Primero lo que habla del sector, después el resto; dentro de cada grupo se
+  // mantiene el orden por fecha y el reparto entre fuentes.
+  const delSector = porFecha.filter((item) => relevancia(item, terminos) > 0);
+  const resto = porFecha.filter((item) => relevancia(item, terminos) === 0);
+
+  const ordenadas = [...intercalarPorFuente(delSector), ...intercalarPorFuente(resto)].slice(
+    0,
+    MAX_ITEMS
+  );
+
   return Promise.all(
     ordenadas.map(async (item) => ({ ...item, image: await fetchOgImage(item.url) }))
   );
