@@ -102,7 +102,7 @@ Lo que no tenía:
 | Contenedor | no |
 | Validación de configuración | `process.env.JWT_SECRET!` |
 | Cabeceras de seguridad | ninguna |
-| Marca del cliente | escrita en el código |
+| Marca | escrita en el código |
 
 **El trabajo fue llevarla al punto en que se puede sostener y auditar.**
 
@@ -191,7 +191,7 @@ Ni se escribió a mano línea por línea, ni lo hizo la IA sola.
 | Lo decidí yo | Lo ejecutó el agente |
 |---|---|
 | Qué proyecto se entrega, y cuál no | Arquitectura, código y pruebas |
-| Que nada lleve datos de cliente | La auditoría de seguridad |
+| Que nada lleve datos reales | La auditoría de seguridad |
 | Que no se gaste dinero | La documentación |
 | Qué se corrige y qué queda como deuda | El montaje del vídeo |
 

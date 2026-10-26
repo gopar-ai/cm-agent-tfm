@@ -10,7 +10,7 @@ producción: el flujo de cuatro fases, el feed, el calendario y la memoria
 estaban hechos y en uso. Lo que no había era nada de lo que sostiene a una
 aplicación en el tiempo: **ni una sola prueba, ni integración continua, ni
 contenedor, ni validación de configuración, ni cabeceras de seguridad**, y la
-marca del cliente estaba escrita dentro del código.
+marca estaba escrita dentro del código.
 
 Así que el trabajo no fue construir funciones nuevas, sino **llevar una
 aplicación que funciona al punto en que se puede sostener, auditar y entregar a
@@ -23,7 +23,7 @@ abajo.
 
 1. Que cualquiera pueda clonar, arrancar y probar el flujo completo sin una
    clave de API y sin configurar nada.
-2. Que el código no contenga datos de ningún cliente: la marca entra por
+2. Que el código no contenga datos de ninguna empresa real: la marca entra por
    configuración.
 3. Red de seguridad real: pruebas con cobertura medida y umbrales que fallan.
 4. Cerrar los agujeros de seguridad encontrados en la auditoría propia.

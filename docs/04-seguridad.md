@@ -247,8 +247,8 @@ Lo que sigue abierto, dicho con claridad:
 - Los secretos se configuran en el entorno de ejecución (Railway) o en un `.env.local`
   que nunca se publica.
 - La contraseña se guarda como hash (`APP_PASSWORD_HASH`), no en claro.
-- Antes de publicar el repositorio se revisó que no hubiera claves ni rastro de
-  ningún cliente en el historial. Este repositorio **nace sin historial previo**
+- Antes de publicar el repositorio se revisó que no hubiera claves ni datos
+  reales en el historial. Este repositorio **nace sin historial previo**
   justamente por eso: el proyecto original vivía en otro repositorio y arrastrar
   su historia era arrastrar su riesgo.
 
@@ -260,7 +260,7 @@ lo anterior.
 
 **Qué protege realmente esa contraseña:** nada que no sea público. La demo corre
 en modo de demostración, con una marca ficticia, sin clave de API y sin un solo
-dato de cliente. Además, el estado vive en el navegador de cada visitante, así
+dato real. Además, el estado vive en el navegador de cada visitante, así
 que ni siquiera hay contenido compartido al que entrar.
 
 **Por qué está escrita en la pantalla y no solo en el README:** quien llega a

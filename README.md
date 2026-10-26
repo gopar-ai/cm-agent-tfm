@@ -112,9 +112,9 @@ Panel editable (titulares, copy, hashtags) ──► Calendario / Borradores (lo
 
 ---
 
-## Calidad
+## Pruebas y seguridad
 
-Este proyecto partía de una aplicación que **ya funcionaba en producción** pero no tenía ninguna prueba, ni integración continua, ni contenedor, ni validación de configuración, ni cabeceras de seguridad. El trabajo fue llevarla al punto en que se puede sostener, auditar y entregar a otra persona.
+La aplicación se construyó a lo largo de varios meses y ya se usaba a diario. Lo que no tenía era red de seguridad: ni una sola prueba, ni revisión automática, ni auditoría. Hoy tiene **406 pruebas**, **ocho hallazgos de seguridad corregidos** y una integración continua que falla si algo baja.
 
 | | |
 |---|---|
