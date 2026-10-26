@@ -1,8 +1,12 @@
 # 4 · Seguridad
 
 Auditoría propia de la aplicación, los ocho hallazgos que tenía, cómo se
-corrigieron y qué riesgo queda vivo. Se recorre OWASP Top 10 (2021) y, por ser
-una aplicación con un modelo de lenguaje, también OWASP Top 10 for LLM.
+corrigieron y qué riesgo queda vivo.
+
+Se recorren las tres listas que aplican a este proyecto, que son las que trata
+el módulo de seguridad del máster: **OWASP Top 10** (aplicación web), **OWASP
+API Security Top 10** (porque expone una API) y **OWASP GenAI · LLM Top 10**
+(porque detrás hay un modelo de lenguaje).
 
 Todo lo que aquí se afirma tiene una prueba detrás; la columna "prueba" nombra
 el archivo.
@@ -192,18 +196,38 @@ servidor real.
 | **A09** | Registro y vigilancia | Los fallos se registran con contexto y **sin** credenciales ni contenido del analista; `/api/health` para vigilancia externa. Reconocido como lo más flojo: no hay registro estructurado ni alertas |
 | **A10** | SSRF | Validación de URL antes de cada petición saliente, sin seguir redirecciones (H-06) |
 
-## 4.3 Riesgos propios de usar un modelo de lenguaje
+## 4.3 OWASP API Security Top 10 (2023)
 
-| | Riesgo (OWASP LLM) | Cómo se trata |
+La aplicación expone cinco rutas de API, así que la lista específica de APIs
+aplica tanto como la general.
+
+| | Riesgo | Cómo se trata aquí |
+|---|---|---|
+| **API1** | Autorización rota a nivel de objeto | No hay objetos de otros usuarios que pedir: el estado es del navegador de cada analista, y ninguna ruta acepta un identificador ajeno |
+| **API2** | Autenticación rota | Hash scrypt, comparación de tiempo constante, límite de intentos por IP, cookie `httpOnly` firmada (H-01, H-02) |
+| **API3** | Autorización rota a nivel de propiedad | El cuerpo de la petición se valida contra un esquema cerrado: lo que no está declarado no entra (H-04) |
+| **API4** | **Consumo de recursos sin límite** | El riesgo central de una API con un modelo detrás: presupuesto diario, límite por minuto y sesión, 40 mensajes de 8.000 caracteres como techo, historial acotado a 10 (H-04, RNF-06) |
+| **API5** | Autorización rota a nivel de función | El middleware exige sesión en todo salvo las rutas públicas declaradas, y cada ruta revalida por su cuenta (`tests/proxy.test.ts`) |
+| **API6** | Acceso sin restricción a flujos sensibles | El flujo caro —generar con el modelo— está detrás de sesión, límite y presupuesto |
+| **API7** | **SSRF** | Validación de la URL antes de cada petición saliente, sin seguir redirecciones (H-06) |
+| **API8** | Configuración insegura | Cabeceras de seguridad, configuración validada al arrancar, contenedor sin privilegios (H-07, H-08) |
+| **API9** | Inventario mal gestionado | Cinco rutas, todas documentadas en [03-diseno](03-diseno.md#33-arquitectura), sin versiones antiguas vivas |
+| **API10** | Consumo inseguro de APIs de terceros | Lo que devuelven el modelo y los feeds se normaliza y se valida antes de usarse (`normalizeNewsItems`, `parseFeedXml`), y sus URLs pasan por el filtro anti-SSRF |
+
+## 4.4 OWASP GenAI · LLM Top 10 (2026)
+
+| | Riesgo | Cómo se trata |
 |---|---|---|
 | **LLM01** | Inyección de prompt | Texto acotado, delimitado y marcado como datos; delimitadores del protocolo neutralizados (H-05) |
-| **LLM02** | Tratamiento inseguro de la salida | La salida del modelo nunca se ejecuta ni se inyecta como HTML: React escapa el texto y los parsers solo extraen campos. Ninguna respuesta decide una acción con efectos |
-| **LLM04** | Denegación de servicio por consumo | Presupuesto diario de llamadas, límite por minuto y sesión, historial acotado a 10 mensajes y techo por mensaje (H-04) |
-| **LLM06** | Revelación de información sensible | El contexto de marca no sale del navegador del analista salvo para su propia petición; sin caché compartida (H-03); los registros no guardan contenido |
-| **LLM08** | Agencia excesiva | El agente solo tiene búsqueda web. No publica, no envía, no borra: produce texto que una persona decide usar |
-| **LLM09** | Confianza excesiva en la salida | El prompt prohíbe inventar estadísticas y exige fecha y fuente verificables en las noticias; las dos versiones A/B empujan a elegir en vez de aceptar |
+| **LLM02** | Revelación de información sensible | El contexto de marca no sale del navegador del analista salvo para su propia petición; sin caché compartida entre sesiones (H-03); los registros no guardan contenido ni credenciales |
+| **LLM03** | Agencia excesiva | El agente solo tiene búsqueda web. No publica, no envía, no borra: produce texto que una persona decide usar |
+| **LLM04** | Cadena de suministro | Dependencias mínimas y fijadas con `package-lock.json`; `npm ci` en la integración continua; `npm audit` en cada ejecución |
+| **LLM06** | Consumo sin límite | Presupuesto diario, límite por minuto y sesión, techo por mensaje y por conversación (H-04) |
+| **LLM07** | Desinformación | El prompt prohíbe inventar estadísticas y exige fecha y fuente verificables; las noticias llevan medio y enlace para poder comprobarlas |
+| **LLM08** | Exposición de contexto oculto | El prompt del sistema no viaja al navegador: se arma en el servidor. El bloque de datos no confiables incluye la instrucción de no revelarlo |
+| **LLM10** | Tratamiento inseguro de la salida | La salida del modelo nunca se ejecuta ni se inyecta como HTML: React escapa el texto y los parsers solo extraen campos. Ninguna respuesta decide una acción con efectos |
 
-## 4.4 Riesgo residual
+## 4.5 Riesgo residual
 
 Lo que sigue abierto, dicho con claridad:
 
@@ -216,7 +240,7 @@ Lo que sigue abierto, dicho con claridad:
 | R-05 | Sin registro estructurado ni alertas | Fuera del alcance de esta entrega; hoy se usa el registro de Railway | Registro en JSON con identificador de petición y alerta sobre tasa de error |
 | R-06 | El analista autenticado puede gastar presupuesto a propósito | Es quien tiene las credenciales; el tope diario acota el daño | Presupuesto por usuario, si hubiera varios |
 
-## 4.5 Manejo de secretos
+## 4.6 Manejo de secretos
 
 - Ningún secreto en el repositorio. `.gitignore` excluye `.env*` salvo
   `.env.example`, que solo lleva nombres de variable y comentarios.
@@ -227,3 +251,35 @@ Lo que sigue abierto, dicho con claridad:
   ningún cliente en el historial. Este repositorio **nace sin historial previo**
   justamente por eso: el proyecto original vivía en otro repositorio y arrastrar
   su historia era arrastrar su riesgo.
+
+## 4.7 Por qué las credenciales de prueba están a la vista
+
+La pantalla de acceso de la demo publicada muestra `demo` / `demo1234` debajo
+del formulario. Es deliberado, y conviene explicar por qué no contradice nada de
+lo anterior.
+
+**Qué protege realmente esa contraseña:** nada que no sea público. La demo corre
+en modo de demostración, con una marca ficticia, sin clave de API y sin un solo
+dato de cliente. Además, el estado vive en el navegador de cada visitante, así
+que ni siquiera hay contenido compartido al que entrar.
+
+**Por qué está escrita en la pantalla y no solo en el README:** quien llega a
+evaluar la aplicación no debería tener que buscar las credenciales en otro
+sitio. Es lo que hacen los entornos de prueba y las demos públicas de producto,
+y es también lo que pide la base de la entrega, que exige entregar "usuario y
+contraseña de prueba".
+
+**Qué sigue estando protegido:**
+
+- La contraseña **no se guarda en claro** en ningún lado: el servidor solo
+  conoce su hash scrypt (`APP_PASSWORD_HASH`), igual que en una instalación real.
+- El acceso sigue teniendo **límite de intentos**, sesión firmada y cookie
+  `httpOnly`. Publicar la contraseña no desactiva ninguna defensa.
+- La variable que muestra el aviso (`DEMO_HINT`) es **opcional y está vacía por
+  defecto**: una instalación real no enseña nada.
+- Lo que de verdad hay que proteger —la clave de API, el secreto de firma, el
+  del cron— no está en el repositorio ni se muestra en ninguna pantalla.
+
+Dicho al revés: lo que sería un error es publicar credenciales que den acceso a
+datos reales, o reutilizar en la demo una contraseña que también valga en
+producción. Ninguna de las dos cosas ocurre aquí.

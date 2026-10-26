@@ -74,8 +74,10 @@ Qué pide el programa, dónde está en este proyecto y cómo comprobarlo.
 | F4 | Límites para evitar abusos | Intentos de acceso por IP, peticiones por minuto, presupuesto diario | ✅ |
 | F5 | Configuración segura | Cabeceras de seguridad, contenedor sin privilegios, `X-Powered-By` apagado | ✅ |
 | F6 | Registro sin datos sensibles | Los fallos se registran con contexto, sin credenciales ni contenido | ✅ en parte (ver R-05) |
-| F7 | Riesgos propios de la IA | OWASP LLM recorrido en [04](04-seguridad.md#43-riesgos-propios-de-usar-un-modelo-de-lenguaje): inyección, salida, consumo, agencia | ✅ |
+| F7 | Riesgos propios de la IA (OWASP GenAI · LLM Top 10) | [04](04-seguridad.md#44-owasp-genai--llm-top-10-2026): los ocho que aplican, de LLM01 a LLM10 | ✅ |
 | F8 | Recorrido de OWASP Top 10 | [04](04-seguridad.md#42-recorrido-de-owasp-top-10-2021), con los diez puntos y ocho hallazgos corregidos | ✅ |
+| F9 | OWASP API Security Top 10 | [04](04-seguridad.md#43-owasp-api-security-top-10-2023): las cinco rutas de API contra los diez riesgos | ✅ |
+| F10 | Validación y sanitización, credenciales, seguridad en APIs | Esquemas de entrada, hash scrypt y límites por ruta (H-01, H-02, H-04) | ✅ |
 
 ## G · Trabajo con IA
 
