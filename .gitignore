@@ -55,3 +55,6 @@ next-env.d.ts
 /playwright-report
 /blob-report
 /playwright/.cache
+
+# Intermedio: se genera con scripts/slides.mjs; lo que se entrega es el PDF
+docs/slides.html

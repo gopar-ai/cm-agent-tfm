@@ -139,7 +139,7 @@ const estilos = `
     width: 1280px; height: 720px; background: #0f0f0f; color: #e8e8e8;
     padding: 72px 88px; display: flex; flex-direction: column; justify-content: center;
     position: relative; overflow: hidden; page-break-after: always;
-    border-top: 5px solid #6366F1;
+    border-top: 5px solid #0a66c2;
   }
   .slide + .slide { margin-top: 28px; }
   h2 { font-size: 46px; font-weight: 800; color: #fff; margin-bottom: 26px; letter-spacing: -0.5px; }
@@ -150,15 +150,15 @@ const estilos = `
   em { color: #cfcfcf; }
   ul { margin: 6px 0 14px 26px; }
   li { font-size: 22px; line-height: 1.6; color: #cfcfcf; margin-bottom: 9px; }
-  li::marker { color: #6366F1; }
+  li::marker { color: #0a66c2; }
   code { font-family: 'JetBrains Mono', monospace; font-size: 0.88em; color: #ff8a8a;
          background: #1b1b1b; padding: 2px 7px; border-radius: 4px; }
-  pre { background: #161616; border: 1px solid #262626; border-left: 3px solid #6366F1;
+  pre { background: #161616; border: 1px solid #262626; border-left: 3px solid #0a66c2;
         border-radius: 8px; padding: 20px 24px; margin: 14px 0; overflow: hidden; }
   pre code { background: none; color: #d4d4d4; font-size: 17px; line-height: 1.6; padding: 0;
               font-variant-ligatures: none; }
   code { font-variant-ligatures: none; }
-  blockquote { border-left: 3px solid #6366F1; padding-left: 20px; margin: 16px 0;
+  blockquote { border-left: 3px solid #0a66c2; padding-left: 20px; margin: 16px 0;
                font-size: 26px; color: #fff; font-weight: 600; }
   table { width: 100%; border-collapse: collapse; margin: 14px 0; }
   th { text-align: left; font-size: 16px; text-transform: uppercase; letter-spacing: 1.2px;
@@ -168,7 +168,7 @@ const estilos = `
   a { color: #ff8a8a; text-decoration: none; }
   .pie { position: absolute; bottom: 30px; left: 88px; right: 88px;
          display: flex; justify-content: space-between; font-size: 15px; color: #5a5a5a; }
-  .marca { color: #6366F1; font-weight: 800; letter-spacing: 0.4px; }
+  .marca { color: #0a66c2; font-weight: 800; letter-spacing: 0.4px; }
 `;
 
 const html = `<!doctype html>

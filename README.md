@@ -58,22 +58,18 @@ La marca es **configuración, no código**: cambiar de empresa —o de sector—
 ## Cómo funciona
 
 ```
-Noticias del sector (RSS + búsqueda web)
-Contexto de la marca (ICP, tono, temas vetados)
-            │
-            ▼
-    Claude Sonnet 4.6
-            │
-            ├─ 1 · Temas — cinco propuestas, con fuente y fecha
-            ├─ 2 · Ángulo — gancho, por qué ahora, emoción objetivo
-            ├─ 3 · Versiones — A/B, tres titulares cada una
-            ├─ 4 · Ajustes — sobre lo elegido, sin regenerar
-            │
-            ▼
-    Calendario — borrador → programado → publicado
-
-Cada elección alimenta la memoria de preferencias:
-las siguientes propuestas nacen con ese estilo.
+Analista (chat)
+     │
+     ▼
+Claude (Anthropic, con Web Search nativo)
+     │
+     ├─► Fase 1: propuesta de temas (evergreen + actualidad con fecha verificada)
+     ├─► Fase 2: ángulo sugerido (gancho, por qué ahora, emoción objetivo)
+     ├─► Fase 3: 2 versiones A/B por formato (Copy, Copy + imagen, Carrusel, PDF, Video)
+     └─► Fase 4: confirmación + ajustes iterativos
+     │
+     ▼
+Panel editable (titulares, copy, hashtags) ──► Calendario / Borradores (localStorage)
 ```
 
 ---
