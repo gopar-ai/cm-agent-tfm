@@ -183,7 +183,25 @@ la aplicación completa sin que llegue una factura sorpresa.
 
 ---
 
-## 14 · Infraestructura
+## 14 · Cómo se construyó
+
+**Dirigiendo a un agente de IA**, que es la competencia que enseña el máster.
+Ni se escribió a mano línea por línea, ni lo hizo la IA sola.
+
+| Lo decidí yo | Lo ejecutó el agente |
+|---|---|
+| Qué proyecto se entrega, y cuál no | Arquitectura, código y pruebas |
+| Que nada lleve datos de cliente | La auditoría de seguridad |
+| Que no se gaste dinero | La documentación |
+| Qué se corrige y qué queda como deuda | El montaje del vídeo |
+
+Descarté dos proyectos antes que este: uno que el evaluador no habría podido
+probar, y otro que exponía datos reales. **Elegí el evaluable por encima del
+vistoso.**
+
+---
+
+## 15 · Infraestructura
 
 ```
 cada cambio  →  lint  →  tipos  →  pruebas + cobertura
@@ -196,7 +214,7 @@ Sin gastar un token: la integración continua corre en modo de demostración.
 
 ---
 
-## 15 · Gracias
+## 16 · Gracias
 
 **Repositorio · aplicación publicada · usuario de prueba** en el formulario de
 entrega.
