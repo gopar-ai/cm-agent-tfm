@@ -117,7 +117,7 @@ calendario.
 > sobre escritorio y celular, con 98 % de cobertura y umbrales que hacen fallar
 > la suite si baja.
 >
-> Y esas pruebas encontraron siete defectos más. Mi favorito: el guion de
+> Y entre las pruebas y el primer despliegue salieron once defectos más. Mi favorito: el guion de
 > demostración respondía la fase equivocada al elegir un tema. No lo vio ninguna
 > prueba unitaria, porque todas usaban frases inventadas, y la interfaz manda
 > otras. Lo encontró el recorrido en navegador. La lección quedó escrita en el

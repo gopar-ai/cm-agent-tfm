@@ -129,8 +129,8 @@ espera, ninguna depende del día en que se ejecute: por eso la suite no falla "a
 veces".
 
 **Cada defecto corregido dejó su prueba de regresión**, con un comentario que
-explica qué fallaba. Son siete, y están señaladas en el código con la frase "el
-error que arregla".
+explica qué fallaba. Están señaladas en el código con la frase "el error que
+arregla".
 
 **Los casos límite se prueban tanto como los felices.** Datos corruptos en el
 navegador, cuota llena, disco de solo lectura, feed caído, modelo que no
@@ -143,8 +143,8 @@ doble de algo de `lib/`, sería señal de que ese módulo hace demasiado.
 
 ## 5.6 Lo que estas pruebas encontraron
 
-No se escribieron para adornar la entrega. Estos defectos los destapó la suite
-mientras se construía:
+No se escribieron para adornar la entrega. Estos once defectos los destaparon la
+suite y el primer despliegue:
 
 1. **El resumen de preferencias se filtraba entre analistas** (H-03 en
    [04-seguridad](04-seguridad.md)). El más grave: una caché de módulo indexada
@@ -171,6 +171,17 @@ mientras se construía:
 8. **Las pruebas escribían la caché del feed en `./data` del proyecto.** Se
    descubrió de la forma más tonta: una captura del README acabó mostrando la
    noticia de ejemplo de una prueba. Ahora la suite usa un directorio temporal.
+9. **El healthcheck estaba detrás de la sesión.** `/api/health` respondía 307
+   hacia el login, así que Railway y el contenedor daban el servicio por sano
+   sin haber comprobado nada. Lo destapó el primer despliegue, y de ahí salió
+   `tests/proxy.test.ts`.
+10. **El aviso con las credenciales de prueba no aparecía en la demo.** Se leía
+   de una variable `NEXT_PUBLIC_`, que Next fija al construir y no al arrancar.
+   Pasó a leerse en el servidor, en ejecución.
+11. **La integración continua heredaba `DEMO_MODE` al correr las pruebas**, así
+   que la suite pasaba en local y fallaba en el servidor; y el trabajo de
+   construcción instalaba sin dependencias de desarrollo. Las dos cosas se ven
+   solo cuando el proyecto sale de la máquina de quien lo escribió.
 
 ## 5.7 Cómo correrlas
 

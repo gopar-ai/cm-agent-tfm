@@ -1,6 +1,6 @@
 # 4 · Seguridad
 
-Auditoría propia de la aplicación, los siete hallazgos que tenía, cómo se
+Auditoría propia de la aplicación, los ocho hallazgos que tenía, cómo se
 corrigieron y qué riesgo queda vivo. Se recorre OWASP Top 10 (2021) y, por ser
 una aplicación con un modelo de lenguaje, también OWASP Top 10 for LLM.
 

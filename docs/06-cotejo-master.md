@@ -98,6 +98,5 @@ probada de punta a punta contra su URL real.
 sino una aplicación en uso llevada al punto en que se puede sostener. De ahí
 salen las dos cosas que más dicen del trabajo: una **auditoría propia con ocho
 hallazgos de seguridad corregidos** —incluida una fuga de datos entre sesiones
-que nadie había visto— y **siete defectos de comportamiento que las pruebas
-destaparon** mientras se escribían, cada uno con su prueba de regresión y su
-explicación en el código.
+que nadie había visto— y **once defectos de comportamiento** que destaparon las pruebas y el primer
+despliegue, cada uno con su prueba de regresión y su explicación en el código.

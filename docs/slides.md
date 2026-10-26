@@ -151,7 +151,7 @@ Todos corregidos, con prueba. OWASP Top 10 y OWASP LLM recorridos en
 | Cobertura | 98 % sentencias · 97 % funciones · 99 % líneas |
 | Umbrales | la suite **falla** si baja |
 
-Y encontraron **siete defectos** más mientras se escribían.
+Y encontraron **once defectos** más mientras se escribían.
 
 ---
 

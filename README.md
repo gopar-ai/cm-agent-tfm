@@ -287,7 +287,7 @@ cm-agent/
 El proyecto partía de una aplicación que ya funcionaba en producción pero no
 tenía ninguna prueba, ni integración continua, ni contenedor, ni validación de
 configuración, ni cabeceras de seguridad. Lo que se hizo fue llevarla al punto en
-que se puede sostener y auditar: ocho hallazgos de seguridad corregidos y seis
+que se puede sostener y auditar: ocho hallazgos de seguridad corregidos y once
 defectos de comportamiento que las pruebas destaparon, cada uno con su prueba de
 regresión. El detalle está en [docs/04](docs/04-seguridad.md) y
 [docs/05](docs/05-pruebas.md).
