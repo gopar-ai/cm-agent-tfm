@@ -12,8 +12,7 @@ import type { NewsItem } from './news-types';
  * Dos fuentes que se complementan: los RSS, que son rápidos y gratuitos pero
  * limitados a los medios que publican feed; y una búsqueda web hecha por un
  * modelo pequeño (Haiku), que alcanza medios sin feed. Para extraer titulares y
- * fechas no hace falta el modelo grande, y la diferencia de costo es grande
- * (docs/07-trabajo-con-ia.md).
+ * fechas no hace falta el modelo grande, y la diferencia de costo es grande.
  */
 
 const NEWS_MODEL = 'claude-haiku-4-5-20251001';

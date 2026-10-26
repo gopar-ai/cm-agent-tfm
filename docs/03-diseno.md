@@ -133,7 +133,6 @@ cambiaría.
 
 Sonnet 4.6 conversa; Haiku 4.5 busca noticias. Extraer titulares y fechas no
 necesita el modelo grande, y la diferencia de costo es de un orden de magnitud.
-El detalle está en [07-trabajo-con-ia](07-trabajo-con-ia.md).
 
 ### D-03 · Modo de demostración dentro del producto, no un mock de pruebas
 

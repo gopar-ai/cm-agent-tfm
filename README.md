@@ -272,8 +272,6 @@ cm-agent-tfm/
 | [03 · Diseño](docs/03-diseno.md) | Arquitectura, siete decisiones con su alternativa y su costo, riesgos, deuda reconocida |
 | [04 · Seguridad](docs/04-seguridad.md) | Auditoría propia, OWASP Top 10 + API + LLM, riesgo residual |
 | [05 · Pruebas](docs/05-pruebas.md) | Estrategia, trazabilidad historia–prueba, y los defectos que encontraron |
-| [06 · Cotejo](docs/06-cotejo-master.md) | Qué pide el máster y dónde está cada cosa |
-| [07 · Trabajo con IA](docs/07-trabajo-con-ia.md) | Quién decidió qué, modelo por tarea y control de costos |
 | [08 · Despliegue](docs/08-despliegue.md) | Variables, Docker, Railway, qué vigilar |
 
 ---
