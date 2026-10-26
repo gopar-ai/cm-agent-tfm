@@ -139,7 +139,7 @@ describe('sortByDateDesc', () => {
 
 describe('relevancia', () => {
   const terminos = ['inteligencia artificial empresas', 'computo en la nube noticias'];
-  const noticia = (title) => ({ title, url: 'u', source: 's', date: '' });
+  const noticia = (title: string) => ({ title, url: 'u', source: 's', date: '' });
 
   it('puntúa lo que habla del sector', () => {
     expect(relevancia(noticia('La inversión en inteligencia artificial crece'), terminos)).toBeGreaterThan(0);
@@ -154,8 +154,8 @@ describe('relevancia', () => {
   });
 
   it('ignora las palabras cortas, que casan con cualquier cosa', () => {
-    // 'de', 'la', 'en' no deberían puntuar.
-    expect(relevancia(noticia('De la casa en el campo'), ['de la casa en'])).toBe(0);
+    // Palabras de tres letras o menos casan con cualquier cosa y no cuentan.
+    expect(relevancia(noticia('De la casa en el campo'), ['de la en el'])).toBe(0);
   });
 });
 
