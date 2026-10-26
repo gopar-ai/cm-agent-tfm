@@ -119,7 +119,7 @@ formato, sin haber redactado todavía:
 | **IA** | Claude Sonnet 4.6 (agente) y Claude Haiku 4.5 (feed), con búsqueda web nativa |
 | **Validación** | Zod, en la configuración y en la entrada de la API |
 | **Sesión** | JWT en cookie `httpOnly`; contraseña en hash scrypt |
-| **Pruebas** | Vitest (367) + Playwright (11 × 2 perfiles) |
+| **Pruebas** | Vitest (374) + Playwright (10 × 2 perfiles) |
 | **Entorno** | Node.js 24 · Docker multietapa · GitHub Actions · Railway |
 | **Persistencia** | `localStorage` del navegador (decisión de diseño, no carencia: [docs/03](docs/03-diseno.md)) |
 
@@ -171,7 +171,7 @@ La receta completa de despliegue, con todas las variables, está en
 |---|---|
 | `npm run dev` | Servidor de desarrollo |
 | `npm run build` / `npm start` | Construcción y arranque de producción |
-| `npm test` | 367 pruebas unitarias y de integración (~5 s) |
+| `npm test` | 374 pruebas unitarias y de integración (~5 s) |
 | `npm run test:cov` | Las mismas, con cobertura y umbrales que hacen fallar |
 | `npm run test:e2e` | Recorrido en navegador real, en escritorio y celular |
 | `npm run lint` / `npm run typecheck` | Análisis estático y tipos |
@@ -216,7 +216,7 @@ cm-agent/
 │   ├── schemas.ts              techos de la entrada de la API
 │   └── security.ts             hash, comparación segura, validación de URL
 │
-├── tests/                      367 pruebas unitarias y de integración
+├── tests/                      374 pruebas unitarias y de integración
 │   ├── api/                    rutas con dobles
 │   └── helpers/                doble de navegador y arranque común
 ├── e2e/                        recorrido en navegador real
@@ -244,7 +244,7 @@ cm-agent/
 
 | | |
 |---|---|
-| **Pruebas** | 367 unitarias y de integración · 11 en navegador real × 2 perfiles |
+| **Pruebas** | 374 unitarias y de integración · 10 × 2 perfiles = 20 en navegador real |
 | **Cobertura** | 98 % sentencias · 97 % funciones · 99 % líneas · 90 % ramas |
 | **Umbrales** | La suite falla si la cobertura baja de 85/90/85/80 |
 | **Análisis estático** | 0 errores |

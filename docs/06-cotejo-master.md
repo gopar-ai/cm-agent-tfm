@@ -48,7 +48,7 @@ Qué pide el programa, dónde está en este proyecto y cómo comprobarlo.
 
 | # | Qué enseña el máster | Dónde | Estado |
 |---|---|---|---|
-| D1 | Muchas pruebas pequeñas, algunas de conjunto, pocas de punta a punta | 328 unitarias · 39 de integración · 11 en navegador | ✅ |
+| D1 | Muchas pruebas pequeñas, algunas de conjunto, pocas de punta a punta | 334 unitarias · 40 de integración · 20 en navegador (10 × 2 perfiles) | ✅ |
 | D2 | Pruebas de punta a punta de lo crítico | Tres recorridos en Chrome y en perfil de celular | ✅ |
 | D3 | Cobertura mínima medida | 98 % sentencias · 97 % funciones · 99 % líneas · 90 % ramas, con umbrales que hacen fallar la suite | ✅ |
 | D4 | Probar con datos de ejemplo, reiniciables | El modo de demostración sirve también a las pruebas; el doble de navegador se estrena en cada prueba | ✅ |
@@ -98,6 +98,6 @@ vídeo con el guion ya escrito (A7).
 sino una aplicación en uso llevada al punto en que se puede sostener. De ahí
 salen las dos cosas que más dicen del trabajo: una **auditoría propia con ocho
 hallazgos de seguridad corregidos** —incluida una fuga de datos entre sesiones
-que nadie había visto— y **seis defectos de comportamiento que las pruebas
+que nadie había visto— y **siete defectos de comportamiento que las pruebas
 destaparon** mientras se escribían, cada uno con su prueba de regresión y su
 explicación en el código.

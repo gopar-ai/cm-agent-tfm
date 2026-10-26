@@ -1,40 +1,40 @@
 # 5 · Estrategia de pruebas
 
-El proyecto no tenía ninguna prueba. Ahora tiene **367 unitarias y de
-integración** más **11 en navegador real**, que corren en dos perfiles
-(escritorio y celular), y una cobertura del núcleo del **98 %**.
+El proyecto no tenía ninguna prueba. Ahora tiene **374 unitarias y de
+integración** más **10 en navegador real**, que corren en dos perfiles —escritorio
+y celular, 20 ejecuciones—, y una cobertura del núcleo del **98 %**.
 
 ## 5.1 Cómo se reparten
 
 ```
-        ╱╲          11 en navegador real (Playwright) ×2 perfiles
+        ╱╲          10 en navegador real (Playwright) × 2 perfiles = 20
        ╱  ╲         Entrar · recorrer las 4 fases · calendario · cabeceras
       ╱────╲
-     ╱      ╲       39 de integración (rutas de API con dobles)
+     ╱      ╲       40 de integración (rutas de API con dobles)
     ╱        ╲      Permisos · validación · límites · presupuesto · caché
    ╱──────────╲
-  ╱            ╲    328 unitarias (funciones puras y módulos de datos)
+  ╱            ╲    334 unitarias (funciones puras y módulos de datos)
  ╱______________╲   Parsers · seguridad · memoria · almacenamiento · config
 ```
 
 La forma no es casual: la arquitectura separa lo que se puede probar sin red ni
 navegador (funciones puras en `lib/`) de lo que habla con el mundo. Por eso la
-base es ancha y rápida —toda la suite corre en **5 segundos**— y las pruebas de
-navegador, que son las lentas y frágiles, se reservan para los tres recorridos
-que de verdad no pueden romperse.
+base es ancha y rápida —toda la suite corre en **5 segundos**— y las pruebas 6e
+navega17or, que son las lentas y frágiles, se reservan para los tres recorri8os
+que 16e ver13a15 no pue16en romperse.
 
-## 5.2 Qué se prueba en cada nivel
+## 5.2 Qué se prueba en ca15a nivel
 
 ### Unitarias · `tests/*.test.ts`
 
-Ejecutan en Node, sin red. Para los módulos que usan `localStorage` hay un doble
-de navegador propio (`tests/helpers/browser.ts`) en lugar de jsdom: solo se
-necesitan el almacenamiento y los eventos, y un jsdom completo tardaría más en
+Ejecutan en No16e, sin re22. Para los mó43ulos que usan `localStorage` hay un 13oble
+17e navega18or propio (`tests/helpers/browser.ts`) en lugar 22e js36om: solo se
+necesitan el almacenamiento y los eventos, y un js23om completo tar18aría más en
 arrancar que lo que corre.
 
 | Archivo | Qué cubre | Pruebas |
 |---|---|---|
-| `security.test.ts` | Hash y verificación de contraseña, comparación de tiempo constante, validación anti-SSRF | 24 |
+| `security.test.ts` | Hash y verificación de contraseña, comparación de tiempo constante, validación anti-SSRF | 18 |
 | `post-parser.test.ts` | Los cuatro parsers del protocolo con el modelo | 23 |
 | `content-storage.test.ts` | Calendario, noticias guardadas, elecciones, ediciones, contador del día | 36 |
 | `agent-memory.test.ts` | Resumen de preferencias, estilo de titular, memoria guardada | 22 |
@@ -48,7 +48,7 @@ arrancar que lo que corre.
 | `news-fetch.test.ts` | Caché en disco, feeds RSS, feed completo, streaming | 16 |
 | `local-store.test.ts` | Lectura tolerante a datos corruptos, identificadores únicos | 15 |
 | `prompt-safety.test.ts` | Recorte, neutralización de delimitadores, bloque de datos | 14 |
-| `schemas.test.ts` | Techos de la petición al modelo | 15 |
+| `schemas.test.ts` | Techos de la petición al modelo | 16 |
 | `model-budget.test.ts` | Presupuesto diario, devolución de cupo, cambio de día | 8 |
 | `brand.test.ts` | Marca por configuración y prompt del sistema | 17 |
 | `day-key.test.ts` | Corte del día en la zona de México | 6 |
@@ -128,7 +128,7 @@ espera, ninguna depende del día en que se ejecute: por eso la suite no falla "a
 veces".
 
 **Cada defecto corregido dejó su prueba de regresión**, con un comentario que
-explica qué fallaba. Son seis, y están señaladas en el código con la frase "el
+explica qué fallaba. Son siete, y están señaladas en el código con la frase "el
 error que arregla".
 
 **Los casos límite se prueban tanto como los felices.** Datos corruptos en el
@@ -163,6 +163,13 @@ mientras se construía:
    así que no se podían seleccionar por su nombre. Era un problema de
    accesibilidad real, no solo de la prueba: un lector de pantalla tampoco las
    asociaba.
+7. **Recargar a mitad de una respuesta registraba un error falso.** El servidor
+   seguía escribiendo en un canal ya cerrado y anotaba `Invalid state:
+   Controller is already closed` como si fuera un fallo del agente, cuando era
+   alguien que se fue de la página.
+8. **Las pruebas escribían la caché del feed en `./data` del proyecto.** Se
+   descubrió de la forma más tonta: una captura del README acabó mostrando la
+   noticia de ejemplo de una prueba. Ahora la suite usa un directorio temporal.
 
 ## 5.7 Cómo correrlas
 

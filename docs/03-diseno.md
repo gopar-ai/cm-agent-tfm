@@ -215,7 +215,7 @@ excepción.
 
 | Métrica | Antes | Ahora |
 |---|---|---|
-| Pruebas automáticas | 0 | 337 unitarias y de integración + 11 en navegador real (×2 perfiles) |
+| Pruebas automáticas | 0 | 374 unitarias y de integración + 10 en navegador real (×2 perfiles) |
 | Cobertura del núcleo | — | 98 % sentencias · 97 % funciones · 99 % líneas · 90 % ramas |
 | Integración continua | No | Lint, tipos, pruebas con cobertura, construcción y recorrido en navegador |
 | Contenedor | No | Dockerfile multietapa, usuario sin privilegios |
