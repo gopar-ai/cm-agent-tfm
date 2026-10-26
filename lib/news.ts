@@ -170,18 +170,61 @@ export async function fetchOgImage(url: string): Promise<string | undefined> {
  * En modo de demostración devuelve un feed de ejemplo: así la demo publicada no
  * depende de la red ni gasta llamadas al modelo.
  */
+/**
+ * Reparte las noticias entre las fuentes, una de cada una por vuelta.
+ *
+ * Sin esto, el feed lo copa el medio que más publica: las diez primeras eran
+ * del mismo sitio, porque todas llevaban la fecha de hoy y el orden lo decidía
+ * quién llegó antes. Alternar deja ver de entrada que hay varias fuentes.
+ */
+export function intercalarPorFuente(items: NewsItem[]): NewsItem[] {
+  const porFuente = new Map<string, NewsItem[]>();
+  for (const item of items) {
+    const cola = porFuente.get(item.source) ?? [];
+    cola.push(item);
+    porFuente.set(item.source, cola);
+  }
+
+  const colas = [...porFuente.values()];
+  const resultado: NewsItem[] = [];
+
+  while (resultado.length < items.length) {
+    for (const cola of colas) {
+      const siguiente = cola.shift();
+      if (siguiente) resultado.push(siguiente);
+    }
+  }
+
+  return resultado;
+}
+
+/** Ordena, quita repetidas, reparte entre fuentes y busca la portada de cada una. */
+async function componerFeed(items: NewsItem[]): Promise<NewsItem[]> {
+  const ordenadas = intercalarPorFuente(sortByDateDesc(dedupeByUrl(items))).slice(0, MAX_ITEMS);
+  return Promise.all(
+    ordenadas.map(async (item) => ({ ...item, image: await fetchOgImage(item.url) }))
+  );
+}
+
 export async function fetchNews(): Promise<NewsItem[]> {
   const { useDemoAgent } = getServerEnv();
-  if (useDemoAgent) return DEMO_NEWS;
+
+  if (useDemoAgent) {
+    // En demostración el feed también trae noticias **reales**: los RSS son
+    // gratuitos y no necesitan clave, así que lo único que se omite es la
+    // búsqueda con el modelo, que es la que cuesta. Si no hay red —o las
+    // fuentes no responden— se cae al feed de ejemplo, para que el panel nunca
+    // aparezca vacío.
+    const reales = await componerFeed(await fetchRssNews().catch(() => [] as NewsItem[]));
+    return reales.length > 0 ? reales : DEMO_NEWS;
+  }
 
   const [rssItems, aiItems] = await Promise.all([
     fetchRssNews().catch(() => [] as NewsItem[]),
     searchNews().catch(() => [] as NewsItem[]),
   ]);
 
-  const top = sortByDateDesc(dedupeByUrl([...rssItems, ...aiItems])).slice(0, MAX_ITEMS);
-
-  return Promise.all(top.map(async (item) => ({ ...item, image: await fetchOgImage(item.url) })));
+  return componerFeed([...rssItems, ...aiItems]);
 }
 
 export { NEWS_MODEL, MAX_ITEMS };

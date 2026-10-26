@@ -154,19 +154,31 @@ describe('fetchRssNews', () => {
 });
 
 describe('fetchNews', () => {
-  it('en modo de demostración devuelve el feed de ejemplo, sin red', async () => {
-    const fetchSpy = vi.fn();
-    vi.stubGlobal('fetch', fetchSpy);
+  it('en demostración trae noticias reales de los RSS, que no cuestan nada', async () => {
+    const xml = '<rss><channel><item><title>Noticia real</title><link>https://medio.example/real</link></item></channel></rss>';
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, text: async () => xml }));
     vi.resetModules();
 
     const { resetServerEnvCache } = await import('@/lib/env');
     resetServerEnvCache();
 
     const { fetchNews } = await import('@/lib/news');
-    const { DEMO_NEWS } = await import('@/lib/news-demo');
 
-    await expect(fetchNews()).resolves.toEqual(DEMO_NEWS);
-    expect(fetchSpy).not.toHaveBeenCalled();
+    const items = await fetchNews();
+    expect(items[0].title).toBe('Noticia real');
+  });
+
+  it('si las fuentes no responden, cae al feed de ejemplo y el panel no queda vacío', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('sin red')));
+    vi.resetModules();
+
+    const { resetServerEnvCache } = await import('@/lib/env');
+    resetServerEnvCache();
+
+    const { fetchNews: traer } = await import('@/lib/news');
+    const { DEMO_NEWS: ejemplo } = await import('@/lib/news-demo');
+
+    await expect(traer()).resolves.toEqual(ejemplo);
   });
 
   it('con clave de API junta feeds y búsqueda, sin repetir noticias', async () => {

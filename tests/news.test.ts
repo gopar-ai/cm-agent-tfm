@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   buildNewsSystemPrompt,
+  intercalarPorFuente,
   dedupeByUrl,
   extractJsonArray,
   fetchOgImage,
@@ -132,6 +133,45 @@ describe('sortByDateDesc', () => {
       { title: 'b', url: 'u2', source: 's', date: '' },
     ];
     expect(sortByDateDesc(items).map((n) => n.title)).toEqual(['a', 'b']);
+  });
+});
+
+describe('intercalarPorFuente', () => {
+  it('alterna entre fuentes en vez de dejar que una copie el feed', () => {
+    const items = [
+      { title: 'a1', url: 'u1', source: 'A', date: '' },
+      { title: 'a2', url: 'u2', source: 'A', date: '' },
+      { title: 'a3', url: 'u3', source: 'A', date: '' },
+      { title: 'b1', url: 'u4', source: 'B', date: '' },
+      { title: 'c1', url: 'u5', source: 'C', date: '' },
+    ];
+
+    expect(intercalarPorFuente(items).map((i) => i.title)).toEqual(['a1', 'b1', 'c1', 'a2', 'a3']);
+  });
+
+  it('no pierde ni duplica ninguna noticia', () => {
+    const items = Array.from({ length: 12 }, (_, i) => ({
+      title: `titular ${i}`,
+      url: `https://medio.example/${i}`,
+      source: i % 3 === 0 ? 'A' : 'B',
+      date: '',
+    }));
+
+    const mezcladas = intercalarPorFuente(items);
+    expect(mezcladas).toHaveLength(items.length);
+    expect(new Set(mezcladas.map((i) => i.url)).size).toBe(items.length);
+  });
+
+  it('con una sola fuente devuelve el mismo orden', () => {
+    const items = [
+      { title: 'a', url: 'u1', source: 'A', date: '' },
+      { title: 'b', url: 'u2', source: 'A', date: '' },
+    ];
+    expect(intercalarPorFuente(items).map((i) => i.title)).toEqual(['a', 'b']);
+  });
+
+  it('con la lista vacía no se queda dando vueltas', () => {
+    expect(intercalarPorFuente([])).toEqual([]);
   });
 });
 

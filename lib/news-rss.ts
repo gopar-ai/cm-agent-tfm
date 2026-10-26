@@ -10,7 +10,7 @@ import { isSafePublicHttpUrl } from './security';
  * extraer cuatro campos. El límite está asumido y anotado en docs/03-diseno.md.
  */
 
-const FEED_TIMEOUT_MS = 6000;
+const FEED_TIMEOUT_MS = Number(process.env.NEWS_FEED_TIMEOUT_MS) || 10000;
 const ITEMS_PER_FEED = 10;
 
 export function decodeEntities(text: string): string {
