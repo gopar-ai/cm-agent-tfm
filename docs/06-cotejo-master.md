@@ -13,7 +13,7 @@ Qué pide el programa, dónde está en este proyecto y cómo comprobarlo.
 | A3 | README completo: descripción, stack, instalación, estructura, funcionalidades, usuario de prueba | [README](../README.md) | ✅ |
 | A4 | Repositorio público en GitHub | <https://github.com/gopar-ai/cm-agent-tfm> — copia limpia, sin historial previo y sin datos de cliente | ✅ |
 | A5 | Despliegue funcionando, con URL | <https://cm-agent-tfm-production.up.railway.app> — Railway, en modo de demostración. Receta en [08](08-despliegue.md) | ✅ |
-| A6 | Slides de presentación | [`slides.md`](slides.md) | ✅ |
+| A6 | Slides de presentación | [`slides.pdf`](slides.pdf) (15 diapositivas), con su fuente en [`slides.md`](slides.md) y versión [`slides.html`](slides.html). En el directorio del código, como pide la base | ✅ |
 | A7 | Vídeo con captura de pantalla | Guion en [`guion-video.md`](guion-video.md) | 🟦 grabación |
 | A8 | Usuario y contraseña de prueba | `demo` / `demo1234`, también visibles en la propia pantalla de acceso | ✅ |
 

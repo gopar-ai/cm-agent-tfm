@@ -18,7 +18,8 @@
     "test:e2e": "playwright test",
     "verify": "npm run lint && npm run typecheck && npm run test:cov",
     "start:e2e": "next build && next start",
-    "hash-password": "node scripts/hash-password.mjs"
+    "hash-password": "node scripts/hash-password.mjs",
+    "slides": "node scripts/slides.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.105.0",

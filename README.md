@@ -21,7 +21,7 @@ que nadie configure nada.
 | **Usuario de prueba** | `demo` |
 | **Contraseña de prueba** | `demo1234` |
 | **Repositorio** | <https://github.com/gopar-ai/cm-agent-tfm> |
-| **Presentación** | [`docs/slides.md`](docs/slides.md) |
+| **Presentación** | **<https://github.com/gopar-ai/cm-agent-tfm/blob/main/docs/slides.pdf>** · también en [`docs/slides.md`](docs/slides.md) y [`docs/slides.html`](docs/slides.html) |
 | **Vídeo** | _(pendiente de publicar)_ |
 | **Documentación técnica** | [`docs/`](docs/) — especificación, requisitos, diseño, seguridad, pruebas |
 
@@ -207,6 +207,7 @@ La receta completa de despliegue, con todas las variables, está en
 | `npm run test:e2e` | Recorrido en navegador real, en escritorio y celular |
 | `npm run lint` / `npm run typecheck` | Análisis estático y tipos |
 | `npm run verify` | Lint + tipos + pruebas con cobertura |
+| `npm run slides` | Regenera la presentación (HTML y PDF) desde `docs/slides.md` |
 | `npm run hash-password -- "tu contraseña"` | Genera el valor de `APP_PASSWORD_HASH` |
 
 ## Estructura
