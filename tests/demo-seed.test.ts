@@ -5,6 +5,7 @@ import {
   MARCA_SIEMBRA,
   PLANTILLAS,
   sembrarContenidoDemo,
+  VERSION_SIEMBRA,
 } from '@/lib/demo-seed';
 import { readJson, writeJson } from '@/lib/local-store';
 import { installBrowser } from './helpers/browser';
@@ -82,13 +83,13 @@ describe('sembrarContenidoDemo', () => {
     expect(publicados.every((p) => p.status === 'publicado')).toBe(true);
   });
 
-  it('actualiza los ejemplos cuando cambia la versión del contenido', () => {
-    // Quien ya había visitado la demo se quedaba con los ejemplos del sector
-    // anterior para siempre: la siembra solo miraba si ya se había hecho.
+  it('actualiza los ejemplos cuando sube la versión del contenido', () => {
+    // Sin esto, quien ya hubiera visitado la demo se quedaría con las
+    // plantillas viejas para siempre: la siembra solo miraría si ya se hizo.
     writeJson(CALENDAR_KEY, [
       {
-        id: 'viejo-1',
-        titular: 'Tres rutas concentran la mitad del robo de carga',
+        id: 'sembrado-antes',
+        titular: 'Un ejemplo de la versión anterior',
         cuerpo: 'texto',
         hashtags: '',
         promptImagen: '',
@@ -96,13 +97,17 @@ describe('sembrarContenidoDemo', () => {
         status: 'publicado',
       },
     ]);
-    writeJson(MARCA_SIEMBRA, '2026-10-25T00:00:00.000Z'); // marca de la versión 1
+    writeJson(MARCA_SIEMBRA, {
+      version: VERSION_SIEMBRA - 1,
+      fecha: '2026-10-25T00:00:00.000Z',
+      ids: ['sembrado-antes'],
+    });
 
     expect(sembrarContenidoDemo(true, HOY)).toBe('actualizado');
 
     const calendario = readJson<CalendarPost[]>(CALENDAR_KEY, []);
     expect(calendario).toHaveLength(PLANTILLAS.length);
-    expect(calendario.some((p) => p.titular.includes('robo de carga'))).toBe(false);
+    expect(calendario.some((p) => p.id === 'sembrado-antes')).toBe(false);
   });
 
   it('no vuelve a sembrar en la siguiente visita', () => {

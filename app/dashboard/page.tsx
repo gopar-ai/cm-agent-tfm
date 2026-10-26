@@ -124,7 +124,7 @@ function DashboardContent() {
     if (lastContent === KICKOFF_MESSAGE) {
       return shuffleArray([
         'Buscando noticias y preparando propuestas',
-        'Revisando fuentes de logística',
+        'Revisando fuentes del sector',
         'Filtrando por relevancia y fecha',
         'Armando la lista final',
         'Comparando ángulos posibles',

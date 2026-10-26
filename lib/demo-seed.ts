@@ -22,35 +22,17 @@ const MARCA = 'cm_demo_sembrado';
 /**
  * Versión del contenido de ejemplo.
  *
- * Sube cuando cambian las publicaciones sembradas. Sin esto, quien ya había
- * visitado la demo se quedaba con los ejemplos del sector anterior para
- * siempre, porque la siembra solo miraba si ya se había hecho alguna vez.
+ * Al subirla, la siguiente visita reemplaza los ejemplos que sembró la versión
+ * anterior. Sin esto, quien ya hubiera entrado se quedaría con las plantillas
+ * viejas para siempre, porque la siembra solo miraría si ya se hizo una vez.
  */
-const VERSION = 2;
+const VERSION = 1;
 
 type Marca = { version: number; fecha: string; ids: string[] };
 
 function leerMarca(): Marca | null {
-  const guardada = readJson<Marca | string | null>(MARCA, null);
-  if (!guardada) return null;
-  // Las primeras versiones guardaban solo la fecha, en texto.
-  if (typeof guardada === 'string') return { version: 1, fecha: guardada, ids: [] };
-  return guardada;
+  return readJson<Marca | null>(MARCA, null);
 }
-
-/**
- * Títulos que sembró la primera versión, cuando la marca de ejemplo era de
- * logística. Aquella marca no guardaba identificadores, así que es la única
- * forma de reconocer su contenido y poder sustituirlo.
- */
-const TITULARES_V1 = [
-  'Tres rutas concentran la mitad del robo de carga',
-  'La hora que no aparece en ningún presupuesto',
-  'Custodia armada o sin arma: cómo se decide de verdad',
-  'Lo que cuesta una hora fuera de temperatura',
-  'El costo oculto de no tener trazabilidad en ruta',
-  'Nuevas reglas de operación para el autotransporte',
-];
 
 function escribirMarca(ids: string[]): void {
   writeJson(MARCA, { version: VERSION, fecha: new Date().toISOString(), ids });
@@ -175,11 +157,7 @@ export function sembrarContenidoDemo(activo: boolean, hoy: Date = new Date()): R
     // versión anterior de la demo: lo que haya hecho el visitante no se toca,
     // ni siquiera para actualizar los ejemplos.
     const sembradoAntes = new Set(marca?.ids ?? []);
-    const titularesV1 = new Set(TITULARES_V1);
-
-    const todoEsNuestro = calendario.every(
-      (post) => sembradoAntes.has(post.id) || titularesV1.has(post.titular)
-    );
+    const todoEsNuestro = calendario.every((post) => sembradoAntes.has(post.id));
 
     if (!todoEsNuestro) {
       escribirMarca(calendario.map((post) => post.id));

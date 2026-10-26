@@ -186,7 +186,9 @@ function SidebarContent() {
                   className="flex-1 truncate"
                   title={displayChatName(chat)}
                 >
-                  {chat.pinned ? '📌 ' : ''}
+                  {chat.pinned && (
+                    <Icono nombre="alfiler" className="inline w-3 h-3 mr-1 -mt-0.5" />
+                  )}
                   {displayChatName(chat)}
                 </Link>
               )}
@@ -195,23 +197,26 @@ function SidebarContent() {
                   <button
                     onClick={() => togglePinChat(chat.id)}
                     title={chat.pinned ? 'Desfijar' : 'Fijar'}
-                    className="hover:opacity-70"
+                    aria-label={chat.pinned ? 'Desfijar' : 'Fijar'}
+                    className="p-0.5 rounded text-zinc-500 hover:text-white hover:bg-[#242830] transition-colors"
                   >
-                    📌
+                    <Icono nombre="alfiler" className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => setRenamingId(chat.id)}
                     title="Renombrar"
-                    className="hover:opacity-70"
+                    aria-label="Renombrar"
+                    className="p-0.5 rounded text-zinc-500 hover:text-white hover:bg-[#242830] transition-colors"
                   >
-                    ✏️
+                    <Icono nombre="escribir" className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => handleDelete(chat.id, chat.name)}
                     title="Eliminar"
-                    className="hover:opacity-70"
+                    aria-label="Eliminar"
+                    className="p-0.5 rounded text-zinc-500 hover:text-[#f87171] hover:bg-[#242830] transition-colors"
                   >
-                    🗑️
+                    <Icono nombre="papelera" className="w-3.5 h-3.5" />
                   </button>
                 </div>
               )}
