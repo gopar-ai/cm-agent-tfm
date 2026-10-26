@@ -141,7 +141,16 @@ const estilos = `
     position: relative; overflow: hidden; page-break-after: always;
     border-top: 5px solid #0a66c2;
   }
+  /* Separación solo para hojear el HTML en el navegador. Al imprimir estorba:
+     empuja cada diapositiva fuera de su página, la parte en dos y deja una
+     página en blanco por medio. De ahí que el PDF saliera con 31 páginas. */
   .slide + .slide { margin-top: 28px; }
+  @page { size: 1280px 720px; margin: 0; }
+  @media print {
+    body { background: #0f0f0f; }
+    .slide + .slide { margin-top: 0; }
+    .slide:last-child { page-break-after: auto; }
+  }
   h2 { font-size: 46px; font-weight: 800; color: #fff; margin-bottom: 26px; letter-spacing: -0.5px; }
   h3 { font-size: 30px; font-weight: 600; color: #fff; margin: 14px 0 10px; }
   h4 { font-size: 22px; font-weight: 600; color: #bdbdbd; margin: 10px 0 6px; }

@@ -11,10 +11,10 @@ Markdown, o se copian a Google Slides o Canva.
 
 ## 1 · CM Agent
 
-**Un agente de community manager que aprende cómo escribes.**
+**Agente de community manager con IA para LinkedIn.**
 
-De la idea al post publicable en cuatro fases, con la actualidad del sector
-encima de la mesa.
+Propone temas desde la actualidad del sector, genera dos versiones de cada post,
+las lleva a un calendario y aprende en silencio el estilo editorial de la marca.
 
 `demo` / `demo1234` — se puede probar ahora mismo.
 
