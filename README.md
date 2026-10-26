@@ -1,173 +1,158 @@
-# CM Agent
+<h1 align="center">CM Agent</h1>
 
-Agente de community manager con IA para LinkedIn. Acompaña de la idea al post
-publicable en cuatro fases, consulta la actualidad del sector mientras propone, y
-aprende del uso: cada elección del analista orienta las siguientes propuestas sin
-que nadie configure nada.
+<p align="center">
+  <strong>De la noticia de hoy a un post de LinkedIn listo para publicar, en cuatro pasos.</strong><br>
+  Un agente de contenido que se especializa en tu marca y aprende cómo escribes.
+</p>
 
-![Recorrido completo: entrar, elegir tema, ver el ángulo y comparar versiones](docs/screenshots/demo.gif)
+<p align="center">
+  <a href="https://cm-agent-tfm-production.up.railway.app"><img alt="Probar la demo" src="https://img.shields.io/badge/probar%20la%20demo-0a66c2?style=for-the-badge"></a>
+</p>
 
-> Las imágenes de este README se graban contra la demo, con una marca ficticia,
-> y se regeneran con `node scripts/capturas.mjs` y `node scripts/demo-gif.mjs`:
-> así no envejecen y nunca muestran datos de un cliente real.
+<p align="center">
+  <img alt="Pruebas" src="https://img.shields.io/badge/pruebas-406%20✓-2da44e">
+  <img alt="Cobertura" src="https://img.shields.io/badge/cobertura-98%25-2da44e">
+  <a href="https://github.com/gopar-ai/cm-agent-tfm/actions"><img alt="CI" src="https://github.com/gopar-ai/cm-agent-tfm/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="Node" src="https://img.shields.io/badge/node-24-333">
+  <img alt="Licencia" src="https://img.shields.io/badge/licencia-MIT-333">
+</p>
 
----
-
-## Entrega del proyecto final
-
-| | |
-|---|---|
-| **Aplicación publicada** | **<https://cm-agent-tfm-production.up.railway.app>** |
-| **Usuario de prueba** | `demo` |
-| **Contraseña de prueba** | `demo1234` |
-| **Repositorio** | <https://github.com/gopar-ai/cm-agent-tfm> |
-| **Presentación** | **<https://github.com/gopar-ai/cm-agent-tfm/blob/main/docs/slides.pdf>** · también en [`docs/slides.md`](docs/slides.md) y [`docs/slides.html`](docs/slides.html) |
-| **Vídeo** | _(pendiente de publicar)_ |
-| **Documentación técnica** | [`docs/`](docs/) — especificación, requisitos, diseño, seguridad, pruebas |
-
-Las credenciales también aparecen escritas en la propia pantalla de acceso: no
-hace falta volver aquí para entrar.
-
-### Dónde está cada cosa que pide la entrega
-
-| Requisito | Dónde |
-|---|---|
-| a · Descripción general del proyecto | [Qué problema resuelve](#qué-problema-resuelve) y [Cómo funciona](#cómo-funciona) |
-| b · Stack tecnológico | [Stack](#stack) |
-| c · Instalación y ejecución | [Instalación](#instalación) y [Comandos](#comandos) |
-| d · Estructura del proyecto | [Estructura](#estructura) |
-| e · Funcionalidades principales | [Funcionalidades](#funcionalidades) y [Cómo se ve](#cómo-se-ve) |
-| f · Usuario y contraseña de prueba | La tabla de aquí arriba, y la propia pantalla de acceso |
-| Código fuente | Repositorio público, enlazado arriba |
-| Despliegue en funcionamiento | URL de aquí arriba · receta en [docs/08](docs/08-despliegue.md) |
-| Slides | [docs/slides.pdf](docs/slides.pdf), dentro del propio repositorio |
-
-
-La versión publicada corre en **modo de demostración**: el agente responde con un
-guion local en vez de llamar al modelo, así que se puede recorrer el flujo
-completo sin gastar nada y sin configurar nada. El código es el mismo; lo único
-que cambia es de dónde sale la respuesta, y la aplicación lo declara en la
-cabecera `X-Agent-Source`.
+![Recorrido completo: entrar, elegir un tema, ver el ángulo y comparar las dos versiones](docs/screenshots/demo.gif)
 
 ---
 
-## Qué problema resuelve
+## Pruébalo en un minuto
 
-Una empresa B2B con ciclo de venta largo necesita publicar en LinkedIn de forma
-constante, y de eso se encarga una analista de marketing, no un equipo de
-contenido. Siempre se topa con lo mismo: decidir **de qué** publicar cuesta más
-que escribirlo; sin seguir la actualidad del sector el contenido queda
-intemporal; y cada herramienta de IA genérica obliga a volver a explicar a quién
-le hablamos, con qué tono y qué no se dice.
+> **<https://cm-agent-tfm-production.up.railway.app>** · usuario `demo` · contraseña `demo1234`
+>
+> Las credenciales aparecen también en la propia pantalla de acceso.
 
-CM Agent es un agente especializado en una marca, que sabe todo eso de entrada y
-que **registra lo que funciona** para acertar más la próxima vez.
+1. **Entra.** El agente ya está proponiendo cinco temas; no hay que pedírselo.
+2. **Pulsa "Elegir este tema".** Antes de escribir una línea te da el ángulo, el por qué ahora y la emoción objetivo.
+3. **Elige un formato.** Llegan dos versiones con ganchos distintos y tres titulares cada una.
+4. **Abre el calendario.** Ahí se ve el mes con borradores, programados y publicados.
+
+A la derecha, el **feed del sector con noticias reales**: de ahí salen los temas de actualidad.
+
+La versión publicada corre en **modo de demostración**: el agente responde con un guion local en vez de llamar al modelo, así que se recorre entero sin gastar nada. El código es el mismo y la aplicación lo declara en la cabecera `X-Agent-Source`.
+
+---
+
+## Para quién es
+
+Una empresa **B2B de tecnología** —una startup de software, una plataforma, una consultora técnica— que necesita publicar en LinkedIn de forma constante, y donde eso recae en **una sola persona**, no en un equipo de contenido.
+
+Esa persona se topa siempre con lo mismo:
+
+| El problema | Lo que hace CM Agent |
+|---|---|
+| Decidir **de qué** publicar cuesta más que escribirlo | Propone cinco temas nada más abrir, mezclando fondo del sector y actualidad |
+| Sin seguir la actualidad, el contenido queda intemporal | Lee los medios del sector y solo llama "actualidad" a lo publicado hoy o ayer |
+| Cada herramienta de IA genérica pide que le expliques todo otra vez | Conoce la marca: a quién le habla, qué le duele y qué no se dice nunca |
+| Lo que funcionó el mes pasado no queda registrado | Aprende de cada elección y propone más cerca de ese estilo |
+
+La marca es **configuración, no código**: cambiar de empresa —o de sector— es cambiar variables de entorno. La demo usa una empresa ficticia de software B2B llamada Vertia.
+
+---
 
 ## Cómo funciona
 
 ```
-Analista (chat)
-     │
-     ▼
-Claude Sonnet 4.6 · con búsqueda web
-     │
-     ├─► Fase 1 · Temas        5 propuestas: fondo del sector + actualidad con fecha verificada
-     ├─► Fase 2 · Ángulo       gancho, por qué ahora, emoción objetivo
-     ├─► Fase 3 · Versiones    A/B por formato, 3 titulares cada una
-     └─► Fase 4 · Ajustes      sobre la versión elegida, sin empezar de nuevo
-     │
-     ▼
-Panel editable ──► Calendario de contenido
-     │
-     └─► cada elección alimenta la memoria de preferencias ──┐
-                                                            │
-         las siguientes propuestas ya nacen con ese estilo ◄─┘
+      Noticias reales del sector                   Contexto de la marca
+      (RSS + búsqueda web)                    (ICP, tono, temas prohibidos)
+                  │                                        │
+                  └────────────────┬───────────────────────┘
+                                   ▼
+                        Claude Sonnet 4.6
+                                   │
+   ┌───────────────────────────────┼───────────────────────────────┐
+   ▼               ▼               ▼               ▼               ▼
+ 1 Temas       2 Ángulo      3 Versiones A/B   4 Ajustes      Calendario
+ 5 propuestas  gancho,       dos ganchos      sobre lo        borrador →
+ con fuente    por qué       distintos, 3     elegido, sin    programado →
+ y fecha       y emoción     titulares c/u    regenerar       publicado
+   │                               │
+   └── cada elección alimenta la memoria de preferencias ──┐
+                                                           │
+            las siguientes propuestas nacen con ese estilo ◄┘
 ```
 
-En paralelo, un feed de noticias del sector (RSS + búsqueda con Claude Haiku 4.5)
-acompaña al chat para detectar oportunidades.
+---
 
-## Funcionalidades
+## Lo que hace, en detalle
 
-- **Flujo en cuatro fases** — temas, ángulo, versiones A/B, ajustes. El agente no
-  pregunta qué quieres: entrega lo que toca en cada paso.
-- **Cinco formatos con estructura propia** — copy, copy + imagen (con el prompt
-  para generarla), carrusel, documento PDF y guion de video.
-- **Actualidad con fecha verificada** — solo entra como "actualidad" lo publicado
-  hoy o ayer, comparando la fecha de forma literal; el resto se convierte en tema
-  de fondo en vez de forzarse.
-- **Memoria silenciosa** — aprende formato, versión y estilo de titular
-  preferidos, y los aplica sin mencionarlo. A partir de tres elecciones: con
-  menos, el patrón sería ruido.
-- **Feed de noticias del sector** — RSS de medios + búsqueda web, con caché en
-  memoria y en disco para no repetir la búsqueda del día.
+- **Flujo en cuatro fases** — el agente no pregunta qué quieres: entrega lo que toca en cada paso.
+- **Cinco formatos con estructura propia** — copy, copy + imagen (con el prompt para generarla), carrusel, documento y guion de vídeo.
+- **Actualidad verificada** — solo entra como "actualidad" lo publicado hoy o ayer, comparando la fecha de forma literal. Si no hay nada fresco, completa con temas de fondo en vez de colar una noticia vieja.
+- **Memoria silenciosa** — aprende formato, versión y estilo de titular preferidos, y los aplica sin mencionarlo. A partir de tres elecciones: con menos, el patrón sería ruido.
+- **Feed del sector** — RSS de medios reales más búsqueda web, con caché en memoria y en disco para no repetir la búsqueda del día.
 - **Calendario de contenido** — borradores, programados y publicados.
-- **Varias propuestas en paralelo** — nombrables, fijables, ordenadas por última
-  actividad.
-- **Contexto de marca editable** — ICP, tono, temas prioritarios y prohibidos, se
-  editan desde la propia aplicación.
+- **Varias propuestas a la vez** — nombrables, fijables, ordenadas por última actividad.
+- **Contexto de marca editable** — ICP, tono, temas prioritarios y prohibidos, desde la propia aplicación.
 - **Modo de demostración** — el flujo completo funciona sin clave de API.
-- **Acceso con sesión** — contraseña en hash, límite de intentos y cookie que el
-  navegador no puede leer.
-- **Costo acotado** — presupuesto diario de llamadas al modelo, límite por minuto
-  y techo por petición. Al agotarse el presupuesto, el agente sigue atendiendo
-  con el guion de demostración en vez de quedarse muerto.
+- **Costo acotado** — presupuesto diario de llamadas, límite por minuto y techo por petición. Al agotarse el presupuesto el agente **sigue atendiendo** con el guion local, en vez de quedarse muerto.
+
+---
 
 ## Cómo se ve
 
-Las cuatro fases, en orden, tal como las recorre la analista.
+<table>
+<tr>
+<td width="50%"><img alt="El agente propone cinco temas al abrir, con el feed del sector al lado" src="docs/screenshots/2-temas.png"></td>
+<td width="50%"><img alt="Ángulo, por qué ahora y emoción objetivo, con el selector de formato" src="docs/screenshots/3-angulo.png"></td>
+</tr>
+<tr>
+<td><strong>1 · Propone sin que se lo pidas.</strong> Cinco temas: unos de fondo, otros de actualidad con medio, fecha y enlace.</td>
+<td><strong>2 · El ángulo, antes de escribir.</strong> Corregir el rumbo aquí es barato; después de leer un post entero, no.</td>
+</tr>
+<tr>
+<td><img alt="Comparación de la versión A y la versión B con sus titulares" src="docs/screenshots/4-versiones.png"></td>
+<td><img alt="Calendario con borradores, programados y publicados" src="docs/screenshots/5-calendario.png"></td>
+</tr>
+<tr>
+<td><strong>3 · Dos versiones para comparar.</strong> Ganchos distintos y tres titulares cada una. Elegir es la interfaz.</td>
+<td><strong>4 · El mes, de un vistazo.</strong> Borrador, programado y publicado, con el contenido ya escrito.</td>
+</tr>
+</table>
 
-### 1 · Entrar
+---
 
-![Pantalla de acceso con las credenciales de prueba a la vista](docs/screenshots/1-acceso.png)
+## Calidad
 
-La demo publicada muestra el usuario de prueba debajo del formulario: quien
-llega a evaluarla no tiene que buscar nada.
+Este proyecto partía de una aplicación que **ya funcionaba en producción** pero no tenía ninguna prueba, ni integración continua, ni contenedor, ni validación de configuración, ni cabeceras de seguridad. El trabajo fue llevarla al punto en que se puede sostener, auditar y entregar a otra persona.
 
-### 2 · El agente propone, sin que nadie se lo pida
-
-![Lista de cinco temas con el feed del sector al lado](docs/screenshots/2-temas.png)
-
-Cinco temas al abrir una propuesta. Los de **actualidad** llevan medio, fecha y
-enlace; los de **fondo** son los asuntos que siempre funcionan en el sector. A
-la derecha, el feed del sector, para detectar oportunidades sin salir de la
-herramienta.
-
-### 3 · El ángulo, antes de escribir una línea
-
-![Ángulo, por qué ahora y emoción objetivo, con el selector de formato](docs/screenshots/3-angulo.png)
-
-Tres líneas —ángulo, por qué ahora, emoción objetivo— y los cinco formatos.
-Corregir el rumbo aquí es barato; hacerlo después de leer un post entero, no.
-
-### 4 · Dos versiones para comparar
-
-![Comparación de la versión A y la versión B, con sus titulares](docs/screenshots/4-versiones.png)
-
-Ganchos realmente distintos, tres titulares cada una, y la estructura propia del
-formato elegido. **Elegir es la interfaz:** cada elección alimenta la memoria de
-preferencias.
-
-### Y lo que sostiene el trabajo diario
-
-| Calendario de contenido | Contexto de marca editable |
+| | |
 |---|---|
-| ![Calendario con borradores, programados y publicados](docs/screenshots/5-calendario.png) | ![Pantalla de configuración del contexto](docs/screenshots/6-contexto.png) |
-| Borradores, programados y publicados | ICP, tono y temas prohibidos, sin tocar el código |
+| **Pruebas** | 406 unitarias y de integración (5 s) · 11 recorridos en navegador real × 2 perfiles |
+| **Cobertura** | 98 % sentencias · 97 % funciones · 99 % líneas · 90 % ramas, con umbrales que hacen fallar la suite |
+| **Seguridad** | Auditoría propia con **ocho hallazgos corregidos**; OWASP Top 10, API Security y GenAI LLM recorridos uno a uno |
+| **Integración continua** | Lint · tipos · pruebas con cobertura · construcción · navegador · imagen Docker levantada y comprobada |
+| **Defectos encontrados** | Once, cada uno con su prueba de regresión y su explicación en el código |
+
+Dos que merecen mención, porque funcionaban y nadie los habría visto:
+
+- **Una caché de preferencias indexada por el número de elecciones.** Dos personas con tres elecciones cada una recibían las preferencias de la otra dentro de su prompt. En una demo pública, eso es una fuga de datos entre sesiones.
+- **Un SSRF al pedir la portada de las noticias.** El servidor pedía URLs propuestas por el modelo sin mirarlas; bastaba una que apuntara al servicio de metadatos de la nube.
+
+El detalle está en [docs/04-seguridad.md](docs/04-seguridad.md) y [docs/05-pruebas.md](docs/05-pruebas.md).
+
+---
 
 ## Stack
 
 | | |
 |---|---|
-| **Lenguaje** | TypeScript (modo estricto) |
+| **Lenguaje** | TypeScript, modo estricto |
 | **Framework** | Next.js 16 · App Router · React 19 |
 | **Estilos** | Tailwind CSS 4 |
 | **IA** | Claude Sonnet 4.6 (agente) y Claude Haiku 4.5 (feed), con búsqueda web nativa |
 | **Validación** | Zod, en la configuración y en la entrada de la API |
 | **Sesión** | JWT en cookie `httpOnly`; contraseña en hash scrypt |
-| **Pruebas** | Vitest (383) + Playwright (10 × 2 perfiles) |
+| **Pruebas** | Vitest · Playwright |
 | **Entorno** | Node.js 24 · Docker multietapa · GitHub Actions · Railway |
-| **Persistencia** | `localStorage` del navegador (decisión de diseño, no carencia: [docs/03](docs/03-diseno.md)) |
+| **Persistencia** | `localStorage` del navegador — decisión de diseño, no carencia ([docs/03](docs/03-diseno.md)) |
+
+---
 
 ## Instalación
 
@@ -182,13 +167,10 @@ npm run dev
 
 Abrir <http://localhost:3000> y entrar con **`demo` / `demo1234`**.
 
-No hace falta configurar nada ni tener clave de API: fuera de producción la
-aplicación rellena credenciales de desarrollo y el agente responde con su guion
-de demostración. Se recorre el flujo completo tal cual.
+No hace falta configurar nada ni tener clave de API: fuera de producción la aplicación rellena credenciales de desarrollo y el agente responde con su guion de demostración. Se recorre el flujo completo tal cual.
 
-### Con el agente real
-
-Crear `.env.local` con la clave de Anthropic:
+<details>
+<summary><strong>Con el agente real</strong></summary>
 
 ```bash
 cp .env.example .env.local
@@ -196,7 +178,10 @@ cp .env.example .env.local
 npm run dev
 ```
 
-### Con Docker
+</details>
+
+<details>
+<summary><strong>Con Docker</strong></summary>
 
 ```bash
 docker build -t cm-agent .
@@ -208,31 +193,35 @@ docker run -p 3000:3000 \
   cm-agent
 ```
 
-La receta completa de despliegue, con todas las variables, está en
-[docs/08-despliegue.md](docs/08-despliegue.md).
+La receta completa, con todas las variables, en [docs/08-despliegue.md](docs/08-despliegue.md).
 
-## Comandos
+</details>
+
+<details>
+<summary><strong>Comandos</strong></summary>
 
 | Comando | Qué hace |
 |---|---|
 | `npm run dev` | Servidor de desarrollo |
-| `npm run build` / `npm start` | Construcción y arranque de producción |
-| `npm test` | 383 pruebas unitarias y de integración (~5 s) |
-| `npm run test:cov` | Las mismas, con cobertura y umbrales que hacen fallar |
-| `npm run test:e2e` | Recorrido en navegador real, en escritorio y celular |
-| `npm run lint` / `npm run typecheck` | Análisis estático y tipos |
+| `npm run build` · `npm start` | Construcción y arranque de producción |
+| `npm test` | 406 pruebas unitarias y de integración (~5 s) |
+| `npm run test:cov` | Las mismas, con cobertura y umbrales |
+| `npm run test:e2e` | Recorrido en navegador real, escritorio y celular |
 | `npm run verify` | Lint + tipos + pruebas con cobertura |
-| `npm run slides` | Regenera la presentación (HTML y PDF) desde `docs/slides.md` |
+| `npm run slides` | Regenera la presentación (HTML y PDF) |
+| `npm run portadas` | Regenera las portadas del feed de ejemplo |
 | `npm run hash-password -- "tu contraseña"` | Genera el valor de `APP_PASSWORD_HASH` |
 
-## Estructura
+</details>
+
+<details>
+<summary><strong>Estructura del proyecto</strong></summary>
 
 ```
-cm-agent/
+cm-agent-tfm/
 ├── app/                        Next.js App Router
 │   ├── api/
 │   │   ├── auth/login/         acceso: límite por IP, hash, cookie firmada
-│   │   ├── auth/logout/
 │   │   ├── chat/               conversación: validación, presupuesto, modelo o guion
 │   │   ├── cron/refresh-news/  refresco programado del feed
 │   │   ├── health/             estado del servicio
@@ -251,62 +240,75 @@ cm-agent/
 │   ├── brand.ts                identidad de la marca, por configuración
 │   ├── calendar-storage.ts     calendario, borradores y publicados
 │   ├── chat-storage.ts         conversaciones guardadas
-│   ├── day-key.ts              corte del día en la zona de la operación
 │   ├── demo-agent.ts           guion de demostración, sin API
+│   ├── demo-seed.ts            contenido de ejemplo del calendario
 │   ├── env.ts                  configuración validada al arrancar
-│   ├── local-store.ts          acceso al almacenamiento del navegador
 │   ├── model-budget.ts         presupuesto diario de llamadas al modelo
-│   ├── news*.ts                feed: fuentes, RSS, búsqueda, caché
+│   ├── news*.ts                feed: fuentes, RSS, búsqueda, caché, relevancia
 │   ├── post-parser.ts          lectura de los bloques que devuelve el modelo
 │   ├── prompt-safety.ts        texto no confiable que entra al prompt
 │   ├── rate-limit.ts           límite de peticiones por clave
 │   ├── schemas.ts              techos de la entrada de la API
 │   └── security.ts             hash, comparación segura, validación de URL
 │
-├── tests/                      383 pruebas unitarias y de integración
-│   ├── api/                    rutas con dobles
-│   └── helpers/                doble de navegador y arranque común
+├── tests/                      406 pruebas unitarias y de integración
 ├── e2e/                        recorrido en navegador real
-├── docs/                       documentación técnica (ver abajo)
-├── scripts/
-│   ├── hash-password.mjs       generador del hash de contraseña
-│   ├── capturas.mjs            capturas del README, desde la demo
-│   └── demo-gif.mjs            animación del README, desde la demo
+├── docs/                       documentación técnica y presentación
+├── scripts/                    capturas, portadas, slides, hash de contraseña
 ├── Dockerfile                  imagen multietapa, usuario sin privilegios
 ├── proxy.ts                    middleware de sesión
 └── .github/workflows/ci.yml    integración continua
 ```
 
+</details>
+
+---
+
 ## Documentación técnica
-
-| Documento | Qué contiene |
-|---|---|
-| [01 · Especificación](docs/01-especificacion.md) | Problema, actores, 15 historias de usuario con criterios de aceptación y prioridad, ambigüedades resueltas |
-| [02 · Requisitos](docs/02-requisitos.md) | 23 requisitos no funcionales con umbral medible y cómo se comprueban |
-| [03 · Diseño](docs/03-diseno.md) | Arquitectura, siete decisiones con sus alternativas y su costo, riesgos, deuda técnica reconocida |
-| [04 · Seguridad](docs/04-seguridad.md) | Auditoría propia: ocho hallazgos corregidos, recorrido de OWASP Top 10 y OWASP LLM, riesgo residual |
-| [05 · Pruebas](docs/05-pruebas.md) | Estrategia, reparto por niveles, trazabilidad historia-prueba, cobertura y los defectos que encontraron |
-| [06 · Cotejo](docs/06-cotejo-master.md) | Qué pide el máster y dónde está cada cosa |
-| [07 · Trabajo con IA](docs/07-trabajo-con-ia.md) | Modelo por tarea, control de costos, y cómo se usó la IA para construirlo |
-| [08 · Despliegue](docs/08-despliegue.md) | Variables, Docker, Railway, qué vigilar |
-
-## Calidad
 
 | | |
 |---|---|
-| **Pruebas** | 383 unitarias y de integración · 10 × 2 perfiles = 20 en navegador real |
-| **Cobertura** | 98 % sentencias · 97 % funciones · 99 % líneas · 90 % ramas |
-| **Umbrales** | La suite falla si la cobertura baja de 85/90/85/80 |
-| **Análisis estático** | 0 errores |
-| **Integración continua** | Lint · tipos · pruebas · construcción · navegador · contenedor |
+| [01 · Especificación](docs/01-especificacion.md) | Problema, actores, 15 historias con criterios de aceptación y prioridad |
+| [02 · Requisitos](docs/02-requisitos.md) | 23 requisitos no funcionales con umbral medible |
+| [03 · Diseño](docs/03-diseno.md) | Arquitectura, siete decisiones con su alternativa y su costo, riesgos, deuda reconocida |
+| [04 · Seguridad](docs/04-seguridad.md) | Auditoría propia, OWASP Top 10 + API + LLM, riesgo residual |
+| [05 · Pruebas](docs/05-pruebas.md) | Estrategia, trazabilidad historia–prueba, y los defectos que encontraron |
+| [06 · Cotejo](docs/06-cotejo-master.md) | Qué pide el máster y dónde está cada cosa |
+| [07 · Trabajo con IA](docs/07-trabajo-con-ia.md) | Quién decidió qué, modelo por tarea y control de costos |
+| [08 · Despliegue](docs/08-despliegue.md) | Variables, Docker, Railway, qué vigilar |
 
-El proyecto partía de una aplicación que ya funcionaba en producción pero no
-tenía ninguna prueba, ni integración continua, ni contenedor, ni validación de
-configuración, ni cabeceras de seguridad. Lo que se hizo fue llevarla al punto en
-que se puede sostener y auditar: ocho hallazgos de seguridad corregidos y once
-defectos de comportamiento que las pruebas destaparon, cada uno con su prueba de
-regresión. El detalle está en [docs/04](docs/04-seguridad.md) y
-[docs/05](docs/05-pruebas.md).
+---
+
+## Entrega del proyecto final
+
+| | |
+|---|---|
+| **Aplicación publicada** | <https://cm-agent-tfm-production.up.railway.app> |
+| **Usuario / contraseña de prueba** | `demo` / `demo1234` |
+| **Repositorio** | <https://github.com/gopar-ai/cm-agent-tfm> |
+| **Presentación** | [`docs/slides.pdf`](docs/slides.pdf) · 16 diapositivas |
+| **Vídeo** | _(pendiente de publicar)_ |
+
+<details>
+<summary><strong>Dónde está cada cosa que pide la entrega</strong></summary>
+
+| Requisito | Dónde |
+|---|---|
+| a · Descripción general del proyecto | [Para quién es](#para-quién-es) y [Cómo funciona](#cómo-funciona) |
+| b · Stack tecnológico | [Stack](#stack) |
+| c · Instalación y ejecución | [Instalación](#instalación) y el desplegable de comandos |
+| d · Estructura del proyecto | El desplegable de estructura |
+| e · Funcionalidades principales | [Lo que hace, en detalle](#lo-que-hace-en-detalle) y [Cómo se ve](#cómo-se-ve) |
+| f · Usuario y contraseña de prueba | La tabla de aquí arriba, y la propia pantalla de acceso |
+| Código fuente | Repositorio público, enlazado arriba |
+| Despliegue en funcionamiento | URL de aquí arriba · receta en [docs/08](docs/08-despliegue.md) |
+| Slides | [`docs/slides.pdf`](docs/slides.pdf), dentro del repositorio |
+
+</details>
+
+> Las imágenes de este README se graban contra la demo, con una marca ficticia, y se regeneran con `node scripts/capturas.mjs` y `node scripts/demo-gif.mjs`: así no envejecen y nunca muestran datos de un cliente real.
+
+---
 
 ## Licencia
 
