@@ -28,6 +28,21 @@ que nadie configure nada.
 Las credenciales también aparecen escritas en la propia pantalla de acceso: no
 hace falta volver aquí para entrar.
 
+### Dónde está cada cosa que pide la entrega
+
+| Requisito | Dónde |
+|---|---|
+| a · Descripción general del proyecto | [Qué problema resuelve](#qué-problema-resuelve) y [Cómo funciona](#cómo-funciona) |
+| b · Stack tecnológico | [Stack](#stack) |
+| c · Instalación y ejecución | [Instalación](#instalación) y [Comandos](#comandos) |
+| d · Estructura del proyecto | [Estructura](#estructura) |
+| e · Funcionalidades principales | [Funcionalidades](#funcionalidades) y [Cómo se ve](#cómo-se-ve) |
+| f · Usuario y contraseña de prueba | La tabla de aquí arriba, y la propia pantalla de acceso |
+| Código fuente | Repositorio público, enlazado arriba |
+| Despliegue en funcionamiento | URL de aquí arriba · receta en [docs/08](docs/08-despliegue.md) |
+| Slides | [docs/slides.pdf](docs/slides.pdf), dentro del propio repositorio |
+
+
 La versión publicada corre en **modo de demostración**: el agente responde con un
 guion local en vez de llamar al modelo, así que se puede recorrer el flujo
 completo sin gastar nada y sin configurar nada. El código es el mismo; lo único
