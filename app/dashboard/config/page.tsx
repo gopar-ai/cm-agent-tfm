@@ -28,7 +28,7 @@ export default function ConfigPage() {
       <div className="px-6 py-3 border-b border-zinc-900 shrink-0 flex items-center justify-between gap-3">
         <button
           onClick={handleReset}
-          className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-1.5 rounded transition-colors"
+          className="text-xs bg-[#1d2126] hover:bg-[#262b31] text-[#c9ced4] px-3 py-1.5 rounded transition-colors"
         >
           Restaurar default
         </button>
@@ -37,7 +37,7 @@ export default function ConfigPage() {
           {message && <span className="text-xs text-green-400">{message}</span>}
           <button
             onClick={handleSave}
-            className="text-xs bg-[#6366F1] hover:bg-indigo-500 text-white px-3 py-1.5 rounded transition-colors font-medium"
+            className="text-xs btn-acento text-white px-3 py-1.5 rounded transition-colors font-medium"
           >
             Guardar cambios
           </button>
@@ -48,7 +48,7 @@ export default function ConfigPage() {
         value={content}
         onChange={(e) => setContent(e.target.value)}
         spellCheck={false}
-        className="flex-1 w-full bg-zinc-950 text-zinc-100 text-sm font-mono leading-relaxed p-6 resize-none focus:outline-none"
+        className="flex-1 w-full bg-zinc-950 text-[#e8eaed] text-sm font-mono leading-relaxed p-6 resize-none focus:outline-none"
       />
     </div>
   );

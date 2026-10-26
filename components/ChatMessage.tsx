@@ -33,7 +33,7 @@ export default function ChatMessage({
   if (isUser) {
     return (
       <div className="flex justify-end mb-4">
-        <div className="bg-zinc-800 text-white rounded-xl rounded-tr-sm px-4 py-3 max-w-[80%] text-sm leading-relaxed whitespace-pre-wrap">
+        <div className="bg-[#1d2126] text-white rounded-xl rounded-tr-sm px-4 py-3 max-w-[80%] text-sm leading-relaxed whitespace-pre-wrap">
           {content}
         </div>
       </div>
@@ -88,7 +88,7 @@ export default function ChatMessage({
 
   return (
     <div className="flex justify-start mb-4">
-      <div className="bg-zinc-900 border border-zinc-800 text-zinc-200 rounded-xl rounded-tl-sm px-4 py-3 max-w-[85%] text-sm leading-relaxed whitespace-pre-wrap">
+      <div className="bg-[#171a1e] border border-[#272c32] text-zinc-200 rounded-xl rounded-tl-sm px-4 py-3 max-w-[85%] text-sm leading-relaxed whitespace-pre-wrap">
         {content}
       </div>
     </div>

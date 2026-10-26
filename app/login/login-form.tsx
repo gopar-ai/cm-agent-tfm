@@ -33,12 +33,12 @@ export default function LoginForm({ demoHint }: { demoHint?: string }) {
   }
 
   return (
-    <main className="min-h-screen bg-[#0f0f0f] flex items-center justify-center px-4">
+    <main className="min-h-screen bg-[#121417] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         {/* Logo / branding */}
         <div className="mb-10 text-center">
           <div className="inline-flex items-center gap-2 mb-2">
-            <span className="text-[#6366F1] text-3xl font-black tracking-tight">CM</span>
+            <span className="text-[#0a66c2] text-3xl font-black tracking-tight">CM</span>
             <span className="text-white text-3xl font-light tracking-tight">Agent</span>
           </div>
           <p className="text-zinc-500 text-sm">Agente de contenido</p>
@@ -58,7 +58,7 @@ export default function LoginForm({ demoHint }: { demoHint?: string }) {
               onChange={(e) => setUsername(e.target.value)}
               required
               autoComplete="username"
-              className="w-full bg-zinc-900 border border-zinc-800 rounded text-white px-4 py-3 text-sm focus:outline-none focus:border-[#6366F1] transition-colors"
+              className="w-full panel rounded text-white px-4 py-3 text-sm focus:outline-none focus:border-[#0a66c2] transition-colors"
             />
           </div>
 
@@ -74,18 +74,18 @@ export default function LoginForm({ demoHint }: { demoHint?: string }) {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-              className="w-full bg-zinc-900 border border-zinc-800 rounded text-white px-4 py-3 text-sm focus:outline-none focus:border-[#6366F1] transition-colors"
+              className="w-full panel rounded text-white px-4 py-3 text-sm focus:outline-none focus:border-[#0a66c2] transition-colors"
             />
           </div>
 
           {error && (
-            <p className="text-[#6366F1] text-sm">{error}</p>
+            <p className="text-[#0a66c2] text-sm">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#6366F1] hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-3 rounded transition-colors text-sm tracking-wide"
+            className="w-full btn-acento disabled:opacity-50 text-white font-semibold py-3 rounded transition-colors text-sm tracking-wide"
           >
             {loading ? 'Ingresando…' : 'Ingresar'}
           </button>
@@ -94,7 +94,7 @@ export default function LoginForm({ demoHint }: { demoHint?: string }) {
         {demoHint && (
           <p
             data-testid="demo-hint"
-            className="mt-6 text-center text-zinc-500 text-xs border border-zinc-800 rounded py-2 px-3"
+            className="mt-6 text-center text-zinc-500 text-xs border border-[#272c32] rounded py-2 px-3"
           >
             {demoHint}
           </p>

@@ -39,20 +39,20 @@ export default function LoadingBubble({ labels }: Props) {
 
   return (
     <div className="flex justify-start mb-4">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl rounded-tl-sm px-4 py-3 max-w-[85%] text-sm flex items-center gap-1.5">
+      <div className="bg-[#171a1e] border border-[#272c32] rounded-xl rounded-tl-sm px-4 py-3 max-w-[85%] text-sm flex items-center gap-1.5">
         <span
           className={`text-white transition-opacity duration-300 ${visible ? 'opacity-100' : 'opacity-0'}`}
         >
           {labels[index]}
         </span>
         <span className="flex items-center gap-0.5">
-          <span className="loading-dot text-[#6366F1] text-base leading-none" style={{ animationDelay: '0ms' }}>
+          <span className="loading-dot text-[#0a66c2] text-base leading-none" style={{ animationDelay: '0ms' }}>
             •
           </span>
-          <span className="loading-dot text-[#6366F1] text-base leading-none" style={{ animationDelay: '200ms' }}>
+          <span className="loading-dot text-[#0a66c2] text-base leading-none" style={{ animationDelay: '200ms' }}>
             •
           </span>
-          <span className="loading-dot text-[#6366F1] text-base leading-none" style={{ animationDelay: '400ms' }}>
+          <span className="loading-dot text-[#0a66c2] text-base leading-none" style={{ animationDelay: '400ms' }}>
             •
           </span>
         </span>

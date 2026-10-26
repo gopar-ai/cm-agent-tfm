@@ -18,7 +18,7 @@ export default function NewsCard({ news, mode, saved, onSave, onRemove, onUseFor
   const showImage = !!news.image && !imgFailed;
 
   return (
-    <div className="bg-[#1a1a1a] border border-zinc-800 rounded-xl overflow-hidden">
+    <div className="panel rounded-xl overflow-hidden">
       {showImage && (
         <img
           src={news.image}
@@ -40,7 +40,7 @@ export default function NewsCard({ news, mode, saved, onSave, onRemove, onUseFor
             href={news.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[11px] bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-1 rounded transition-colors"
+            className="text-[11px] bg-[#1d2126] hover:bg-[#262b31] text-[#c9ced4] px-2 py-1 rounded transition-colors"
           >
             <Icono nombre="enlace" className="w-3 h-3" />Ver noticia
           </a>
@@ -49,14 +49,14 @@ export default function NewsCard({ news, mode, saved, onSave, onRemove, onUseFor
             <button
               onClick={onSave}
               disabled={saved}
-              className="text-[11px] bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 text-zinc-300 px-2 py-1 rounded transition-colors"
+              className="text-[11px] bg-[#1d2126] hover:bg-[#262b31] disabled:opacity-50 text-[#c9ced4] px-2 py-1 rounded transition-colors"
             >
               <Icono nombre="guardar" className="w-3 h-3" />{saved ? 'Guardada' : 'Guardar'}
             </button>
           ) : (
             <button
               onClick={onRemove}
-              className="text-[11px] bg-zinc-800 hover:bg-indigo-900 text-zinc-300 px-2 py-1 rounded transition-colors"
+              className="text-[11px] bg-[#1d2126] hover:bg-indigo-900 text-[#c9ced4] px-2 py-1 rounded transition-colors"
             >
               🗑️ Quitar
             </button>
@@ -64,7 +64,7 @@ export default function NewsCard({ news, mode, saved, onSave, onRemove, onUseFor
 
           <button
             onClick={onUseForPost}
-            className="text-[11px] bg-[#6366F1] hover:bg-indigo-500 text-white px-2 py-1 rounded transition-colors"
+            className="text-[11px] btn-sutil text-white px-2 py-1 rounded transition-colors"
           >
             <Icono nombre="escribir" className="w-3 h-3" />Usar para post
           </button>

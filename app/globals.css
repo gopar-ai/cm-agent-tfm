@@ -56,3 +56,98 @@ body {
 .animate-slide-down {
   animation: slide-down 0.25s ease-out;
 }
+
+/* ---------------------------------------------------------------------------
+ * Paleta y superficies
+ *
+ * El color de marca vive en una variable y no repartido por las clases: así se
+ * cambia de marca sin perseguir literales por los componentes, que era el
+ * problema de la versión anterior.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  /* Azul de LinkedIn: la herramienta publica ahí, así que el acento no es una
+     elección estética sino la del sitio para el que se escribe. */
+  --acento: #0a66c2;
+  --acento-claro: #2f86de;
+  --acento-oscuro: #07518f;
+  --acento-borde: #0b5fae;
+  --acento-tenue: rgba(10, 102, 194, 0.16);
+
+  /* Superficies: gris muy oscuro en vez de negro puro. El negro absoluto con
+     texto blanco produce halo y cansa la vista en sesiones largas. */
+  --fondo: #121417;
+  --superficie: #171a1e;
+  --superficie-alta: #1d2126;
+  --borde: #272c32;
+  --texto: #e8eaed;
+  --texto-tenue: #9aa1a9;
+}
+
+/* Botón principal: degradado corto, filo superior claro y sombra proyectada en
+   el propio color. Es lo que separa un botón plano de uno que parece pulsable. */
+.btn-acento {
+  background-image: linear-gradient(180deg, var(--acento-claro) 0%, var(--acento) 55%, var(--acento-oscuro) 100%);
+  border: 1px solid var(--acento-borde);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 6px 18px -8px rgba(63, 79, 212, 0.9),
+    0 1px 2px rgba(0, 0, 0, 0.45);
+  color: #fff;
+  transition: filter 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.btn-acento:hover:not(:disabled) {
+  filter: brightness(1.09);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 10px 24px -10px rgba(63, 79, 212, 1),
+    0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.btn-acento:active:not(:disabled) {
+  transform: translateY(0);
+  filter: brightness(0.94);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.35),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* Foco visible: se ve con teclado y no estorba con el ratón (accesibilidad). */
+.btn-acento:focus-visible,
+.btn-sutil:focus-visible {
+  outline: 2px solid var(--acento-claro);
+  outline-offset: 2px;
+}
+
+/* Botón secundario: mismo relieve, sin color de marca. */
+.btn-sutil {
+  background-image: linear-gradient(180deg, var(--superficie-alta) 0%, var(--superficie) 100%);
+  border: 1px solid var(--borde);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 2px 8px -4px rgba(0, 0, 0, 0.8);
+  transition: border-color 0.16s ease, filter 0.16s ease, transform 0.16s ease;
+}
+
+.btn-sutil:hover:not(:disabled) {
+  border-color: var(--acento-borde);
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+/* Superficie de tarjeta: degradado muy corto y sombra baja, para que el panel
+   se despegue del fondo sin parecer una caja flotante. */
+.panel {
+  background-image: linear-gradient(180deg, var(--superficie) 0%, #14171a 100%);
+  border: 1px solid var(--borde);
+  box-shadow: 0 14px 34px -22px rgba(0, 0, 0, 0.95);
+}
+
+.panel-acento {
+  border-color: var(--acento-borde);
+  box-shadow:
+    0 0 0 1px var(--acento-tenue),
+    0 14px 34px -22px rgba(0, 0, 0, 0.95);
+}

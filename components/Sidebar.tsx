@@ -109,7 +109,7 @@ function SidebarContent() {
       {/* Branding */}
       <div className="px-4 py-5 border-b border-zinc-900">
         <div className="flex items-center gap-2">
-          <span className="text-[#6366F1] font-black text-xl">CM</span>
+          <span className="text-[#0a66c2] font-black text-xl">CM</span>
           <span className="hidden md:block text-white font-light text-xl">Agent</span>
         </div>
         <p className="hidden md:block text-zinc-600 text-xs mt-0.5">Contenido para LinkedIn</p>
@@ -119,7 +119,7 @@ function SidebarContent() {
       <div className="px-2 pt-3">
         <button
           onClick={handleNewProposal}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm bg-[#6366F1] hover:bg-indigo-500 text-white font-medium transition-colors"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm btn-acento text-white font-medium transition-colors"
         >
           <span>+</span>
           <span className="hidden md:block">Nueva propuesta</span>
@@ -136,8 +136,8 @@ function SidebarContent() {
               href={href}
               className={`flex items-center gap-3 px-3 py-2.5 rounded text-sm transition-colors ${
                 active
-                  ? 'bg-zinc-800 text-white font-medium'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+                  ? 'bg-[#1d2126] text-white font-medium'
+                  : 'text-zinc-400 hover:text-white hover:bg-[#1d2126]'
               }`}
             >
               <Icono nombre={icon} className="w-4 h-4 shrink-0" />
@@ -159,7 +159,7 @@ function SidebarContent() {
             <div
               key={chat.id}
               className={`group flex items-center gap-1 px-2 py-2 rounded text-xs ${
-                active ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:bg-zinc-900 hover:text-zinc-300'
+                active ? 'bg-[#1d2126] text-white' : 'text-zinc-500 hover:bg-[#171a1e] hover:text-[#c9ced4]'
               }`}
             >
               {isRenaming ? (
@@ -225,7 +225,7 @@ function SidebarContent() {
                 key={post.id}
                 href={`/calendar?postId=${post.id}`}
                 title={post.titular}
-                className="px-2 py-2 rounded text-xs text-zinc-500 hover:bg-zinc-900 hover:text-zinc-300 truncate transition-colors"
+                className="px-2 py-2 rounded text-xs text-zinc-500 hover:bg-[#171a1e] hover:text-[#c9ced4] truncate transition-colors"
               >
                 {truncate(post.titular, 25)} · {formatShortDateFromISO(post.fecha)}
               </Link>
@@ -243,8 +243,8 @@ function SidebarContent() {
           href={CONFIG_LINK.href}
           className={`flex items-center gap-3 px-3 py-2.5 rounded text-sm transition-colors ${
             pathname === CONFIG_LINK.href
-              ? 'bg-zinc-800 text-white font-medium'
-              : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+              ? 'bg-[#1d2126] text-white font-medium'
+              : 'text-zinc-400 hover:text-white hover:bg-[#1d2126]'
           }`}
         >
           <Icono nombre={CONFIG_LINK.icon} className="w-4 h-4 shrink-0" />
@@ -266,7 +266,7 @@ function SidebarContent() {
       <div className="p-2 border-t border-zinc-900">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm text-zinc-500 hover:text-white hover:bg-[#1d2126] transition-colors"
         >
           <Icono nombre="salir" className="w-4 h-4" />
           <span className="hidden md:block">Cerrar sesión</span>

@@ -95,7 +95,7 @@ export default function NewsFeed({ onUseForPost }: Props) {
               key={t}
               onClick={() => setTab(t)}
               className={`text-xs px-3 py-1.5 rounded-full transition-colors ${
-                tab === t ? 'bg-[#6366F1] text-white' : 'bg-zinc-900 text-zinc-400 hover:text-white'
+                tab === t ? 'btn-acento text-white' : 'bg-[#171a1e] text-zinc-400 hover:text-white'
               }`}
             >
               {t === 'recientes' ? 'Recientes' : `Guardadas (${savedNews.length})`}
@@ -113,7 +113,7 @@ export default function NewsFeed({ onUseForPost }: Props) {
                 className={`text-[11px] px-2 py-1 rounded transition-colors ${
                   filter === f.value
                     ? 'bg-zinc-700 text-white'
-                    : 'bg-zinc-900 text-zinc-500 hover:text-zinc-300'
+                    : 'bg-[#171a1e] text-zinc-500 hover:text-[#c9ced4]'
                 }`}
               >
                 {f.label}
@@ -129,7 +129,7 @@ export default function NewsFeed({ onUseForPost }: Props) {
           <p className="text-zinc-500 text-sm text-center py-6">Buscando noticias…</p>
         )}
 
-        {error && <p className="text-[#6366F1] text-sm text-center py-6">{error}</p>}
+        {error && <p className="text-[#0a66c2] text-sm text-center py-6">{error}</p>}
 
         {!loading && !error && visibleNews.length === 0 && (
           <p className="text-zinc-500 text-sm text-center py-6">

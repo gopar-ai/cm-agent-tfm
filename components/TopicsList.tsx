@@ -12,8 +12,8 @@ type Props = {
 
 export default function TopicsList({ topics, closingText, onSelect, disabled }: Props) {
   return (
-    <div className="w-full max-w-xl bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-      <div className="bg-zinc-800 px-4 py-2">
+    <div className="w-full max-w-xl panel rounded-xl overflow-hidden">
+      <div className="bg-[#1d2126] px-4 py-2">
         <span className="text-xs text-zinc-400 uppercase tracking-widest">
           <Icono nombre="lista" className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />Propuestas de temas
         </span>
@@ -25,10 +25,10 @@ export default function TopicsList({ topics, closingText, onSelect, disabled }: 
             key={topic.number}
             onClick={() => !disabled && onSelect?.(topic)}
             className={`px-4 py-3 flex gap-3 transition-colors ${
-              onSelect && !disabled ? 'cursor-pointer hover:bg-zinc-800/60' : ''
+              onSelect && !disabled ? 'cursor-pointer hover:bg-[#1d2126]/60' : ''
             } ${disabled ? 'opacity-60' : ''}`}
           >
-            <span className="text-[#6366F1] font-bold text-sm shrink-0 w-5 text-right">
+            <span className="text-[#0a66c2] font-bold text-sm shrink-0 w-5 text-right">
               {topic.number}.
             </span>
             <div className="flex-1 space-y-1.5 min-w-0">
@@ -38,7 +38,7 @@ export default function TopicsList({ topics, closingText, onSelect, disabled }: 
                   className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap ${
                     topic.kind === 'Actualidad'
                       ? 'bg-blue-950 text-blue-300'
-                      : 'bg-zinc-800 text-zinc-400'
+                      : 'bg-[#1d2126] text-zinc-400'
                   }`}
                 >
                   {topic.kind}
@@ -60,7 +60,7 @@ export default function TopicsList({ topics, closingText, onSelect, disabled }: 
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="text-[10px] bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-0.5 rounded-full transition-colors inline-flex items-center gap-1"
+                      className="text-[10px] bg-[#1d2126] hover:bg-[#262b31] text-[#c9ced4] px-2 py-0.5 rounded-full transition-colors inline-flex items-center gap-1"
                     >
                       <Icono nombre="enlace" className="w-3 h-3" />Ver noticia
                     </a>
@@ -74,7 +74,7 @@ export default function TopicsList({ topics, closingText, onSelect, disabled }: 
                     if (!disabled) onSelect(topic);
                   }}
                   disabled={disabled}
-                  className="mt-1 text-xs bg-[#6366F1] hover:bg-indigo-500 disabled:opacity-50 text-white px-3 py-1 rounded-full transition-colors inline-flex items-center gap-1"
+                  className="mt-1 text-xs btn-acento disabled:opacity-50 text-white px-3 py-1 rounded-full transition-colors inline-flex items-center gap-1"
                 >
                   <Icono nombre="check" className="w-3.5 h-3.5" />Elegir este tema
                 </button>
@@ -85,7 +85,7 @@ export default function TopicsList({ topics, closingText, onSelect, disabled }: 
       </div>
 
       {closingText && (
-        <div className="px-4 py-3 border-t border-zinc-800 text-zinc-300 text-sm">
+        <div className="px-4 py-3 border-t border-[#272c32] text-[#c9ced4] text-sm">
           {closingText}
         </div>
       )}

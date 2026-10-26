@@ -25,7 +25,7 @@ const STATUS_LABELS: Record<Status, string> = {
 };
 
 const STATUS_COLORS: Record<Status, string> = {
-  borrador: 'bg-zinc-700 text-zinc-300',
+  borrador: 'bg-zinc-700 text-[#c9ced4]',
   programado: 'bg-blue-900 text-blue-300',
   publicado: 'bg-green-900 text-green-300',
 };
@@ -137,11 +137,11 @@ function CalendarContent() {
           <div className="px-6 py-4 border-b border-zinc-900 bg-zinc-950/50 shrink-0">
             <p className="text-white text-sm font-medium flex items-center gap-2"><Icono nombre="calendario" className="w-4 h-4" />Aún no tienes posts guardados</p>
             <p className="text-zinc-500 text-xs mt-1 leading-relaxed">
-              Los posts que guardes desde el chat con el botón <span className="text-zinc-300">“+ Calendario”</span> aparecerán aquí para que les asignes fecha y les den seguimiento (borrador → programado → publicado).
+              Los posts que guardes desde el chat con el botón <span className="text-[#c9ced4]">“+ Calendario”</span> aparecerán aquí para que les asignes fecha y les den seguimiento (borrador → programado → publicado).
             </p>
             <Link
               href="/dashboard"
-              className="inline-block mt-2 text-xs bg-[#6366F1] hover:bg-indigo-500 text-white px-3 py-1.5 rounded transition-colors"
+              className="inline-block mt-2 text-xs btn-acento text-white px-3 py-1.5 rounded transition-colors"
             >
               Ir al chat a generar una propuesta
             </Link>
@@ -174,7 +174,7 @@ function CalendarContent() {
                 >
                   <span
                     className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs mb-1 ${
-                      isToday ? 'bg-[#6366F1] text-white font-bold' : 'text-zinc-500'
+                      isToday ? 'btn-acento text-white font-bold' : 'text-zinc-500'
                     }`}
                   >
                     {day}
@@ -221,7 +221,7 @@ function CalendarContent() {
               <select
                 value={selected.status}
                 onChange={(e) => updatePost(selected.id, { status: e.target.value as Status })}
-                className="bg-zinc-900 border border-zinc-800 text-white text-sm rounded px-3 py-2 w-full focus:outline-none focus:border-[#6366F1]"
+                className="panel text-white text-sm rounded px-3 py-2 w-full focus:outline-none focus:border-[#0a66c2]"
               >
                 {Object.entries(STATUS_LABELS).map(([val, label]) => (
                   <option key={val} value={val}>{label}</option>
@@ -236,22 +236,22 @@ function CalendarContent() {
                 type="date"
                 value={selected.fecha}
                 onChange={(e) => updatePost(selected.id, { fecha: e.target.value })}
-                className="bg-zinc-900 border border-zinc-800 text-white text-sm rounded px-3 py-2 w-full focus:outline-none focus:border-[#6366F1]"
+                className="panel text-white text-sm rounded px-3 py-2 w-full focus:outline-none focus:border-[#0a66c2]"
               />
             </div>
 
             {/* Copy */}
             <div>
               <label className="text-zinc-500 text-xs uppercase tracking-widest block mb-1">Copy</label>
-              <p className="text-zinc-300 text-sm leading-relaxed whitespace-pre-wrap">{selected.cuerpo}</p>
+              <p className="text-[#c9ced4] text-sm leading-relaxed whitespace-pre-wrap">{selected.cuerpo}</p>
             </div>
 
-            <p className="text-[#6366F1] text-xs font-medium">{selected.hashtags}</p>
+            <p className="text-[#0a66c2] text-xs font-medium">{selected.hashtags}</p>
 
             {/* Delete */}
             <button
               onClick={() => deletePost(selected.id)}
-              className="w-full text-sm text-zinc-500 hover:text-[#6366F1] border border-zinc-800 hover:border-[#6366F1] rounded py-2 transition-colors"
+              className="w-full text-sm text-zinc-500 hover:text-[#0a66c2] border border-[#272c32] hover:border-[#0a66c2] rounded py-2 transition-colors"
             >
               Eliminar post
             </button>
