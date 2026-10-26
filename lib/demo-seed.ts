@@ -19,6 +19,43 @@ import { newId, readJson, writeJson } from './local-store';
 
 const MARCA = 'cm_demo_sembrado';
 
+/**
+ * Versión del contenido de ejemplo.
+ *
+ * Sube cuando cambian las publicaciones sembradas. Sin esto, quien ya había
+ * visitado la demo se quedaba con los ejemplos del sector anterior para
+ * siempre, porque la siembra solo miraba si ya se había hecho alguna vez.
+ */
+const VERSION = 2;
+
+type Marca = { version: number; fecha: string; ids: string[] };
+
+function leerMarca(): Marca | null {
+  const guardada = readJson<Marca | string | null>(MARCA, null);
+  if (!guardada) return null;
+  // Las primeras versiones guardaban solo la fecha, en texto.
+  if (typeof guardada === 'string') return { version: 1, fecha: guardada, ids: [] };
+  return guardada;
+}
+
+/**
+ * Títulos que sembró la primera versión, cuando la marca de ejemplo era de
+ * logística. Aquella marca no guardaba identificadores, así que es la única
+ * forma de reconocer su contenido y poder sustituirlo.
+ */
+const TITULARES_V1 = [
+  'Tres rutas concentran la mitad del robo de carga',
+  'La hora que no aparece en ningún presupuesto',
+  'Custodia armada o sin arma: cómo se decide de verdad',
+  'Lo que cuesta una hora fuera de temperatura',
+  'El costo oculto de no tener trazabilidad en ruta',
+  'Nuevas reglas de operación para el autotransporte',
+];
+
+function escribirMarca(ids: string[]): void {
+  writeJson(MARCA, { version: VERSION, fecha: new Date().toISOString(), ids });
+}
+
 type Plantilla = {
   /** Días respecto a hoy: negativo es pasado. */
   desplazamiento: number;
@@ -113,7 +150,12 @@ export function construirContenidoDemo(hoy: Date = new Date()): CalendarPost[] {
   }));
 }
 
-export type ResultadoSiembra = 'sembrado' | 'ya-sembrado' | 'calendario-con-datos' | 'no-aplica';
+export type ResultadoSiembra =
+  | 'sembrado'
+  | 'actualizado'
+  | 'ya-sembrado'
+  | 'calendario-con-datos'
+  | 'no-aplica';
 
 /**
  * Siembra el calendario si procede. Devuelve qué hizo, para poder probarlo y
@@ -121,13 +163,28 @@ export type ResultadoSiembra = 'sembrado' | 'ya-sembrado' | 'calendario-con-dato
  */
 export function sembrarContenidoDemo(activo: boolean, hoy: Date = new Date()): ResultadoSiembra {
   if (!activo) return 'no-aplica';
-  if (readJson<string | null>(MARCA, null)) return 'ya-sembrado';
 
+  const marca = leerMarca();
   const existentes = readJson<CalendarPost[]>(CALENDAR_KEY, []);
-  if (Array.isArray(existentes) && existentes.length > 0) {
-    // Alguien ya trabajó en este navegador: se respeta y no se vuelve a mirar.
-    writeJson(MARCA, new Date().toISOString());
-    return 'calendario-con-datos';
+  const calendario = Array.isArray(existentes) ? existentes : [];
+
+  if (marca?.version === VERSION) return 'ya-sembrado';
+
+  if (calendario.length > 0) {
+    // Hay contenido. Solo se reemplaza si es exactamente lo que sembró una
+    // versión anterior de la demo: lo que haya hecho el visitante no se toca,
+    // ni siquiera para actualizar los ejemplos.
+    const sembradoAntes = new Set(marca?.ids ?? []);
+    const titularesV1 = new Set(TITULARES_V1);
+
+    const todoEsNuestro = calendario.every(
+      (post) => sembradoAntes.has(post.id) || titularesV1.has(post.titular)
+    );
+
+    if (!todoEsNuestro) {
+      escribirMarca(calendario.map((post) => post.id));
+      return 'calendario-con-datos';
+    }
   }
 
   const publicaciones = construirContenidoDemo(hoy);
@@ -136,9 +193,9 @@ export function sembrarContenidoDemo(activo: boolean, hoy: Date = new Date()): R
     PUBLISHED_KEY,
     publicaciones.filter((post) => post.status === 'publicado')
   );
-  writeJson(MARCA, new Date().toISOString());
+  escribirMarca(publicaciones.map((post) => post.id));
 
-  return 'sembrado';
+  return marca ? 'actualizado' : 'sembrado';
 }
 
-export { MARCA as MARCA_SIEMBRA, PLANTILLAS };
+export { MARCA as MARCA_SIEMBRA, PLANTILLAS, VERSION as VERSION_SIEMBRA };

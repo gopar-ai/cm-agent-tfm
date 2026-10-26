@@ -106,13 +106,20 @@ function SidebarContent() {
 
   return (
     <aside className="w-16 md:w-52 flex flex-col bg-zinc-950 border-r border-zinc-900 shrink-0">
-      {/* Branding */}
+      {/* Branding · es además el camino de vuelta al panel, como en cualquier
+          aplicación web: el logo lleva al inicio. */}
       <div className="px-4 py-5 border-b border-zinc-900">
-        <div className="flex items-center gap-2">
-          <span className="text-[#0a66c2] font-black text-xl">CM</span>
-          <span className="hidden md:block text-white font-light text-xl">Agent</span>
-        </div>
-        <p className="hidden md:block text-zinc-600 text-xs mt-0.5">Contenido para LinkedIn</p>
+        <Link
+          href="/dashboard"
+          aria-label="Ir al panel principal"
+          className="block rounded transition-opacity hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0a66c2]"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-[#0a66c2] font-black text-xl">CM</span>
+            <span className="hidden md:block text-white font-light text-xl">Agent</span>
+          </div>
+          <p className="hidden md:block text-zinc-600 text-xs mt-0.5">Contenido para LinkedIn</p>
+        </Link>
       </div>
 
       {/* Nueva propuesta */}

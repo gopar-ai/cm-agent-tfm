@@ -121,6 +121,17 @@ test.describe('E2 · conversación con el agente', () => {
 });
 
 test.describe('E3 · calendario', () => {
+  test('el logo devuelve al panel desde cualquier pantalla', async ({ page }) => {
+    await entrar(page);
+    await page.goto('/calendar');
+    await expect(page).toHaveURL(/\/calendar/);
+
+    await page.getByRole('link', { name: 'Ir al panel principal' }).click();
+
+    await expect(page).toHaveURL(/\/dashboard/);
+    await expect(page.getByPlaceholder('Escribe aquí tu instrucción al agente')).toBeVisible();
+  });
+
   test('el calendario se abre con sesión', async ({ page }) => {
     await entrar(page);
     await page.goto('/calendar');
