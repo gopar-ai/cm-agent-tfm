@@ -1,5 +1,6 @@
 'use client';
 
+import Icono from '@/components/Icono';
 import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -15,8 +16,8 @@ import {
 } from '@/lib/chat-storage';
 import { getPublishedPosts, subscribeToPublished, type CalendarPost } from '@/lib/calendar-storage';
 
-const NAV = [{ href: '/calendar', label: 'Calendario', icon: '📅' }];
-const CONFIG_LINK = { href: '/dashboard/config', label: 'Configuración', icon: '⚙️' };
+const NAV = [{ href: '/calendar', label: 'Calendario', icon: 'calendario' as const }];
+const CONFIG_LINK = { href: '/dashboard/config', label: 'Configuración', icon: 'ajustes' as const };
 
 const MONTH_ABBR = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
@@ -108,17 +109,17 @@ function SidebarContent() {
       {/* Branding */}
       <div className="px-4 py-5 border-b border-zinc-900">
         <div className="flex items-center gap-2">
-          <span className="text-[#CC0000] font-black text-xl">CM</span>
+          <span className="text-[#6366F1] font-black text-xl">CM</span>
           <span className="hidden md:block text-white font-light text-xl">Agent</span>
         </div>
-        <p className="hidden md:block text-zinc-600 text-xs mt-0.5">Tu asistente de contenido</p>
+        <p className="hidden md:block text-zinc-600 text-xs mt-0.5">Contenido para LinkedIn</p>
       </div>
 
       {/* Nueva propuesta */}
       <div className="px-2 pt-3">
         <button
           onClick={handleNewProposal}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm bg-[#CC0000] hover:bg-red-700 text-white font-medium transition-colors"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm bg-[#6366F1] hover:bg-indigo-500 text-white font-medium transition-colors"
         >
           <span>+</span>
           <span className="hidden md:block">Nueva propuesta</span>
@@ -139,7 +140,7 @@ function SidebarContent() {
                   : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
               }`}
             >
-              <span>{icon}</span>
+              <Icono nombre={icon} className="w-4 h-4 shrink-0" />
               <span className="hidden md:block">{label}</span>
             </Link>
           );
@@ -148,7 +149,7 @@ function SidebarContent() {
 
       {/* Propuestas */}
       <div className="hidden md:block px-3 pt-2 pb-1">
-        <p className="text-zinc-600 text-[10px] uppercase tracking-widest">💡 Propuestas</p>
+        <p className="text-zinc-600 text-[10px] uppercase tracking-widest">Propuestas</p>
       </div>
       <div className="hidden md:flex flex-col gap-0.5 px-2 max-h-[320px] overflow-y-auto">
         {chats.map((chat) => {
@@ -216,7 +217,7 @@ function SidebarContent() {
       {sortedPublished.length > 0 && (
         <>
           <div className="hidden md:block px-3 pt-3 pb-1 border-t border-zinc-900 mt-2">
-            <p className="text-zinc-600 text-[10px] uppercase tracking-widest">✅ Publicados</p>
+            <p className="text-zinc-600 text-[10px] uppercase tracking-widest">Publicados</p>
           </div>
           <div className="hidden md:flex flex-col gap-0.5 px-2 max-h-[160px] overflow-y-auto">
             {sortedPublished.map((post) => (
@@ -246,7 +247,7 @@ function SidebarContent() {
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
           }`}
         >
-          <span>{CONFIG_LINK.icon}</span>
+          <Icono nombre={CONFIG_LINK.icon} className="w-4 h-4 shrink-0" />
           <span className="hidden md:block">{CONFIG_LINK.label}</span>
         </Link>
       </div>
@@ -267,7 +268,7 @@ function SidebarContent() {
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors"
         >
-          <span>🚪</span>
+          <Icono nombre="salir" className="w-4 h-4" />
           <span className="hidden md:block">Cerrar sesión</span>
         </button>
       </div>

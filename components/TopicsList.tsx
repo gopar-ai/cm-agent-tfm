@@ -1,5 +1,6 @@
 'use client';
 
+import Icono from '@/components/Icono';
 import { Topic } from '@/lib/post-parser';
 
 type Props = {
@@ -14,7 +15,7 @@ export default function TopicsList({ topics, closingText, onSelect, disabled }: 
     <div className="w-full max-w-xl bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
       <div className="bg-zinc-800 px-4 py-2">
         <span className="text-xs text-zinc-400 uppercase tracking-widest">
-          📋 Propuestas de temas
+          <Icono nombre="lista" className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />Propuestas de temas
         </span>
       </div>
 
@@ -27,7 +28,7 @@ export default function TopicsList({ topics, closingText, onSelect, disabled }: 
               onSelect && !disabled ? 'cursor-pointer hover:bg-zinc-800/60' : ''
             } ${disabled ? 'opacity-60' : ''}`}
           >
-            <span className="text-[#CC0000] font-bold text-sm shrink-0 w-5 text-right">
+            <span className="text-[#6366F1] font-bold text-sm shrink-0 w-5 text-right">
               {topic.number}.
             </span>
             <div className="flex-1 space-y-1.5 min-w-0">
@@ -40,7 +41,7 @@ export default function TopicsList({ topics, closingText, onSelect, disabled }: 
                       : 'bg-zinc-800 text-zinc-400'
                   }`}
                 >
-                  {topic.kind === 'Actualidad' ? '📰 Actualidad' : '🏷️ Tema'}
+                  {topic.kind}
                 </span>
               </div>
               <p className="text-zinc-400 text-xs leading-relaxed">{topic.reason}</p>
@@ -61,7 +62,7 @@ export default function TopicsList({ topics, closingText, onSelect, disabled }: 
                       onClick={(e) => e.stopPropagation()}
                       className="text-[10px] bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-0.5 rounded-full transition-colors inline-flex items-center gap-1"
                     >
-                      🔗 Ver noticia
+                      <Icono nombre="enlace" className="w-3 h-3" />Ver noticia
                     </a>
                   )}
                 </div>
@@ -73,9 +74,9 @@ export default function TopicsList({ topics, closingText, onSelect, disabled }: 
                     if (!disabled) onSelect(topic);
                   }}
                   disabled={disabled}
-                  className="mt-1 text-xs bg-[#CC0000] hover:bg-red-700 disabled:opacity-50 text-white px-3 py-1 rounded-full transition-colors inline-flex items-center gap-1"
+                  className="mt-1 text-xs bg-[#6366F1] hover:bg-indigo-500 disabled:opacity-50 text-white px-3 py-1 rounded-full transition-colors inline-flex items-center gap-1"
                 >
-                  ✅ Elegir este tema
+                  <Icono nombre="check" className="w-3.5 h-3.5" />Elegir este tema
                 </button>
               )}
             </div>

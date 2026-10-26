@@ -1,5 +1,6 @@
 'use client';
 
+import Icono from '@/components/Icono';
 import { useState } from 'react';
 import type { VersionsResult } from '@/lib/post-parser';
 import VersionEditPanel from './VersionEditPanel';
@@ -28,7 +29,7 @@ export default function VersionsCompare({ stateId, versions, onConfirm, disabled
 
   return (
     <div className="w-full max-w-2xl space-y-3">
-      <p className="text-zinc-500 text-xs uppercase tracking-widest">📐 Formato: {versions.format}</p>
+      <p className="text-zinc-500 text-xs uppercase tracking-widest flex items-center gap-1.5"><Icono nombre="regla" className="w-3.5 h-3.5" />Formato: {versions.format}</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {(['A', 'B'] as const).map((letter) => {
@@ -50,7 +51,7 @@ export default function VersionsCompare({ stateId, versions, onConfirm, disabled
                   onClick={() => handleChoose(letter)}
                   disabled={disabled || !!confirmed}
                   className={`w-full text-sm py-1.5 rounded transition-colors disabled:opacity-50 ${
-                    confirmed === letter ? 'bg-red-900 text-white' : 'bg-[#CC0000] hover:bg-red-700 text-white'
+                    confirmed === letter ? 'bg-indigo-900 text-white' : 'bg-[#6366F1] hover:bg-indigo-500 text-white'
                   }`}
                 >
                   {confirmed === letter ? '✓ Elegida' : `Elegir ${letter}`}

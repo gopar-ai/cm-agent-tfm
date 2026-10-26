@@ -96,12 +96,12 @@ test.describe('E2 · conversación con el agente', () => {
 
     // Fase 2: al elegir un tema aparece el ángulo, con sus tres líneas.
     await temas.first().click();
-    await expect(page.getByText('🎯 Ángulo')).toBeVisible();
-    await expect(page.getByText('💡 Por qué ahora')).toBeVisible();
-    await expect(page.getByText('🎭 Emoción objetivo')).toBeVisible();
+    await expect(page.getByText('Ángulo', { exact: true })).toBeVisible();
+    await expect(page.getByText('Por qué ahora')).toBeVisible();
+    await expect(page.getByText('Emoción objetivo')).toBeVisible();
 
     // Fase 3: al elegir formato llegan las dos versiones, con sus titulares.
-    await page.getByRole('button', { name: '📝 Copy' }).first().click();
+    await page.getByRole('button', { name: 'Copy', exact: true }).first().click();
     await expect(page.getByText('Versión A')).toBeVisible();
     await expect(page.getByText('Versión B')).toBeVisible();
     await expect(page.getByText(/Formato: Copy/)).toBeVisible();

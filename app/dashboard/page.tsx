@@ -296,11 +296,11 @@ function DashboardContent() {
           <div className="px-4 pt-3 shrink-0">
             <div className="flex items-center justify-between mb-1">
               <span className="text-zinc-500 text-xs">Generando…</span>
-              <span className="text-[#CC0000] text-xs font-medium">{loadingProgress}%</span>
+              <span className="text-[#6366F1] text-xs font-medium">{loadingProgress}%</span>
             </div>
             <div className="h-1 w-full bg-zinc-900 rounded overflow-hidden">
               <div
-                className="h-full bg-[#CC0000] transition-all duration-200 ease-out"
+                className="h-full bg-[#6366F1] transition-all duration-200 ease-out"
                 style={{ width: `${loadingProgress}%` }}
               />
             </div>
@@ -338,12 +338,12 @@ function DashboardContent() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Escribe aquí tu instrucción al agente…"
               disabled={loading}
-              className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg text-white text-sm px-4 py-3 focus:outline-none focus:border-[#CC0000] transition-colors placeholder-zinc-600 disabled:opacity-50"
+              className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg text-white text-sm px-4 py-3 focus:outline-none focus:border-[#6366F1] transition-colors placeholder-zinc-600 disabled:opacity-50"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="bg-[#CC0000] hover:bg-red-700 disabled:opacity-40 text-white px-4 py-3 rounded-lg transition-colors text-sm font-medium"
+              className="bg-[#6366F1] hover:bg-indigo-500 disabled:opacity-40 text-white px-4 py-3 rounded-lg transition-colors text-sm font-medium"
             >
               Enviar
             </button>

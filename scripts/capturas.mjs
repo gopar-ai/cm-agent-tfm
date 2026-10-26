@@ -54,12 +54,12 @@ await capturar('2-temas');
 
 // 3 · Ángulo antes de escribir
 await page.getByRole('button', { name: /Elegir este tema/ }).first().click();
-await page.getByText('🎯 Ángulo').waitFor();
+await page.getByText('Ángulo', { exact: true }).waitFor();
 await page.waitForTimeout(500);
 await capturar('3-angulo');
 
 // 4 · Dos versiones para comparar
-await page.getByRole('button', { name: '📝 Copy' }).first().click();
+await page.getByRole('button', { name: 'Copy', exact: true }).first().click();
 await page.getByText('Versión A').waitFor();
 await page.waitForTimeout(800);
 await capturar('4-versiones');

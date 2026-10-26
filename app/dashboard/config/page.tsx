@@ -37,7 +37,7 @@ export default function ConfigPage() {
           {message && <span className="text-xs text-green-400">{message}</span>}
           <button
             onClick={handleSave}
-            className="text-xs bg-[#CC0000] hover:bg-red-700 text-white px-3 py-1.5 rounded transition-colors font-medium"
+            className="text-xs bg-[#6366F1] hover:bg-indigo-500 text-white px-3 py-1.5 rounded transition-colors font-medium"
           >
             Guardar cambios
           </button>

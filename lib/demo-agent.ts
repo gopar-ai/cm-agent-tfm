@@ -15,11 +15,11 @@ import { detectFormat, detectPhase } from './agent-messages';
  *  3. Que las pruebas de punta a punta corran sin red y sin costo, siempre con
  *     la misma respuesta.
  *
- * Los medios y enlaces son inventados a propósito y usan el dominio reservado
+ * El contenido es el de la marca de ejemplo —una empresa de software B2B—, y
+ * los medios y enlaces son inventados a propósito, con el dominio reservado
  * `.example` (RFC 2606): un guion de demostración no debe fabricar enlaces que
  * parezcan de medios reales.
  */
-
 
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('es-MX', {
@@ -35,26 +35,26 @@ function topicsResponse(brand: Brand, now: Date): string {
   const hoy = formatDate(now);
   const ayer = formatDate(yesterday);
 
-  return `1. 🚨 Tres rutas concentran la mitad del robo de carga del trimestre — Actualidad
-El reporte trimestral salió hoy y nombra corredores donde tus clientes mueven mercancía.
+  return `1. 🤖 Siete de cada diez equipos de producto ya usan IA a diario — Actualidad
+El informe salió hoy y pone número a algo que tus clientes ya están viviendo.
 Fecha: ${hoy}
-Fuente: Reporte Carga
-[ver noticia](https://reportecarga.example/robo-carga-corredores)
+Fuente: Reporte Tech
+[ver noticia](https://reportetech.example/ia-equipos-producto)
 
-2. 📦 Custodia armada o sin arma: cómo se decide de verdad — Tema
-La pregunta que todo gerente de logística hace en la primera llamada.
+2. 🔌 Por qué las integraciones deciden el cambio de plataforma — Tema
+La razón real por la que un equipo migra, y casi nunca aparece en el pitch.
 
-3. ❄️ Lo que cuesta una hora fuera de temperatura — Tema
-Pone número al riesgo en cadena de frío, donde el daño no se ve hasta la entrega.
-
-4. 🛡️ Nuevas reglas de operación para el autotransporte — Actualidad
-Publicadas ayer: cambian requisitos de seguridad que afectan a tus clientes.
+3. ⚖️ Entra en vigor la nueva ley de datos para empresas de software — Actualidad
+Publicada ayer: cambia lo que tus clientes pueden guardar y dónde.
 Fecha: ${ayer}
-Fuente: Logística Hoy
-[ver noticia](https://logisticahoy.example/reglas-autotransporte)
+Fuente: Datos Hoy
+[ver noticia](https://datoshoy.example/ley-datos-personales)
 
-5. 💰 El costo oculto de no tener trazabilidad en ruta — Tema
-Habla del dolor sin vender servicio: lo que no se mide, no se reclama.
+4. ☁️ El costo oculto de un dato que nadie consulta — Tema
+Habla del dolor sin vender producto: lo que se paga por almacenar ruido.
+
+5. 📊 Qué mide un equipo de datos que sí influye en el negocio — Tema
+Separa las métricas que se presentan de las que de verdad cambian decisiones.
 
 ¿Cuál desarrollamos? Escribe el número.`;
 }
@@ -62,96 +62,84 @@ Habla del dolor sin vender servicio: lo que no se mide, no se reclama.
 function angleResponse(): string {
   return `---ANGULO---
 🎯 Ángulo
-No es el robo lo que quiebra la operación: es enterarse tarde.
+El problema no es adoptar IA: es no saber qué datos le estás dando.
 
 💡 Por qué ahora
-El reporte del trimestre acaba de poner números a rutas que tus clientes usan a diario.
+El informe de hoy dice que ya la usan siete de cada diez, y casi nadie audita con qué.
 
 🎭 Emoción objetivo
-Urgencia controlada: preocupación que empuja a revisar, no a paralizarse.
+Urgencia controlada: la de revisar algo hoy, no la de alarmarse.
 ---FIN_ANGULO---`;
 }
 
 function versionsResponse(brand: Brand, format: string): string {
   const isCopyWithImage = format === 'Copy + imagen';
 
+  const cuerpoA = `🤖 Siete de cada diez equipos de producto ya usan IA todos los días.
+
+La pregunta interesante no es si la usan. Es con qué datos.
+
+En la mayoría de los equipos que conozco, el modelo recibe lo que alguien pegó en un prompt: una exportación vieja, una tabla sin permisos, un campo que nadie sabía que tenía datos personales.
+
+Adoptar IA sin saber qué entra no es ir rápido. Es firmar un cheque en blanco.
+
+Antes de la próxima integración, responde dos cosas: qué datos toca y quién aprobó que los tocara. 🔐`;
+
+  const cuerpoB = `📊 Un equipo nos enseñó su panel de IA. Doce métricas, todas en verde.
+
+Les preguntamos cuál les había hecho cambiar una decisión el último mes.
+
+Silencio.
+
+Un dato que no cambia una decisión no es información: es decoración cara. Y en datos, la decoración se paga por gigabyte almacenado y por hora de ingeniería mantenida.
+
+Si tu panel tiene doce métricas, empieza por tachar las que nadie mira. 🔌`;
+
   const contentA = isCopyWithImage
     ? `COPY DEL POST:
-🚨 Tres rutas concentran la mitad del robo de carga de este trimestre.
-
-No es mala suerte. Es un patrón que ya se puede anticipar.
-
-La mayoría de las operaciones se enteran del incidente cuando el cliente llama a preguntar por su entrega. Horas después. Cuando ya no hay nada que hacer.
-
-La diferencia no la hace tener custodia. La hace saber, en el minuto uno, que algo se salió de la ruta.
-
-Si mueves mercancía de valor por esos corredores, revisa dos cosas esta semana: cuánto tardas en detectar una desviación, y a quién le llega esa alerta. 🛡️
-HASHTAGS: #SeguridadLogistica #RoboDeCarga #CadenaDeSuministro
+${cuerpoA}
+HASHTAGS: #InteligenciaArtificial #DatosEmpresariales #ProductoDigital
 
 COPY DE LA IMAGEN:
-TE ENTERAS CUANDO YA NO HAY NADA QUE HACER
+¿CON QUÉ DATOS ESTÁS ENTRENANDO?
 
 PROMPT PARA IMAGEN:
-Fondo oscuro con textura de asfalto nocturno, tráiler desenfocado al fondo, texto blanco grande centrado, paleta negro/rojo/blanco, estilo editorial profesional, sin personas.`
+Fondo oscuro con una malla de nodos conectados apenas visible, texto blanco grande centrado, paleta negro/rojo/blanco, estilo editorial tecnológico, sin personas.`
     : `CUERPO:
-🚨 Tres rutas concentran la mitad del robo de carga de este trimestre.
-
-No es mala suerte. Es un patrón que ya se puede anticipar.
-
-La mayoría de las operaciones se enteran del incidente cuando el cliente llama a preguntar por su entrega. Horas después. Cuando ya no hay nada que hacer.
-
-La diferencia no la hace tener custodia. La hace saber, en el minuto uno, que algo se salió de la ruta.
-
-Si mueves mercancía de valor por esos corredores, revisa dos cosas esta semana: cuánto tardas en detectar una desviación, y a quién le llega esa alerta. 🛡️
-HASHTAGS: #SeguridadLogistica #RoboDeCarga #CadenaDeSuministro`;
+${cuerpoA}
+HASHTAGS: #InteligenciaArtificial #DatosEmpresariales #ProductoDigital`;
 
   const contentB = isCopyWithImage
     ? `COPY DEL POST:
-📦 Un cliente nos preguntó cuánto cuesta la custodia.
-
-Le devolvimos otra pregunta: ¿cuánto cuesta una hora sin saber dónde está su carga?
-
-Nadie presupuesta eso. Pero ahí está: la llamada al cliente final, la penalización por incumplimiento, el seguro que tarda semanas, el contrato que no se renueva.
-
-El reporte de este trimestre señala tres corredores con la mitad de los incidentes. Si tu operación pasa por ahí, el cálculo ya no es hipotético.
-
-Compara las dos cifras antes de decidir. 🛡️
-HASHTAGS: #RiesgoLogistico #TransporteDeCarga #SupplyChain
+${cuerpoB}
+HASHTAGS: #Datos #Analitica #EquiposDeProducto
 
 COPY DE LA IMAGEN:
-¿CUÁNTO CUESTA UNA HORA SIN SABER DÓNDE ESTÁ?
+DOCE MÉTRICAS. CERO DECISIONES.
 
 PROMPT PARA IMAGEN:
-Fondo negro, silueta de contenedor con línea roja de ruta interrumpida, texto blanco grande, paleta negro/rojo/blanco, estilo profesional minimalista.`
+Fondo negro, panel de gráficas apagadas salvo una encendida en rojo, texto blanco grande, estilo profesional minimalista.`
     : `CUERPO:
-📦 Un cliente nos preguntó cuánto cuesta la custodia.
-
-Le devolvimos otra pregunta: ¿cuánto cuesta una hora sin saber dónde está su carga?
-
-Nadie presupuesta eso. Pero ahí está: la llamada al cliente final, la penalización por incumplimiento, el seguro que tarda semanas, el contrato que no se renueva.
-
-El reporte de este trimestre señala tres corredores con la mitad de los incidentes. Si tu operación pasa por ahí, el cálculo ya no es hipotético.
-
-Compara las dos cifras antes de decidir. 🛡️
-HASHTAGS: #RiesgoLogistico #TransporteDeCarga #SupplyChain`;
+${cuerpoB}
+HASHTAGS: #Datos #Analitica #EquiposDeProducto`;
 
   return `---VERSIONES---
 FORMATO: ${format}
 ---VERSION A---
-TITULO: Enterarse tarde es el verdadero costo
+TITULO: La pregunta que nadie hace antes de adoptar IA
 TITULARES:
-1. Tres rutas concentran la mitad del robo de carga
-2. El problema no es el robo: es el aviso que llega tarde
-3. ¿Cuánto tardas en saber que tu carga se salió de ruta?
+1. Siete de cada diez equipos ya usan IA. ¿Con qué datos?
+2. Adoptar IA sin auditar los datos es firmar en blanco
+3. Dos preguntas antes de tu próxima integración
 CONTENIDO:
 ${contentA}
 ---FIN VERSION A---
 ---VERSION B---
-TITULO: La cuenta que nadie presupuesta
+TITULO: Doce métricas en verde y ninguna decisión
 TITULARES:
-1. Nos preguntaron cuánto cuesta la custodia
-2. La hora que no aparece en ningún presupuesto
-3. Dos cifras que conviene comparar antes de decidir
+1. Un panel con doce métricas y ninguna decisión
+2. El dato que no cambia nada es decoración cara
+3. Empieza por tachar las métricas que nadie mira
 CONTENIDO:
 ${contentB}
 ---FIN VERSION B---
@@ -164,17 +152,17 @@ function confirmationResponse(): string {
 
 function adjustmentResponse(): string {
   return `---POST---
-TITULAR: Tres rutas concentran la mitad del robo de carga
+TITULAR: Siete de cada diez equipos ya usan IA. ¿Con qué datos?
 CUERPO:
-🚨 Tres rutas concentran la mitad del robo de carga de este trimestre.
+🤖 Siete de cada diez equipos de producto ya usan IA todos los días.
 
-No es mala suerte. Es un patrón que ya se puede anticipar.
+La pregunta interesante no es si la usan. Es con qué datos.
 
-La diferencia no la hace tener custodia. La hace saber, en el minuto uno, que algo se salió de la ruta.
+Adoptar IA sin saber qué entra no es ir rápido. Es firmar un cheque en blanco.
 
-Revisa dos cosas esta semana: cuánto tardas en detectar una desviación, y a quién le llega esa alerta. 🛡️
-HASHTAGS: #SeguridadLogistica #RoboDeCarga #CadenaDeSuministro
-PROMPT_IMAGEN: Fondo oscuro, carretera nocturna, texto blanco grande, paleta negro/rojo/blanco.
+Antes de la próxima integración, responde dos cosas: qué datos toca y quién aprobó que los tocara. 🔐
+HASHTAGS: #InteligenciaArtificial #DatosEmpresariales #ProductoDigital
+PROMPT_IMAGEN: Fondo oscuro, malla de nodos conectados, texto blanco grande, paleta negro/rojo/blanco.
 ---FIN---`;
 }
 

@@ -7,6 +7,8 @@ import type { NewsItem } from './news-types';
  * Medios y enlaces inventados, con el dominio reservado `.example` (RFC 2606):
  * una demostración no debe fabricar enlaces que parezcan de medios reales. Las
  * fechas se calculan al momento para que el feed se vea vigente cualquier día.
+ *
+ * Las portadas se generan con `npm run portadas` y viven en `public/demo-news`.
  */
 
 function daysAgo(days: number): string {
@@ -15,39 +17,45 @@ function daysAgo(days: number): string {
 
 export const DEMO_NEWS: NewsItem[] = [
   {
-    title: 'Tres corredores concentran la mitad del robo de carga del trimestre',
-    url: 'https://reportecarga.example/robo-carga-corredores',
-    source: 'Reporte Carga',
+    title: 'Siete de cada diez equipos de producto ya usan IA en su flujo diario',
+    url: 'https://reportetech.example/ia-equipos-producto',
+    source: 'Reporte Tech',
     date: daysAgo(0),
+    image: '/demo-news/ia-producto.jpg',
   },
   {
-    title: 'Nuevas reglas de operación para el autotransporte entran en vigor',
-    url: 'https://logisticahoy.example/reglas-autotransporte',
-    source: 'Logística Hoy',
+    title: 'La nueva ley de datos personales entra en vigor para empresas de software',
+    url: 'https://datoshoy.example/ley-datos-personales',
+    source: 'Datos Hoy',
     date: daysAgo(1),
+    image: '/demo-news/regulacion-datos.jpg',
   },
   {
-    title: 'El nearshoring presiona la capacidad de los centros de distribución',
-    url: 'https://cadenanorte.example/nearshoring-capacidad',
-    source: 'Cadena Norte',
+    title: 'El costo de la nube sube y las empresas revisan sus contratos',
+    url: 'https://nubeyredes.example/costo-nube-contratos',
+    source: 'Nube y Redes',
     date: daysAgo(1),
+    image: '/demo-news/costo-nube.jpg',
   },
   {
-    title: 'Cadena de frío: el costo de una hora fuera de rango',
-    url: 'https://frioyruta.example/cadena-de-frio-costo',
-    source: 'Frío y Ruta',
+    title: 'Ciberseguridad: los ataques a cadenas de suministro de software se duplican',
+    url: 'https://seguridaddigital.example/ataques-cadena-software',
+    source: 'Seguridad Digital',
     date: daysAgo(2),
+    image: '/demo-news/ciberseguridad.jpg',
   },
   {
-    title: 'Aduanas estrena ventanilla digital para despacho de carga',
-    url: 'https://comercioexterior.example/ventanilla-digital',
-    source: 'Comercio Exterior Hoy',
+    title: 'Latinoamérica concentra una quinta parte del nuevo talento técnico contratado',
+    url: 'https://talentotech.example/talento-latam',
+    source: 'Talento Tech',
     date: daysAgo(3),
+    image: '/demo-news/talento.jpg',
   },
   {
-    title: 'Seguros de mercancía: por qué suben las primas en rutas del centro',
-    url: 'https://riesgologistico.example/primas-seguros',
-    source: 'Riesgo Logístico',
+    title: 'Las integraciones, el motivo número uno para cambiar de plataforma de datos',
+    url: 'https://plataformasb2b.example/integraciones-cambio',
+    source: 'Plataformas B2B',
     date: daysAgo(4),
+    image: '/demo-news/integraciones.jpg',
   },
 ];

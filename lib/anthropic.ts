@@ -128,7 +128,7 @@ FASE 2 — ÁNGULO (al elegir tema; no preguntes formato, el analista usa botone
 [1 línea máximo]
 ---FIN_ANGULO---
 
-FASE 3 — VERSIONES A/B (al elegir formato; puede venir con emoji decorativo, ej. "📝 Copy", "📸 Copy + imagen", "🎠 Carrusel", "📄 Documento PDF", "🎬 Video (guión)" — trátalo igual): genera 2 versiones con ángulos/ganchos realmente distintos (nunca la misma idea con sinónimos), cada una con 3 titulares.
+FASE 3 — VERSIONES A/B (al elegir formato; el nombre puede venir con un emoji delante — trátalo igual): genera 2 versiones con ángulos/ganchos realmente distintos (nunca la misma idea con sinónimos), cada una con 3 titulares.
 
 ---VERSIONES---
 FORMATO: [nombre exacto, sin emoji]

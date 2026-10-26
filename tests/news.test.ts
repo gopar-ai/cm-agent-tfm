@@ -8,7 +8,12 @@ import {
   sortByDateDesc,
 } from '@/lib/news';
 import { decodeEntities, parseFeedXml, toIsoDate } from '@/lib/news-rss';
-import { getRssFeeds, getSearchDomains, getSearchQueries } from '@/lib/news-sources';
+import {
+  DEFAULT_SEARCH_DOMAINS,
+  getRssFeeds,
+  getSearchDomains,
+  getSearchQueries,
+} from '@/lib/news-sources';
 
 afterEach(() => {
   delete process.env.NEWS_RSS_FEEDS;
@@ -315,7 +320,7 @@ describe('news-sources', () => {
 
   it('ignora una configuración vacía y vuelve a los valores por defecto', () => {
     process.env.NEWS_SEARCH_DOMAINS = '   ';
-    expect(getSearchDomains()).toEqual(expect.arrayContaining(['thelogisticsworld.com']));
+    expect(getSearchDomains()).toEqual(DEFAULT_SEARCH_DOMAINS);
   });
 
   it('toma dominios y consultas de la configuración', () => {

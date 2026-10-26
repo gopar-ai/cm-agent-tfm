@@ -5,38 +5,38 @@
  * agente a otra marca o a otro sector: feeds, dominios que el modelo debe
  * priorizar y consultas de búsqueda. Se pueden sustituir por configuración, sin
  * tocar el código que las usa (HU-13, RNF-10).
+ *
+ * Los valores por defecto son los de la marca de ejemplo —una empresa de
+ * software B2B—, así que apuntan a medios de tecnología en español.
  */
 
 export type RssFeed = { url: string; source: string };
 
 export const DEFAULT_RSS_FEEDS: RssFeed[] = [
-  { url: 'https://thelogisticsworld.com/feed/', source: 'The Logistics World' },
-  { url: 'https://logisticapress.com/feed/', source: 'Logística Press' },
-  { url: 'https://transporte.mx/feed/', source: 'Transporte.mx' },
-  { url: 'https://esemanal.mx/feed/', source: 'eSemanal' },
-  { url: 'https://t21.com.mx/feed/', source: 'T21' },
-  { url: 'https://revistalogisticaytransporte.com/feed/', source: 'Revista Énfasis Logística' },
-  { url: 'https://alianzaflotillera.com/feed/', source: 'Alianza Flotillera' },
-  { url: 'https://mexicanist.com/?feed=rss2', source: 'Mexicanist' },
+  { url: 'https://www.xataka.com.mx/feedburner.xml', source: 'Xataka México' },
+  { url: 'https://hipertextual.com/feed', source: 'Hipertextual' },
+  { url: 'https://www.genbeta.com/feedburner.xml', source: 'Genbeta' },
+  { url: 'https://www.wwwhatsnew.com/feed/', source: 'WWWhat’s new' },
+  { url: 'https://www.muycomputerpro.com/feed', source: 'MuyComputerPro' },
+  { url: 'https://blog.desdelinux.net/feed/', source: 'DesdeLinux' },
 ];
 
 export const DEFAULT_SEARCH_DOMAINS = [
-  'thelogisticsworld.com',
-  'elfinanciero.com.mx',
+  'xataka.com.mx',
+  'hipertextual.com',
+  'muycomputerpro.com',
   'eleconomista.com.mx',
 ];
 
 export const DEFAULT_SEARCH_QUERIES = [
-  'logística México',
-  'cadena de suministro México',
-  'nearshoring México',
-  'comercio exterior México',
-  'transporte de carga México',
-  'robo de carga México',
-  'seguridad logística México',
-  'CANACAR',
-  'puertos México logística',
-  'aranceles transporte México',
+  'inteligencia artificial empresas',
+  'plataformas de datos empresas',
+  'computo en la nube noticias',
+  'ciberseguridad empresas Latinoamérica',
+  'regulación de datos personales Latinoamérica',
+  'talento tecnológico Latinoamérica',
+  'software B2B inversión',
+  'automatización de procesos empresas',
 ];
 
 function parseList(value: string | undefined): string[] | null {

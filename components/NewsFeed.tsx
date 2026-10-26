@@ -1,5 +1,6 @@
 'use client';
 
+import Icono from '@/components/Icono';
 import { useEffect, useState } from 'react';
 import NewsCard from './NewsCard';
 import type { NewsItem } from '@/lib/news-types';
@@ -84,7 +85,7 @@ export default function NewsFeed({ onUseForPost }: Props) {
       {/* Header */}
       <div className="px-4 py-4 border-b border-zinc-900 shrink-0">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-white font-semibold text-sm">📡 Feed de noticias</h2>
+          <h2 className="text-white font-semibold text-sm flex items-center gap-2"><Icono nombre="señal" className="w-4 h-4" />Feed del sector</h2>
         </div>
 
         {/* Tabs */}
@@ -94,7 +95,7 @@ export default function NewsFeed({ onUseForPost }: Props) {
               key={t}
               onClick={() => setTab(t)}
               className={`text-xs px-3 py-1.5 rounded-full transition-colors ${
-                tab === t ? 'bg-[#CC0000] text-white' : 'bg-zinc-900 text-zinc-400 hover:text-white'
+                tab === t ? 'bg-[#6366F1] text-white' : 'bg-zinc-900 text-zinc-400 hover:text-white'
               }`}
             >
               {t === 'recientes' ? 'Recientes' : `Guardadas (${savedNews.length})`}
@@ -128,7 +129,7 @@ export default function NewsFeed({ onUseForPost }: Props) {
           <p className="text-zinc-500 text-sm text-center py-6">Buscando noticias…</p>
         )}
 
-        {error && <p className="text-[#CC0000] text-sm text-center py-6">{error}</p>}
+        {error && <p className="text-[#6366F1] text-sm text-center py-6">{error}</p>}
 
         {!loading && !error && visibleNews.length === 0 && (
           <p className="text-zinc-500 text-sm text-center py-6">

@@ -86,7 +86,7 @@ export default function VersionEditPanel({ stateId, choice, titulares, contenido
   }
 
   return (
-    <div className="mt-3 bg-[#111111] border-t-2 border-[#CC0000] rounded-xl p-5 space-y-5 animate-slide-down">
+    <div className="mt-3 bg-[#111111] border-t-2 border-[#6366F1] rounded-xl p-5 space-y-5 animate-slide-down">
       <p className="text-zinc-500 text-xs uppercase tracking-widest">Editar versión · {formato}</p>
 
       {/* Titulares */}
@@ -100,7 +100,7 @@ export default function VersionEditPanel({ stateId, choice, titulares, contenido
                 name={`titular-${formato}`}
                 checked={selectedIndex === i}
                 onChange={() => setSelectedIndex(i)}
-                className="accent-[#CC0000] shrink-0"
+                className="accent-[#6366F1] shrink-0"
               />
               {editingIndex === i ? (
                 <>
@@ -109,11 +109,11 @@ export default function VersionEditPanel({ stateId, choice, titulares, contenido
                     value={titular}
                     onChange={(e) => updateTitular(i, e.target.value)}
                     autoFocus
-                    className="flex-1 bg-zinc-950 border border-zinc-700 rounded text-white text-sm px-2 py-1 focus:outline-none focus:border-[#CC0000]"
+                    className="flex-1 bg-zinc-950 border border-zinc-700 rounded text-white text-sm px-2 py-1 focus:outline-none focus:border-[#6366F1]"
                   />
                   <button
                     onClick={() => setEditingIndex(null)}
-                    className="text-xs bg-[#CC0000] hover:bg-red-700 text-white px-2 py-1 rounded transition-colors shrink-0"
+                    className="text-xs bg-[#6366F1] hover:bg-indigo-500 text-white px-2 py-1 rounded transition-colors shrink-0"
                   >
                     Listo
                   </button>
@@ -141,7 +141,7 @@ export default function VersionEditPanel({ stateId, choice, titulares, contenido
           value={cuerpo}
           onChange={(e) => setCuerpo(e.target.value)}
           style={{ minHeight: '200px' }}
-          className="w-full bg-[#1a1a1a] border border-zinc-800 rounded-lg text-white text-sm p-3 leading-relaxed focus:outline-none focus:border-[#CC0000] transition-colors resize-y"
+          className="w-full bg-[#1a1a1a] border border-zinc-800 rounded-lg text-white text-sm p-3 leading-relaxed focus:outline-none focus:border-[#6366F1] transition-colors resize-y"
         />
       </div>
 
@@ -153,7 +153,7 @@ export default function VersionEditPanel({ stateId, choice, titulares, contenido
             type="text"
             value={copyImagen}
             onChange={(e) => setCopyImagen(e.target.value)}
-            className="w-full bg-[#1a1a1a] border border-zinc-800 rounded-lg text-white text-sm px-3 py-2 focus:outline-none focus:border-[#CC0000] transition-colors"
+            className="w-full bg-[#1a1a1a] border border-zinc-800 rounded-lg text-white text-sm px-3 py-2 focus:outline-none focus:border-[#6366F1] transition-colors"
           />
         </div>
       )}
@@ -194,7 +194,7 @@ export default function VersionEditPanel({ stateId, choice, titulares, contenido
               }
             }}
             placeholder="nuevo"
-            className="bg-zinc-950 border border-zinc-800 rounded-full text-white text-xs px-2 py-1 w-20 focus:outline-none focus:border-[#CC0000]"
+            className="bg-zinc-950 border border-zinc-800 rounded-full text-white text-xs px-2 py-1 w-20 focus:outline-none focus:border-[#6366F1]"
           />
           <button
             onClick={addHashtag}
@@ -220,12 +220,12 @@ export default function VersionEditPanel({ stateId, choice, titulares, contenido
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="bg-zinc-950 border border-zinc-800 rounded text-white text-sm px-2 py-1.5 focus:outline-none focus:border-[#CC0000]"
+              className="bg-zinc-950 border border-zinc-800 rounded text-white text-sm px-2 py-1.5 focus:outline-none focus:border-[#6366F1]"
             />
             <button
               onClick={handleAddToCalendarClick}
               disabled={!date}
-              className="text-sm bg-[#CC0000] hover:bg-red-700 disabled:opacity-50 text-white px-4 py-2 rounded transition-colors"
+              className="text-sm bg-[#6366F1] hover:bg-indigo-500 disabled:opacity-50 text-white px-4 py-2 rounded transition-colors"
             >
               Confirmar fecha
             </button>
@@ -233,7 +233,7 @@ export default function VersionEditPanel({ stateId, choice, titulares, contenido
         ) : (
           <button
             onClick={handleAddToCalendarClick}
-            className="text-sm bg-[#CC0000] hover:bg-red-700 text-white px-4 py-2 rounded transition-colors"
+            className="text-sm bg-[#6366F1] hover:bg-indigo-500 text-white px-4 py-2 rounded transition-colors"
           >
             Agregar al calendario
           </button>

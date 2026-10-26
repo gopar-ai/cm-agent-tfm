@@ -55,10 +55,10 @@ await page.getByRole('button', { name: /Elegir este tema/ }).first().waitFor({ t
 await pausa(2500); // la lista de temas se lee
 
 await page.getByRole('button', { name: /Elegir este tema/ }).first().click();
-await page.getByText('🎯 Ángulo').waitFor({ timeout: 60_000 });
+await page.getByText('Ángulo', { exact: true }).waitFor({ timeout: 60_000 });
 await pausa(2500); // el ángulo se lee
 
-await page.getByRole('button', { name: '📸 Copy + imagen' }).first().click();
+await page.getByRole('button', { name: 'Copy + imagen' }).first().click();
 await page.getByText('Versión A').waitFor({ timeout: 60_000 });
 await pausa(3500); // las dos versiones se comparan
 

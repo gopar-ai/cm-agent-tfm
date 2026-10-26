@@ -27,13 +27,13 @@ export type Brand = {
  * ningún sitio existente.
  */
 export const DEMO_BRAND: Brand = {
-  name: 'Trazo Seguro',
-  description: 'empresa B2B de seguridad logística en México',
-  coreService: 'custodia de transporte de carga (armada y sin arma)',
-  website: 'trazoseguro.example',
+  name: 'Vertia',
+  description: 'empresa B2B de software que vende una plataforma de datos a equipos de producto',
+  coreService: 'plataforma de datos en la nube, con analítica e integraciones',
+  website: 'vertia.example',
   audience:
-    'directores de logística, gerentes de supply chain y responsables de seguridad en empresas que mueven mercancía de valor en México',
-  sector: 'logística y transporte de carga en México',
+    'CTOs, líderes de producto y responsables de datos en empresas de tecnología de Latinoamérica',
+  sector: 'tecnología, software y datos',
 };
 
 function fromEnv(key: string, fallback: string): string {

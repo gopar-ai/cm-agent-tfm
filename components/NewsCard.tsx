@@ -1,5 +1,6 @@
 'use client';
 
+import Icono from '@/components/Icono';
 import { useState } from 'react';
 import type { NewsItem } from '@/lib/news-types';
 
@@ -41,7 +42,7 @@ export default function NewsCard({ news, mode, saved, onSave, onRemove, onUseFor
             rel="noopener noreferrer"
             className="text-[11px] bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-1 rounded transition-colors"
           >
-            🔗 Ver noticia
+            <Icono nombre="enlace" className="w-3 h-3" />Ver noticia
           </a>
 
           {mode === 'feed' ? (
@@ -50,12 +51,12 @@ export default function NewsCard({ news, mode, saved, onSave, onRemove, onUseFor
               disabled={saved}
               className="text-[11px] bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 text-zinc-300 px-2 py-1 rounded transition-colors"
             >
-              {saved ? '✓ Guardada' : '💾 Guardar'}
+              <Icono nombre="guardar" className="w-3 h-3" />{saved ? 'Guardada' : 'Guardar'}
             </button>
           ) : (
             <button
               onClick={onRemove}
-              className="text-[11px] bg-zinc-800 hover:bg-red-900 text-zinc-300 px-2 py-1 rounded transition-colors"
+              className="text-[11px] bg-zinc-800 hover:bg-indigo-900 text-zinc-300 px-2 py-1 rounded transition-colors"
             >
               🗑️ Quitar
             </button>
@@ -63,9 +64,9 @@ export default function NewsCard({ news, mode, saved, onSave, onRemove, onUseFor
 
           <button
             onClick={onUseForPost}
-            className="text-[11px] bg-[#CC0000] hover:bg-red-700 text-white px-2 py-1 rounded transition-colors"
+            className="text-[11px] bg-[#6366F1] hover:bg-indigo-500 text-white px-2 py-1 rounded transition-colors"
           >
-            ✍️ Usar para post
+            <Icono nombre="escribir" className="w-3 h-3" />Usar para post
           </button>
         </div>
       </div>

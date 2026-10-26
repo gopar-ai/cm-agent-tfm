@@ -31,7 +31,7 @@ export default function PostCard({ post, onSave }: Props) {
           <button
             onClick={handleSave}
             disabled={saved}
-            className="text-xs bg-[#CC0000] hover:bg-red-700 disabled:opacity-50 text-white px-3 py-1 rounded transition-colors"
+            className="text-xs bg-[#6366F1] hover:bg-indigo-500 disabled:opacity-50 text-white px-3 py-1 rounded transition-colors"
           >
             {saved ? '✓ Guardado' : '+ Calendario'}
           </button>
@@ -42,7 +42,7 @@ export default function PostCard({ post, onSave }: Props) {
       <div className="px-4 py-4 space-y-3">
         <h3 className="text-white font-bold text-base leading-tight">{post.titular}</h3>
         <p className="text-zinc-300 text-sm leading-relaxed whitespace-pre-wrap">{post.cuerpo}</p>
-        <p className="text-[#CC0000] text-xs font-medium">{post.hashtags}</p>
+        <p className="text-[#6366F1] text-xs font-medium">{post.hashtags}</p>
       </div>
 
       {/* Prompt imagen */}

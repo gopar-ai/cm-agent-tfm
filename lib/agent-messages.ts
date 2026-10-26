@@ -14,13 +14,19 @@
 
 export type AgentPhase = 'temas' | 'angulo' | 'versiones' | 'confirmacion' | 'ajuste';
 
-/** Formatos que ofrece la interfaz, con su emoji. */
+/**
+ * Formatos que ofrece la interfaz.
+ *
+ * Sin emoji: la interfaz los dibuja con un icono propio. `detectFormat` sigue
+ * quitando emojis por si el modelo los añade por su cuenta, que es lo que hacía
+ * la primera versión del prompt.
+ */
 export const FORMAT_OPTIONS = [
-  '📝 Copy',
-  '📸 Copy + imagen',
-  '🎠 Carrusel',
-  '📄 Documento PDF',
-  '🎬 Video (guión)',
+  'Copy',
+  'Copy + imagen',
+  'Carrusel',
+  'Documento PDF',
+  'Video (guión)',
 ] as const;
 
 /** Nombres de formato sin emoji, del más específico al más general. */

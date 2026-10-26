@@ -46,13 +46,13 @@ export default function LoadingBubble({ labels }: Props) {
           {labels[index]}
         </span>
         <span className="flex items-center gap-0.5">
-          <span className="loading-dot text-[#CC0000] text-base leading-none" style={{ animationDelay: '0ms' }}>
+          <span className="loading-dot text-[#6366F1] text-base leading-none" style={{ animationDelay: '0ms' }}>
             •
           </span>
-          <span className="loading-dot text-[#CC0000] text-base leading-none" style={{ animationDelay: '200ms' }}>
+          <span className="loading-dot text-[#6366F1] text-base leading-none" style={{ animationDelay: '200ms' }}>
             •
           </span>
-          <span className="loading-dot text-[#CC0000] text-base leading-none" style={{ animationDelay: '400ms' }}>
+          <span className="loading-dot text-[#6366F1] text-base leading-none" style={{ animationDelay: '400ms' }}>
             •
           </span>
         </span>

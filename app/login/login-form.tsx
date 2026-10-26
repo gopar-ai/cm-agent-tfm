@@ -38,7 +38,7 @@ export default function LoginForm({ demoHint }: { demoHint?: string }) {
         {/* Logo / branding */}
         <div className="mb-10 text-center">
           <div className="inline-flex items-center gap-2 mb-2">
-            <span className="text-[#CC0000] text-3xl font-black tracking-tight">CM</span>
+            <span className="text-[#6366F1] text-3xl font-black tracking-tight">CM</span>
             <span className="text-white text-3xl font-light tracking-tight">Agent</span>
           </div>
           <p className="text-zinc-500 text-sm">Agente de contenido</p>
@@ -58,7 +58,7 @@ export default function LoginForm({ demoHint }: { demoHint?: string }) {
               onChange={(e) => setUsername(e.target.value)}
               required
               autoComplete="username"
-              className="w-full bg-zinc-900 border border-zinc-800 rounded text-white px-4 py-3 text-sm focus:outline-none focus:border-[#CC0000] transition-colors"
+              className="w-full bg-zinc-900 border border-zinc-800 rounded text-white px-4 py-3 text-sm focus:outline-none focus:border-[#6366F1] transition-colors"
             />
           </div>
 
@@ -74,18 +74,18 @@ export default function LoginForm({ demoHint }: { demoHint?: string }) {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-              className="w-full bg-zinc-900 border border-zinc-800 rounded text-white px-4 py-3 text-sm focus:outline-none focus:border-[#CC0000] transition-colors"
+              className="w-full bg-zinc-900 border border-zinc-800 rounded text-white px-4 py-3 text-sm focus:outline-none focus:border-[#6366F1] transition-colors"
             />
           </div>
 
           {error && (
-            <p className="text-[#CC0000] text-sm">{error}</p>
+            <p className="text-[#6366F1] text-sm">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#CC0000] hover:bg-red-700 disabled:opacity-50 text-white font-semibold py-3 rounded transition-colors text-sm tracking-wide"
+            className="w-full bg-[#6366F1] hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-3 rounded transition-colors text-sm tracking-wide"
           >
             {loading ? 'Ingresando…' : 'Ingresar'}
           </button>
